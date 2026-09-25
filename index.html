@@ -1,244 +1,134 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="light" style="color-scheme: light;">
   <head>
     <meta charset="UTF-8" />
+    <meta name="color-scheme" content="only light" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Suit Aura Girls brings confidence-first styling, premium collections, and elevated personal brand experiences."
-    />
-    <title>Suit Aura Girls | Style with Confidence</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
+    <!-- Immediate Mobile Browser Polyfill & Crash Shield (Vivo, iQOO, Mi, Samsung, WebView, Private Browsing) -->
+    <script>
+      (function() {
+        var memoryStorage = {};
+        
+        // Safe localStorage polyfill
+        try {
+          var testKey = '__sba_test__';
+          window.localStorage.setItem(testKey, '1');
+          window.localStorage.removeItem(testKey);
+        } catch (e) {
+          try {
+            Object.defineProperty(window, 'localStorage', {
+              value: {
+                getItem: function(k) { return memoryStorage[k] || null; },
+                setItem: function(k, v) { memoryStorage[k] = String(v); },
+                removeItem: function(k) { delete memoryStorage[k]; },
+                clear: function() { memoryStorage = {}; },
+                key: function(i) { return Object.keys(memoryStorage)[i] || null; },
+                get length() { return Object.keys(memoryStorage).length; }
+              },
+              writable: true,
+              configurable: true
+            });
+          } catch (err) {}
+        }
+
+        // Safe sessionStorage polyfill
+        try {
+          var testKeyS = '__sba_test_s__';
+          window.sessionStorage.setItem(testKeyS, '1');
+          window.sessionStorage.removeItem(testKeyS);
+        } catch (e) {
+          try {
+            Object.defineProperty(window, 'sessionStorage', {
+              value: {
+                getItem: function(k) { return memoryStorage['s_' + k] || null; },
+                setItem: function(k, v) { memoryStorage['s_' + k] = String(v); },
+                removeItem: function(k) { delete memoryStorage['s_' + k]; },
+                clear: function() { },
+                key: function(i) { return null; },
+                get length() { return 0; }
+              },
+              writable: true,
+              configurable: true
+            });
+          } catch (err) {}
+        }
+
+        // Safe Storage prototype patch
+        if (typeof Storage !== 'undefined' && Storage.prototype) {
+          try {
+            var origSet = Storage.prototype.setItem;
+            var origGet = Storage.prototype.getItem;
+            var origRemove = Storage.prototype.removeItem;
+            Storage.prototype.setItem = function(k, v) { try { origSet.call(this, k, v); } catch (e) { memoryStorage[k] = String(v); } };
+            Storage.prototype.getItem = function(k) { try { return origGet.call(this, k); } catch (e) { return memoryStorage[k] || null; } };
+            Storage.prototype.removeItem = function(k) { try { origRemove.call(this, k); } catch (e) { delete memoryStorage[k]; } };
+          } catch (e) {}
+        }
+
+        // Safe matchMedia
+        if (!window.matchMedia) {
+          window.matchMedia = function(q) {
+            return {
+              matches: false, media: q, onchange: null,
+              addListener: function() {}, removeListener: function() {},
+              addEventListener: function() {}, removeEventListener: function() {},
+              dispatchEvent: function() { return false; }
+            };
+          };
+        }
+
+        // Safe ResizeObserver
+        if (!window.ResizeObserver) {
+          window.ResizeObserver = function() {
+            this.observe = function() {};
+            this.unobserve = function() {};
+            this.disconnect = function() {};
+          };
+        }
+
+        // Safe IntersectionObserver
+        if (!window.IntersectionObserver) {
+          window.IntersectionObserver = function() {
+            this.observe = function() {};
+            this.unobserve = function() {};
+            this.disconnect = function() {};
+          };
+        }
+
+        // Safe crypto.randomUUID
+        if (!window.crypto) { window.crypto = {}; }
+        if (!window.crypto.randomUUID) {
+          window.crypto.randomUUID = function() {
+            return '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, function(c) {
+              return (c ^ (Math.random() * 16 >> (c / 4))).toString(16);
+            });
+          };
+        }
+
+        // Catch unhandled promise rejections so non-critical background fetch failures don't crash
+        window.addEventListener('unhandledrejection', function(event) {
+          if (event && event.preventDefault) { event.preventDefault(); }
+        });
+      })();
+    </script>
+    <title>Suit Bliss Aura | Women's Suits, Kurtis & Ethnic Fashion</title>
+    <meta name="description" content="Shop elegant women's suits, kurtis, dresses, anarkali and ethnic fashion at Suit Bliss Aura." />
+    <meta property="og:title" content="Suit Bliss Aura | Women's Suits, Kurtis & Ethnic Fashion" />
+    <meta property="og:description" content="Shop elegant women's suits, kurtis, dresses, anarkali and ethnic fashion at Suit Bliss Aura." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- Google Fonts & Image CDN Preconnects -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+    <link rel="dns-prefetch" href="https://images.unsplash.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Razorpay Checkout Script (Non-blocking async) -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js" async defer></script>
   </head>
-  <body>
-    <header class="site-header">
-      <div class="container nav-wrap">
-        <a href="#home" class="brand" aria-label="Suit Aura Girls home">
-          <span class="brand-mark">S</span>
-          <span>Suit Aura Girls</span>
-        </a>
-
-        <nav class="main-nav" aria-label="Main navigation">
-          <a href="#home">Home</a>
-          <a href="#collections">Collections</a>
-          <a href="#about">About</a>
-          <a href="#process">Process</a>
-          <a href="#contact">Contact</a>
-        </nav>
-
-        <a href="#contact" class="btn btn-primary">Book a Styling Call</a>
-      </div>
-    </header>
-
-    <main>
-      <section id="home" class="hero">
-        <div class="container hero-inner">
-          <div class="hero-copy">
-            <p class="eyebrow">Luxury styling for every moment</p>
-            <h1>Dress to feel powerful, polished, and unmistakably you.</h1>
-            <p class="intro">
-              Suit Aura Girls curates elevated fashion, personalized styling, and
-              confidence-driven looks for women who want to stand out with grace.
-            </p>
-
-            <div class="hero-actions">
-              <a href="#collections" class="btn btn-primary">Shop the Collection</a>
-              <a href="#about" class="btn btn-secondary">Learn More</a>
-            </div>
-
-            <ul class="stats" aria-label="Brand statistics">
-              <li><strong>25k+</strong><span>happy clients</span></li>
-              <li><strong>4.9/5</strong><span>average rating</span></li>
-              <li><strong>120+</strong><span>new looks weekly</span></li>
-            </ul>
-          </div>
-
-          <div class="hero-visual" aria-label="Fashion styling showcase">
-            <div class="image-card main-card">
-              <img
-                src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=80"
-                alt="Woman in a magazine-inspired boutique look"
-              />
-            </div>
-            <div class="floating-note note-top">Signature looks</div>
-            <div class="floating-note note-bottom">Curated for confidence</div>
-          </div>
-        </div>
-      </section>
-
-      <section id="collections" class="collections section-spacing">
-        <div class="container">
-          <div class="section-head">
-            <p class="eyebrow">Featured collections</p>
-            <h2>Statement pieces designed to elevate everyday confidence.</h2>
-          </div>
-
-          <div class="card-grid">
-            <article class="product-card">
-              <div class="product-image image-one"></div>
-              <div class="product-body">
-                <span>Power Edit</span>
-                <h3>Executive Elegance</h3>
-                <p>Tailored silhouettes with a luxe finish for meetings, launches, and events.</p>
-              </div>
-            </article>
-
-            <article class="product-card">
-              <div class="product-image image-two"></div>
-              <div class="product-body">
-                <span>Weekend Luxe</span>
-                <h3>Soft Glam</h3>
-                <p>Lightweight layers and feminine textures for brunches, dates, and celebrations.</p>
-              </div>
-            </article>
-
-            <article class="product-card">
-              <div class="product-image image-three"></div>
-              <div class="product-body">
-                <span>Signature Picks</span>
-                <h3>Minimal Drama</h3>
-                <p>Clean lines and striking details that turn everyday looks into a statement.</p>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section id="about" class="about section-spacing">
-        <div class="container about-grid">
-          <div class="about-copy">
-            <p class="eyebrow">Our approach</p>
-            <h2>Style is more than fashion — it is self-trust in motion.</h2>
-            <p>
-              At Suit Aura Girls, we help women build wardrobes and personal looks that
-              feel intentional, premium, and completely aligned with their lifestyle.
-            </p>
-            <p>
-              From personalized styling sessions to thoughtfully curated pieces, every
-              recommendation is designed to make you feel seen, polished, and powerful.
-            </p>
-          </div>
-
-          <div class="feature-panel">
-            <div>
-              <span class="panel-number">01</span>
-              <h3>Curated wardrobes</h3>
-              <p>Elevated staples and occasionwear that match your goals and identity.</p>
-            </div>
-            <div>
-              <span class="panel-number">02</span>
-              <h3>Personal styling</h3>
-              <p>Tailored advice to help you build outfits that feel effortless and bold.</p>
-            </div>
-            <div>
-              <span class="panel-number">03</span>
-              <h3>Confidence-first</h3>
-              <p>We celebrate the energy behind every look so your style feels authentic.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="process" class="process section-spacing">
-        <div class="container">
-          <div class="section-head">
-            <p class="eyebrow">How it works</p>
-            <h2>A simple luxury experience from first look to final reveal.</h2>
-          </div>
-
-          <div class="steps">
-            <article class="step-card">
-              <span>01</span>
-              <h3>Discover</h3>
-              <p>Share your style goals, occasions, and the vibe you want to carry.</p>
-            </article>
-            <article class="step-card">
-              <span>02</span>
-              <h3>Curate</h3>
-              <p>Receive refined recommendations built around your personality and schedule.</p>
-            </article>
-            <article class="step-card">
-              <span>03</span>
-              <h3>Elevate</h3>
-              <p>Step out feeling polished, confident, and fully in your best energy.</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="pricing section-spacing">
-        <div class="container">
-          <div class="section-head">
-            <p class="eyebrow">Styling plans</p>
-            <h2>Choose your signature support.</h2>
-          </div>
-
-          <div class="pricing-grid">
-            <article class="pricing-card">
-              <p class="plan-name">Starter</p>
-              <h3>₹2,999</h3>
-              <ul>
-                <li>2 personalized outfit suggestions</li>
-                <li>Styling notes</li>
-                <li>Wardrobe guidance</li>
-              </ul>
-              <a href="#contact" class="btn btn-secondary">Get Started</a>
-            </article>
-
-            <article class="pricing-card featured-plan">
-              <p class="plan-name">Signature</p>
-              <h3>₹6,999</h3>
-              <ul>
-                <li>Complete styling consultation</li>
-                <li>3 curated outfit formulas</li>
-                <li>Priority support</li>
-              </ul>
-              <a href="#contact" class="btn btn-primary">Most Popular</a>
-            </article>
-
-            <article class="pricing-card">
-              <p class="plan-name">Luxury</p>
-              <h3>₹12,999</h3>
-              <ul>
-                <li>Full wardrobe direction</li>
-                <li>Event styling plans</li>
-                <li>Dedicated style concierge</li>
-              </ul>
-              <a href="#contact" class="btn btn-secondary">Book Now</a>
-            </article>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer id="contact" class="site-footer">
-      <div class="container footer-wrap">
-        <div>
-          <a href="#home" class="brand brand-footer">
-            <span class="brand-mark">S</span>
-            <span>Suit Aura Girls</span>
-          </a>
-          <p>Luxury style, personal confidence, and elevated everyday presence.</p>
-        </div>
-
-        <div class="footer-links">
-          <a href="#collections">Collections</a>
-          <a href="#about">About</a>
-          <a href="#process">Process</a>
-          <a href="mailto:hello@suitauragirls.in">hello@suitauragirls.in</a>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>© <span id="year"></span> Suit Aura Girls. All rights reserved.</p>
-      </div>
-    </footer>
-
-    <script src="script.js"></script>
+  <body class="bg-[#F7F2EA] text-[#16261F] antialiased selection:bg-[#B8935A]/30 selection:text-[#16261F]">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
+

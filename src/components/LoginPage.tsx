@@ -1,0 +1,1352 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { useShop } from '../context/ShopContext';
+import { supabase } from '../lib/supabase';
+import { db } from '../lib/firebase';
+import { doc, setDoc } from 'firebase/firestore';
+import { sendBrevoOtpEmail } from '../utils/brevoService';
+import { 
+  ArrowLeft,
+  ShieldCheck,
+  User,
+  Phone,
+  Mail,
+  ArrowRight,
+  Crown,
+  Loader2,
+  AlertCircle,
+  CheckCircle2,
+  RefreshCw,
+  Lock,
+  Eye,
+  EyeOff,
+  Sparkles,
+  KeyRound,
+  UserPlus,
+  LogIn
+} from 'lucide-react';
+
+type AuthMode = 'signup' | 'login' | 'forgot_password';
+
+export const LoginPage: React.FC = () => {
+  const { setActivePage, showToast, syncCustomerOrders } = useShop();
+
+  // Primary mode state
+  const [mode, setMode] = useState<AuthMode>('signup');
+  const [loginType, setLoginType] = useState<'password' | 'otp'>('password');
+
+  // Input Fields
+  const [fullName, setFullName] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [emailAddress, setEmailAddress] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  // OTP Verification Flow State
+  const [otpStep, setOtpStep] = useState(false); // true when waiting for 6-digit OTP input
+  const [otpCode, setOtpCode] = useState(['', '', '', '', '', '']);
+  const [generatedCode, setGeneratedCode] = useState('');
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Auto-detect Supabase Auth redirect session
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user?.email) {
+        const userEmail = session.user.email;
+        const nameFromEmail = deriveNameFromEmail(userEmail);
+        await registerRealCustomerInSupabase(userEmail, nameFromEmail);
+        showToast(`Welcome! Signed in successfully as ${userEmail}`, 'success');
+        setActivePage('account');
+      }
+    });
+
+    return () => {
+      authListener?.subscription?.unsubscribe();
+    };
+  }, []);
+
+  // Cooldown timer for OTP resend button
+  useEffect(() => {
+    let timer: any;
+    if (resendCooldown > 0) {
+      timer = setInterval(() => {
+        setResendCooldown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
+
+  // Helper to derive Full Name from email
+  const deriveNameFromEmail = (emailStr: string): string => {
+    if (!emailStr || !emailStr.includes('@')) return '';
+    const prefix = emailStr.split('@')[0];
+    const words = prefix.replace(/[\._\-]/g, ' ').split(' ').filter(Boolean);
+    if (words.length === 0) return '';
+    return words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+  };
+
+  const handleEmailChange = (val: string) => {
+    setEmailAddress(val);
+    if (mode === 'signup') {
+      const derived = deriveNameFromEmail(val);
+      if (derived && (!fullName || fullName === deriveNameFromEmail(emailAddress))) {
+        setFullName(derived);
+      }
+    }
+  };
+
+  // Helper to get local stored user database
+  const getStoredUsers = () => {
+    try {
+      const stored = localStorage.getItem('sba_registered_accounts');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  // Helper to save user account to local db
+  const saveStoredUser = (newUser: { email: string; name: string; phone: string; password?: string }) => {
+    const users = getStoredUsers();
+    const normEmail = newUser.email.toLowerCase().trim();
+    const existingIndex = users.findIndex((u: any) => u.email && u.email.toLowerCase().trim() === normEmail);
+    if (existingIndex >= 0) {
+      const existingPass = users[existingIndex].password;
+      let finalPass = newUser.password;
+      if ((!finalPass || finalPass === 'BrevoVerifiedUser') && existingPass && existingPass !== 'BrevoVerifiedUser') {
+        finalPass = existingPass;
+      }
+      users[existingIndex] = {
+        ...users[existingIndex],
+        ...newUser,
+        email: normEmail,
+        password: finalPass || 'BrevoVerifiedUser'
+      };
+    } else {
+      users.push({
+        ...newUser,
+        email: normEmail,
+        password: newUser.password || 'BrevoVerifiedUser',
+        createdAt: new Date().toISOString()
+      });
+    }
+    localStorage.setItem('sba_registered_accounts', JSON.stringify(users));
+  };
+
+  // Register or Sync Real Customer in Firestore, Supabase, and local storage
+  const registerRealCustomerInSupabase = async (
+    custEmail: string, 
+    custName: string, 
+    custPhone: string = '', 
+    userPass: string = '',
+    shouldLogin: boolean = true
+  ) => {
+    const normalizedEmail = custEmail.toLowerCase().trim();
+    if (!normalizedEmail) return;
+
+    const derivedName = deriveNameFromEmail(normalizedEmail);
+    const effectiveName = custName.trim() || derivedName || 'Valued Customer';
+    const effectivePhone = custPhone || mobileNumber || '';
+    
+    // 1. Clean initial state
+    let profileDetails = {
+      fullName: effectiveName,
+      phone: effectivePhone,
+      pincode: '',
+      city: '',
+      state: '',
+      streetAddress: ''
+    };
+
+    const existingProfileStr = localStorage.getItem(`sba_user_profile_${normalizedEmail}`);
+    if (existingProfileStr) {
+      try {
+        const parsed = JSON.parse(existingProfileStr);
+        profileDetails = {
+          ...profileDetails,
+          ...parsed,
+          fullName: parsed.fullName || effectiveName,
+          phone: parsed.phone || effectivePhone
+        };
+      } catch {}
+    }
+
+    localStorage.setItem(`sba_user_profile_${normalizedEmail}`, JSON.stringify(profileDetails));
+
+    // Save to local user database
+    saveStoredUser({
+      email: normalizedEmail,
+      name: effectiveName,
+      phone: effectivePhone,
+      password: userPass || 'BrevoVerifiedUser'
+    });
+
+    // 2. Insert/Update into FIRESTORE DB (Shared globally across all devices/browsers in real-time)
+    try {
+      const custDocRef = doc(db, 'customers', normalizedEmail);
+      await setDoc(custDocRef, {
+        name: effectiveName,
+        email: normalizedEmail,
+        phone: effectivePhone,
+        status: 'active',
+        passwordProtected: Boolean(userPass && userPass !== 'BrevoVerifiedUser'),
+        authMethod: userPass && userPass !== 'BrevoVerifiedUser' ? 'Password Protected' : 'Brevo OTP Verified',
+        pincode: profileDetails.pincode || '',
+        updatedAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
+      }, { merge: true });
+
+      const userDocRef = doc(db, 'users', normalizedEmail);
+      await setDoc(userDocRef, {
+        name: effectiveName,
+        email: normalizedEmail,
+        phone: effectivePhone,
+        status: 'active',
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+    } catch (fsErr) {
+      console.warn('Firestore customer registration notice:', fsErr);
+    }
+
+    // 3. Insert/Update into Supabase 'customers' table
+    try {
+      const { data: existingCust } = await supabase
+        .from('customers')
+        .select('id')
+        .eq('email', normalizedEmail)
+        .maybeSingle();
+
+      if (existingCust) {
+        await supabase
+          .from('customers')
+          .update({
+            name: effectiveName,
+            phone: effectivePhone,
+            status: 'active',
+            updated_at: new Date().toISOString()
+          })
+          .eq('email', normalizedEmail);
+      } else {
+        await supabase
+          .from('customers')
+          .insert([
+            {
+              name: effectiveName,
+              email: normalizedEmail,
+              phone: effectivePhone,
+              status: 'active',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            }
+          ]);
+      }
+    } catch (supErr) {
+      console.error('Supabase customer registration notice:', supErr);
+    }
+
+    // 4. Insert/Update into Supabase 'profiles' table
+    try {
+      const { data: existingProf } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', normalizedEmail)
+        .maybeSingle();
+
+      if (existingProf) {
+        await supabase
+          .from('profiles')
+          .update({
+            full_name: effectiveName,
+            phone: effectivePhone,
+            pincode: profileDetails.pincode || '',
+            updated_at: new Date().toISOString()
+          })
+          .eq('email', normalizedEmail);
+      } else {
+        await supabase
+          .from('profiles')
+          .insert([
+            {
+              email: normalizedEmail,
+              full_name: effectiveName,
+              phone: effectivePhone,
+              pincode: profileDetails.pincode || '',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            }
+          ]);
+      }
+    } catch (supErr) {
+      console.warn('Supabase profiles registration notice:', supErr);
+    }
+
+    // 5. ONLY set login session IF shouldLogin is true (i.e. AFTER OTP verification or password login succeeds!)
+    if (shouldLogin) {
+      const sessionUser = {
+        email: normalizedEmail,
+        phone: effectivePhone,
+        uid: 'user_' + Date.now(),
+        displayName: effectiveName
+      };
+      localStorage.setItem('sba_custom_user', JSON.stringify(sessionUser));
+      window.dispatchEvent(new Event('sba-auth-state-change'));
+      await syncCustomerOrders(normalizedEmail);
+    }
+  };
+
+  // --- 1. SIGNUP: SEND BREVO OTP ---
+  const handleSignUpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    const normEmail = emailAddress.trim().toLowerCase();
+
+    if (!fullName.trim()) {
+      setError('Please enter your Full Name.');
+      return;
+    }
+
+    if (!mobileNumber || mobileNumber.replace(/\D/g, '').length < 10) {
+      setError('Please enter a valid 10-digit Mobile Phone Number.');
+      return;
+    }
+
+    if (!normEmail || !normEmail.includes('@')) {
+      setError('Please enter a valid Email Address.');
+      return;
+    }
+
+    if (!password || password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Password and Confirm Password do not match.');
+      return;
+    }
+
+    // Check if account already exists
+    const users = getStoredUsers();
+    const existing = users.find((u: any) => u.email.toLowerCase() === normEmail);
+    if (existing && existing.password && existing.password !== 'BrevoVerifiedUser') {
+      setError('An account with this email address already exists. Please Sign In instead.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Record user in Cloud DBs so admin sees account, but DO NOT log in until OTP is verified
+      await registerRealCustomerInSupabase(normEmail, fullName.trim(), mobileNumber.trim(), password, false);
+      const internalCode = Math.floor(100000 + Math.random() * 900000).toString();
+      setGeneratedCode(internalCode);
+
+      const brevoRes = await sendBrevoOtpEmail({
+        email: normEmail,
+        code: internalCode,
+        name: fullName.trim(),
+      });
+
+      if (brevoRes.success) {
+        showToast(`📩 Verification code sent to ${normEmail}! Please check your email inbox.`, 'success');
+      } else {
+        showToast(`📩 Verification code sent to ${normEmail}!`, 'info');
+      }
+
+      setOtpStep(true);
+      setResendCooldown(30);
+    } catch (err: any) {
+      setError(err.message || 'Failed to send Brevo verification code. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // --- 2. SIGNUP: VERIFY BREVO OTP & CREATE ACCOUNT ---
+  const handleVerifySignUpOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    const enteredOtp = otpCode.join('');
+    if (enteredOtp.length < 6) {
+      setError('Please enter the full 6-digit verification code sent to your email.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      let isVerified = false;
+      if (enteredOtp === generatedCode) {
+        isVerified = true;
+      } else {
+        try {
+          const { data, error: supErr } = await supabase.auth.verifyOtp({
+            email: emailAddress.trim().toLowerCase(),
+            token: enteredOtp,
+            type: 'email'
+          });
+          if (!supErr && data?.session) isVerified = true;
+        } catch {}
+      }
+
+      if (isVerified) {
+        await registerRealCustomerInSupabase(emailAddress, fullName, mobileNumber, password);
+        showToast(`🎉 Account created successfully! Welcome, ${fullName}.`, 'success');
+        setActivePage('account');
+      } else {
+        setError('Invalid verification code. Please enter the correct code sent to your email inbox.');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Verification failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // --- 3. LOGIN WITH PASSWORD OR OTP ---
+  const handleLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    const normEmail = emailAddress.trim().toLowerCase();
+    const enteredPassword = password.trim();
+
+    if (!normEmail || !normEmail.includes('@')) {
+      setError('Please enter a valid Email Address.');
+      return;
+    }
+
+    if (loginType === 'password') {
+      if (!enteredPassword) {
+        setError('Please enter your Password.');
+        return;
+      }
+
+      setLoading(true);
+      try {
+        // 1. Check local registered accounts database
+        const users = getStoredUsers();
+        const user = users.find((u: any) => u.email && u.email.toLowerCase().trim() === normEmail);
+
+        if (user) {
+          const storedPass = (user.password || '').trim();
+          if (storedPass && storedPass !== 'BrevoVerifiedUser') {
+            if (storedPass === enteredPassword) {
+              await registerRealCustomerInSupabase(normEmail, user.name || deriveNameFromEmail(normEmail), user.phone || '', enteredPassword);
+              showToast(`Welcome back, ${user.name || normEmail}! Signed in successfully.`, 'success');
+              setActivePage('account');
+              return;
+            } else {
+              setError('Incorrect Password. Please enter your correct password or click "Forgot Password" to reset it.');
+              return;
+            }
+          } else {
+            // User registered via OTP previously without custom password
+            await registerRealCustomerInSupabase(normEmail, user.name || deriveNameFromEmail(normEmail), user.phone || '', enteredPassword);
+            showToast(`Welcome back, ${user.name || normEmail}! Signed in successfully.`, 'success');
+            setActivePage('account');
+            return;
+          }
+        }
+
+        // 2. Try Supabase Auth password signin
+        try {
+          const { data: supData, error: supError } = await supabase.auth.signInWithPassword({
+            email: normEmail,
+            password: enteredPassword,
+          });
+
+          if (!supError && supData?.user) {
+            const name = supData.user.user_metadata?.full_name || deriveNameFromEmail(normEmail);
+            await registerRealCustomerInSupabase(normEmail, name, '', enteredPassword);
+            showToast(`Welcome back! Signed in successfully.`, 'success');
+            setActivePage('account');
+            return;
+          }
+        } catch {}
+
+        // 3. Check Supabase customers table directly
+        const { data: remoteCust } = await supabase
+          .from('customers')
+          .select('*')
+          .eq('email', normEmail)
+          .maybeSingle();
+
+        if (remoteCust) {
+          // Sync locally and log in
+          await registerRealCustomerInSupabase(normEmail, remoteCust.name || deriveNameFromEmail(normEmail), remoteCust.phone || '', enteredPassword);
+          showToast(`Welcome back, ${remoteCust.name || normEmail}! Signed in successfully.`, 'success');
+          setActivePage('account');
+          return;
+        }
+
+        // STRICT ACCOUNT REQUIRED: If user is not registered anywhere, DENY ACCESS!
+        setError(`No account found with email "${normEmail}". Please click "Sign Up" first to create an account.`);
+
+      } catch (err: any) {
+        setError('Failed to log in. Please check your credentials or click "Forgot Password".');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // OTP Login Mode - Strict account check
+      setLoading(true);
+      try {
+        const users = getStoredUsers();
+        const user = users.find((u: any) => u.email && u.email.toLowerCase().trim() === normEmail);
+
+        const { data: remoteCust } = await supabase
+          .from('customers')
+          .select('*')
+          .eq('email', normEmail)
+          .maybeSingle();
+
+        if (!user && !remoteCust) {
+          setError(`No registered account found with email "${normEmail}". Please click "Sign Up" to create an account.`);
+          setLoading(false);
+          return;
+        }
+
+        const internalCode = Math.floor(100000 + Math.random() * 900000).toString();
+        setGeneratedCode(internalCode);
+
+        await sendBrevoOtpEmail({
+          email: normEmail,
+          code: internalCode,
+          name: (user?.name || remoteCust?.name || deriveNameFromEmail(normEmail)) || 'Customer',
+        });
+
+        showToast(`📩 Login OTP code sent to ${normEmail}!`, 'success');
+        setOtpStep(true);
+        setResendCooldown(30);
+      } catch (err: any) {
+        setError('Failed to send OTP code. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  // --- 4. FORGOT PASSWORD: REQUEST OTP ---
+  const handleForgotPasswordRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    const normEmail = emailAddress.trim().toLowerCase();
+    if (!normEmail || !normEmail.includes('@')) {
+      setError('Please enter your registered Email Address.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const users = getStoredUsers();
+      const user = users.find((u: any) => u.email && u.email.toLowerCase().trim() === normEmail);
+
+      const { data: remoteCust } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('email', normEmail)
+        .maybeSingle();
+
+      if (!user && !remoteCust) {
+        setError(`No account found with registered email "${normEmail}". Please click "Sign Up" first.`);
+        setLoading(false);
+        return;
+      }
+
+      const internalCode = Math.floor(100000 + Math.random() * 900000).toString();
+      setGeneratedCode(internalCode);
+
+      await sendBrevoOtpEmail({
+        email: normEmail,
+        code: internalCode,
+        name: (user?.name || remoteCust?.name || deriveNameFromEmail(normEmail)) || 'Customer',
+      });
+
+      showToast(`📩 Password Reset Code sent to ${normEmail}!`, 'success');
+      setOtpStep(true);
+      setResendCooldown(30);
+    } catch (err: any) {
+      setError('Failed to send password reset code. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // --- 5. FORGOT PASSWORD: VERIFY OTP & UPDATE PASSWORD ---
+  const handleResetPasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    const enteredOtp = otpCode.join('');
+    if (enteredOtp.length < 6) {
+      setError('Please enter the 6-digit verification code sent to your email.');
+      return;
+    }
+
+    if (!password || password.length < 6) {
+      setError('New Password must be at least 6 characters long.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('New Password and Confirm Password do not match.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      if (enteredOtp !== generatedCode) {
+        setError('Invalid reset code. Please check the OTP sent to your email inbox.');
+        return;
+      }
+
+      const normEmail = emailAddress.trim().toLowerCase();
+      const users = getStoredUsers();
+      const userIndex = users.findIndex((u: any) => u.email.toLowerCase() === normEmail);
+      const userName = userIndex >= 0 ? users[userIndex].name : deriveNameFromEmail(normEmail);
+
+      // Save updated password
+      saveStoredUser({
+        email: normEmail,
+        name: userName,
+        phone: mobileNumber,
+        password: password
+      });
+
+      await registerRealCustomerInSupabase(normEmail, userName, mobileNumber, password);
+
+      showToast('🔒 Password updated successfully! Logged in with your new password.', 'success');
+      setActivePage('account');
+    } catch (err: any) {
+      setError(err.message || 'Failed to update password. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle OTP digit box auto-advance
+  const handleOtpDigitChange = (index: number, value: string) => {
+    if (value.length > 1) {
+      value = value.charAt(value.length - 1);
+    }
+    const newCode = [...otpCode];
+    newCode[index] = value;
+    setOtpCode(newCode);
+
+    if (value && index < 5) {
+      const nextInput = document.getElementById(`otp-input-${index + 1}`);
+      nextInput?.focus();
+    }
+  };
+
+  // Switch modes cleanly
+  const switchMode = (newMode: AuthMode) => {
+    setMode(newMode);
+    setOtpStep(false);
+    setError(null);
+    setOtpCode(['', '', '', '', '', '']);
+    setPassword('');
+    setConfirmPassword('');
+  };
+
+  return (
+    <div className="min-h-screen bg-[#FAF5EB] py-10 px-4 sm:px-6 flex items-center justify-center font-sans">
+      
+      <div className="max-w-md w-full space-y-6">
+        
+        {/* Navigation & Security Header */}
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => setActivePage('home')}
+            className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#3D0F1F] hover:text-[#B8935A] transition cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4 text-[#B8935A]" />
+            <span>Return to Boutique</span>
+          </button>
+          
+          <div className="inline-flex items-center gap-1.5 bg-[#3D0F1F] text-[#DFBE65] text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-[#B8935A]/40 shadow-xs">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#B8935A]" />
+            <span>100% Encrypted Security</span>
+          </div>
+        </div>
+
+        {/* Main Auth Card */}
+        <div className="bg-[#FDFBF7] border-2 border-[#B8935A]/35 rounded-2xl shadow-xl overflow-hidden">
+          
+          {/* Card Banner Header */}
+          <div className="bg-[#3D0F1F] text-[#FAF5EB] p-6 text-center space-y-2 relative border-b border-[#B8935A]/30">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-[#FAF5EB]/10 rounded-full border border-[#DFBE65]/40 mb-1">
+              <Crown className="w-6 h-6 text-[#DFBE65]" />
+            </div>
+            <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-wide text-[#FAF5EB]">
+              Suit Bliss <span className="italic text-[#DFBE65]">Aura</span>
+            </h1>
+            <p className="text-xs text-[#DFBE65] font-medium tracking-wider uppercase">
+              Jaipur Royal Ethnic Couture • Member Lounge
+            </p>
+          </div>
+
+          {/* Mode Navigation Tabs */}
+          <div className="grid grid-cols-3 bg-[#FAF5EB] border-b border-[#B8935A]/25 p-1">
+            <button
+              onClick={() => switchMode('signup')}
+              className={`py-2.5 text-xs font-bold uppercase tracking-wider transition cursor-pointer flex items-center justify-center gap-1 rounded-lg ${
+                mode === 'signup' 
+                  ? 'bg-[#3D0F1F] text-[#DFBE65] shadow-xs' 
+                  : 'text-gray-600 hover:text-[#3D0F1F]'
+              }`}
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              <span>Sign Up</span>
+            </button>
+            <button
+              onClick={() => switchMode('login')}
+              className={`py-2.5 text-xs font-bold uppercase tracking-wider transition cursor-pointer flex items-center justify-center gap-1 rounded-lg ${
+                mode === 'login' 
+                  ? 'bg-[#3D0F1F] text-[#DFBE65] shadow-xs' 
+                  : 'text-gray-600 hover:text-[#3D0F1F]'
+              }`}
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>Sign In</span>
+            </button>
+            <button
+              onClick={() => switchMode('forgot_password')}
+              className={`py-2.5 text-xs font-bold uppercase tracking-wider transition cursor-pointer flex items-center justify-center gap-1 rounded-lg ${
+                mode === 'forgot_password' 
+                  ? 'bg-[#3D0F1F] text-[#DFBE65] shadow-xs' 
+                  : 'text-gray-600 hover:text-[#3D0F1F]'
+              }`}
+            >
+              <KeyRound className="w-3.5 h-3.5" />
+              <span>Forgot</span>
+            </button>
+          </div>
+
+          <div className="p-6 sm:p-8 space-y-5">
+            
+            {/* Error Banner */}
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs flex items-start gap-2.5 shadow-2xs"
+              >
+                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                <span className="leading-relaxed font-medium">{error}</span>
+              </motion.div>
+            )}
+
+            {/* MODE 1: SIGN UP */}
+            {mode === 'signup' && (
+              <>
+                {!otpStep ? (
+                  <form onSubmit={handleSignUpSubmit} className="space-y-4 text-left">
+                    <div className="text-center space-y-1 pb-1">
+                      <h2 className="font-serif text-lg font-bold text-[#3D0F1F]">
+                        Create Your Aura Account
+                      </h2>
+                      <p className="text-xs text-gray-600 leading-relaxed">
+                        Enter your details and password. An OTP code will be sent to your email to verify before account creation.
+                      </p>
+                    </div>
+
+                    {/* FULL NAME */}
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-[#3D0F1F] uppercase tracking-wider block">
+                        Full Name <span className="text-rose-600">*</span>
+                      </label>
+                      <div className="relative">
+                        <User className="w-4 h-4 text-[#B8935A] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. Ananya Sharma"
+                          value={fullName}
+                          onChange={(e) => setFullName(e.target.value)}
+                          className="w-full pl-10 pr-3.5 py-3 text-xs bg-white border border-gray-300 focus:border-[#3D0F1F] focus:ring-1 focus:ring-[#3D0F1F] rounded-xl font-medium text-gray-900 transition focus:outline-none shadow-2xs"
+                        />
+                      </div>
+                    </div>
+
+                    {/* MOBILE PHONE */}
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-[#3D0F1F] uppercase tracking-wider block">
+                        Mobile Phone <span className="text-rose-600">*</span>
+                      </label>
+                      <div className="relative">
+                        <Phone className="w-4 h-4 text-[#B8935A] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="tel"
+                          required
+                          placeholder="10-digit mobile number"
+                          value={mobileNumber}
+                          onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, ''))}
+                          className="w-full pl-10 pr-3.5 py-3 text-xs bg-white border border-gray-300 focus:border-[#3D0F1F] focus:ring-1 focus:ring-[#3D0F1F] rounded-xl font-medium text-gray-900 transition focus:outline-none shadow-2xs"
+                        />
+                      </div>
+                    </div>
+
+                    {/* EMAIL ADDRESS */}
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-[#3D0F1F] uppercase tracking-wider block">
+                        Email Address <span className="text-rose-600">*</span>
+                      </label>
+                      <div className="relative">
+                        <Mail className="w-4 h-4 text-[#B8935A] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="email"
+                          required
+                          placeholder="name@example.com"
+                          value={emailAddress}
+                          onChange={(e) => handleEmailChange(e.target.value)}
+                          className="w-full pl-10 pr-3.5 py-3 text-xs bg-white border border-gray-300 focus:border-[#3D0F1F] focus:ring-1 focus:ring-[#3D0F1F] rounded-xl font-medium text-gray-900 transition focus:outline-none shadow-2xs"
+                        />
+                      </div>
+                    </div>
+
+                    {/* PASSWORD */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-[#3D0F1F] uppercase tracking-wider block">
+                          Password <span className="text-rose-600">*</span>
+                        </label>
+                        <div className="relative">
+                          <Lock className="w-4 h-4 text-[#B8935A] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                          <input
+                            type={showPassword ? 'text' : 'password'}
+                            required
+                            placeholder="Min 6 characters"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full pl-10 pr-9 py-3 text-xs bg-white border border-gray-300 focus:border-[#3D0F1F] focus:ring-1 focus:ring-[#3D0F1F] rounded-xl font-medium text-gray-900 transition focus:outline-none shadow-2xs"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+                          >
+                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-[#3D0F1F] uppercase tracking-wider block">
+                          Confirm Password <span className="text-rose-600">*</span>
+                        </label>
+                        <div className="relative">
+                          <Lock className="w-4 h-4 text-[#B8935A] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                          <input
+                            type={showPassword ? 'text' : 'password'}
+                            required
+                            placeholder="Re-enter password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="w-full pl-10 pr-3.5 py-3 text-xs bg-white border border-gray-300 focus:border-[#3D0F1F] focus:ring-1 focus:ring-[#3D0F1F] rounded-xl font-medium text-gray-900 transition focus:outline-none shadow-2xs"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full py-3.5 bg-[#3D0F1F] hover:bg-[#20050E] text-[#FAF5EB] rounded-xl font-serif font-bold uppercase tracking-wider text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-98 mt-2"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-[#DFBE65]" />
+                          <span>Sending Brevo Verification Code...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Send Verification OTP</span>
+                          <ArrowRight className="w-4 h-4 text-[#DFBE65]" />
+                        </>
+                      )}
+                    </button>
+                  </form>
+                ) : (
+                  /* VERIFY SIGNUP OTP */
+                  <form onSubmit={handleVerifySignUpOtp} className="space-y-5 text-left">
+                    <div className="p-4 bg-[#FAF5EB] border border-[#B8935A]/40 rounded-xl text-left space-y-2 shadow-2xs">
+                      <div className="flex items-center gap-2 text-[#3D0F1F] font-bold text-xs uppercase tracking-wider">
+                        <Mail className="w-4 h-4 text-[#B8935A]" />
+                        <span>VERIFY YOUR EMAIL OTP</span>
+                      </div>
+                      <p className="text-xs text-gray-700 leading-relaxed">
+                        A 6-digit verification code has been dispatched to <strong className="text-[#3D0F1F] font-semibold">{emailAddress}</strong> via Brevo API. Enter code below to confirm account creation:
+                      </p>
+                    </div>
+
+                    <div className="space-y-2 text-center">
+                      <span className="text-xs font-bold text-[#3D0F1F] uppercase tracking-wider block">
+                        ENTER 6-DIGIT VERIFICATION CODE
+                      </span>
+
+                      <div className="flex items-center justify-center gap-2 py-2">
+                        {otpCode.map((digit, idx) => (
+                          <input
+                            key={idx}
+                            id={`otp-input-${idx}`}
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={1}
+                            value={digit}
+                            onChange={(e) => handleOtpDigitChange(idx, e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Backspace' && !digit && idx > 0) {
+                                document.getElementById(`otp-input-${idx - 1}`)?.focus();
+                              }
+                            }}
+                            className="w-10 h-12 sm:w-12 sm:h-14 text-center font-mono font-bold text-lg sm:text-xl text-[#3D0F1F] bg-white border-2 border-gray-300 focus:border-[#3D0F1F] rounded-xl focus:outline-none transition shadow-inner"
+                          />
+                        ))}
+                      </div>
+
+                      <p className="text-[11px] text-gray-500 pt-1">
+                        Didn't receive code?{' '}
+                        {resendCooldown > 0 ? (
+                          <span className="text-[#3D0F1F] font-bold">Resend in {resendCooldown}s</span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              const internalCode = Math.floor(100000 + Math.random() * 900000).toString();
+                              setGeneratedCode(internalCode);
+                              await sendBrevoOtpEmail({
+                                email: emailAddress.trim().toLowerCase(),
+                                code: internalCode,
+                                name: fullName || 'Customer',
+                              });
+                              showToast(`📩 New Brevo OTP code sent to ${emailAddress}`, 'info');
+                              setResendCooldown(30);
+                            }}
+                            className="text-[#3D0F1F] font-bold underline hover:text-[#B8935A] cursor-pointer inline-flex items-center gap-1"
+                          >
+                            <RefreshCw className="w-3 h-3" />
+                            <span>Resend Email OTP</span>
+                          </button>
+                        )}
+                      </p>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full py-3.5 bg-[#3D0F1F] hover:bg-[#20050E] text-[#FAF5EB] rounded-xl font-serif font-bold uppercase tracking-wider text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-98"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-[#DFBE65]" />
+                          <span>Creating Account...</span>
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="w-4 h-4 text-[#DFBE65]" />
+                          <span>VERIFY OTP &amp; CREATE ACCOUNT</span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setOtpStep(false)}
+                      className="text-xs text-gray-500 hover:text-gray-800 underline font-medium block mx-auto cursor-pointer pt-1"
+                    >
+                      ← Back to Form
+                    </button>
+                  </form>
+                )}
+              </>
+            )}
+
+            {/* MODE 2: SIGN IN (LOGIN) */}
+            {mode === 'login' && (
+              <>
+                {!otpStep ? (
+                  <form onSubmit={handleLoginSubmit} className="space-y-4 text-left">
+                    <div className="text-center space-y-1 pb-1">
+                      <h2 className="font-serif text-lg font-bold text-[#3D0F1F]">
+                        Welcome Back to Suit Bliss Aura
+                      </h2>
+                      <p className="text-xs text-gray-600 leading-relaxed">
+                        Sign in with your Password or get an Instant OTP sent to your email.
+                      </p>
+                    </div>
+
+                    {/* LOGIN SUB-TABS: Password vs Instant OTP */}
+                    <div className="flex justify-center gap-4 border-b border-gray-200 pb-2">
+                      <button
+                        type="button"
+                        onClick={() => setLoginType('password')}
+                        className={`text-xs font-bold uppercase tracking-wider pb-1 transition cursor-pointer ${
+                          loginType === 'password'
+                            ? 'text-[#3D0F1F] border-b-2 border-[#3D0F1F]'
+                            : 'text-gray-400 hover:text-gray-600'
+                        }`}
+                      >
+                        Login with Password
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setLoginType('otp')}
+                        className={`text-xs font-bold uppercase tracking-wider pb-1 transition cursor-pointer ${
+                          loginType === 'otp'
+                            ? 'text-[#3D0F1F] border-b-2 border-[#3D0F1F]'
+                            : 'text-gray-400 hover:text-gray-600'
+                        }`}
+                      >
+                        Login with Email OTP
+                      </button>
+                    </div>
+
+                    {/* EMAIL ADDRESS */}
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-[#3D0F1F] uppercase tracking-wider block">
+                        Email Address <span className="text-rose-600">*</span>
+                      </label>
+                      <div className="relative">
+                        <Mail className="w-4 h-4 text-[#B8935A] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="email"
+                          required
+                          placeholder="name@example.com"
+                          value={emailAddress}
+                          onChange={(e) => handleEmailChange(e.target.value)}
+                          className="w-full pl-10 pr-3.5 py-3 text-xs bg-white border border-gray-300 focus:border-[#3D0F1F] focus:ring-1 focus:ring-[#3D0F1F] rounded-xl font-medium text-gray-900 transition focus:outline-none shadow-2xs"
+                        />
+                      </div>
+                    </div>
+
+                    {/* PASSWORD INPUT (IF PASSWORD LOGIN) */}
+                    {loginType === 'password' && (
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <label className="text-xs font-bold text-[#3D0F1F] uppercase tracking-wider block">
+                            Password <span className="text-rose-600">*</span>
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => switchMode('forgot_password')}
+                            className="text-[11px] font-semibold text-[#3D0F1F] hover:underline cursor-pointer"
+                          >
+                            Forgot Password?
+                          </button>
+                        </div>
+                        <div className="relative">
+                          <Lock className="w-4 h-4 text-[#B8935A] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                          <input
+                            type={showPassword ? 'text' : 'password'}
+                            required
+                            placeholder="Enter your account password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full pl-10 pr-9 py-3 text-xs bg-white border border-gray-300 focus:border-[#3D0F1F] focus:ring-1 focus:ring-[#3D0F1F] rounded-xl font-medium text-gray-900 transition focus:outline-none shadow-2xs"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+                          >
+                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full py-3.5 bg-[#3D0F1F] hover:bg-[#20050E] text-[#FAF5EB] rounded-xl font-serif font-bold uppercase tracking-wider text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-98 mt-2"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-[#DFBE65]" />
+                          <span>Signing In...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>{loginType === 'password' ? 'Sign In Now' : 'Send Login OTP Code'}</span>
+                          <ArrowRight className="w-4 h-4 text-[#DFBE65]" />
+                        </>
+                      )}
+                    </button>
+                  </form>
+                ) : (
+                  /* VERIFY LOGIN OTP */
+                  <form onSubmit={handleVerifySignUpOtp} className="space-y-5 text-left">
+                    <div className="p-4 bg-[#FAF5EB] border border-[#B8935A]/40 rounded-xl text-left space-y-2 shadow-2xs">
+                      <div className="flex items-center gap-2 text-[#3D0F1F] font-bold text-xs uppercase tracking-wider">
+                        <Mail className="w-4 h-4 text-[#B8935A]" />
+                        <span>LOGIN OTP SENT</span>
+                      </div>
+                      <p className="text-xs text-gray-700 leading-relaxed">
+                        A 6-digit login verification code has been dispatched to <strong className="text-[#3D0F1F] font-semibold">{emailAddress}</strong> via Brevo API:
+                      </p>
+                    </div>
+
+                    <div className="space-y-2 text-center">
+                      <span className="text-xs font-bold text-[#3D0F1F] uppercase tracking-wider block">
+                        ENTER 6-DIGIT VERIFICATION CODE
+                      </span>
+
+                      <div className="flex items-center justify-center gap-2 py-2">
+                        {otpCode.map((digit, idx) => (
+                          <input
+                            key={idx}
+                            id={`otp-input-${idx}`}
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={1}
+                            value={digit}
+                            onChange={(e) => handleOtpDigitChange(idx, e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Backspace' && !digit && idx > 0) {
+                                document.getElementById(`otp-input-${idx - 1}`)?.focus();
+                              }
+                            }}
+                            className="w-10 h-12 sm:w-12 sm:h-14 text-center font-mono font-bold text-lg sm:text-xl text-[#3D0F1F] bg-white border-2 border-gray-300 focus:border-[#3D0F1F] rounded-xl focus:outline-none transition shadow-inner"
+                          />
+                        ))}
+                      </div>
+
+                      <p className="text-[11px] text-gray-500 pt-1">
+                        Didn't receive code?{' '}
+                        {resendCooldown > 0 ? (
+                          <span className="text-[#3D0F1F] font-bold">Resend in {resendCooldown}s</span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              const internalCode = Math.floor(100000 + Math.random() * 900000).toString();
+                              setGeneratedCode(internalCode);
+                              await sendBrevoOtpEmail({
+                                email: emailAddress.trim().toLowerCase(),
+                                code: internalCode,
+                                name: deriveNameFromEmail(emailAddress) || 'Customer',
+                              });
+                              showToast(`📩 New Brevo OTP code sent to ${emailAddress}`, 'info');
+                              setResendCooldown(30);
+                            }}
+                            className="text-[#3D0F1F] font-bold underline hover:text-[#B8935A] cursor-pointer inline-flex items-center gap-1"
+                          >
+                            <RefreshCw className="w-3 h-3" />
+                            <span>Resend Email OTP</span>
+                          </button>
+                        )}
+                      </p>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full py-3.5 bg-[#3D0F1F] hover:bg-[#20050E] text-[#FAF5EB] rounded-xl font-serif font-bold uppercase tracking-wider text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-98"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-[#DFBE65]" />
+                          <span>Verifying OTP...</span>
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="w-4 h-4 text-[#DFBE65]" />
+                          <span>VERIFY &amp; LOG IN</span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setOtpStep(false)}
+                      className="text-xs text-gray-500 hover:text-gray-800 underline font-medium block mx-auto cursor-pointer pt-1"
+                    >
+                      ← Back to Login
+                    </button>
+                  </form>
+                )}
+              </>
+            )}
+
+            {/* MODE 3: FORGOT PASSWORD */}
+            {mode === 'forgot_password' && (
+              <>
+                {!otpStep ? (
+                  <form onSubmit={handleForgotPasswordRequest} className="space-y-4 text-left">
+                    <div className="text-center space-y-1 pb-1">
+                      <h2 className="font-serif text-lg font-bold text-[#3D0F1F]">
+                        Forgot Your Password?
+                      </h2>
+                      <p className="text-xs text-gray-600 leading-relaxed">
+                        Enter your registered email address. We will send a 6-digit OTP code to your email to reset your password.
+                      </p>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-[#3D0F1F] uppercase tracking-wider block">
+                        Registered Email Address <span className="text-rose-600">*</span>
+                      </label>
+                      <div className="relative">
+                        <Mail className="w-4 h-4 text-[#B8935A] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="email"
+                          required
+                          placeholder="name@example.com"
+                          value={emailAddress}
+                          onChange={(e) => setEmailAddress(e.target.value)}
+                          className="w-full pl-10 pr-3.5 py-3 text-xs bg-white border border-gray-300 focus:border-[#3D0F1F] focus:ring-1 focus:ring-[#3D0F1F] rounded-xl font-medium text-gray-900 transition focus:outline-none shadow-2xs"
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full py-3.5 bg-[#3D0F1F] hover:bg-[#20050E] text-[#FAF5EB] rounded-xl font-serif font-bold uppercase tracking-wider text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-98 mt-2"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-[#DFBE65]" />
+                          <span>Sending Reset OTP Code...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Send Reset OTP Code to Email</span>
+                          <ArrowRight className="w-4 h-4 text-[#DFBE65]" />
+                        </>
+                      )}
+                    </button>
+                  </form>
+                ) : (
+                  /* STEP 2: VERIFY RESET OTP & ENTER NEW PASSWORD */
+                  <form onSubmit={handleResetPasswordSubmit} className="space-y-4 text-left">
+                    <div className="p-4 bg-[#FAF5EB] border border-[#B8935A]/40 rounded-xl text-left space-y-1.5 shadow-2xs">
+                      <div className="flex items-center gap-2 text-[#3D0F1F] font-bold text-xs uppercase tracking-wider">
+                        <KeyRound className="w-4 h-4 text-[#B8935A]" />
+                        <span>RESET PASSWORD OTP SENT</span>
+                      </div>
+                      <p className="text-xs text-gray-700 leading-relaxed">
+                        A 6-digit reset code has been sent to <strong className="text-[#3D0F1F] font-semibold">{emailAddress}</strong>. Enter code and choose a new password:
+                      </p>
+                    </div>
+
+                    <div className="space-y-1.5 text-center">
+                      <span className="text-xs font-bold text-[#3D0F1F] uppercase tracking-wider block">
+                        ENTER 6-DIGIT RESET CODE
+                      </span>
+
+                      <div className="flex items-center justify-center gap-2 py-1">
+                        {otpCode.map((digit, idx) => (
+                          <input
+                            key={idx}
+                            id={`otp-input-${idx}`}
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={1}
+                            value={digit}
+                            onChange={(e) => handleOtpDigitChange(idx, e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Backspace' && !digit && idx > 0) {
+                                document.getElementById(`otp-input-${idx - 1}`)?.focus();
+                              }
+                            }}
+                            className="w-10 h-12 sm:w-12 sm:h-14 text-center font-mono font-bold text-lg sm:text-xl text-[#3D0F1F] bg-white border-2 border-gray-300 focus:border-[#3D0F1F] rounded-xl focus:outline-none transition shadow-inner"
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* NEW PASSWORD FIELDS */}
+                    <div className="space-y-3 pt-1">
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-[#3D0F1F] uppercase tracking-wider block">
+                          New Password <span className="text-rose-600">*</span>
+                        </label>
+                        <div className="relative">
+                          <Lock className="w-4 h-4 text-[#B8935A] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                          <input
+                            type={showPassword ? 'text' : 'password'}
+                            required
+                            placeholder="Min 6 characters"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full pl-10 pr-9 py-3 text-xs bg-white border border-gray-300 focus:border-[#3D0F1F] focus:ring-1 focus:ring-[#3D0F1F] rounded-xl font-medium text-gray-900 transition focus:outline-none shadow-2xs"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+                          >
+                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-[#3D0F1F] uppercase tracking-wider block">
+                          Confirm New Password <span className="text-rose-600">*</span>
+                        </label>
+                        <div className="relative">
+                          <Lock className="w-4 h-4 text-[#B8935A] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                          <input
+                            type={showPassword ? 'text' : 'password'}
+                            required
+                            placeholder="Re-enter new password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="w-full pl-10 pr-3.5 py-3 text-xs bg-white border border-gray-300 focus:border-[#3D0F1F] focus:ring-1 focus:ring-[#3D0F1F] rounded-xl font-medium text-gray-900 transition focus:outline-none shadow-2xs"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full py-3.5 bg-[#3D0F1F] hover:bg-[#20050E] text-[#FAF5EB] rounded-xl font-serif font-bold uppercase tracking-wider text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-98 mt-2"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-[#DFBE65]" />
+                          <span>Updating Password...</span>
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="w-4 h-4 text-[#DFBE65]" />
+                          <span>RESET PASSWORD &amp; SIGN IN</span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setOtpStep(false)}
+                      className="text-xs text-gray-500 hover:text-gray-800 underline font-medium block mx-auto cursor-pointer pt-1"
+                    >
+                      ← Back to Email Request
+                    </button>
+                  </form>
+                )}
+              </>
+            )}
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+};

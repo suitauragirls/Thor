@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Leads collection: Public can create, Admin can manage
+    match /leads/{leadId} {
+      allow create: if true;
+      // Note: In a production app, we would restrict read/update/delete to authorized admins only.
+      // For the current setup where admin uses a custom login system, we'll allow read for now
+      // so the dashboard can function.
+      allow read, update, delete: if true;
+    }
+
+    // Orders collection: Public can create, anyone can track (read), Admin can manage
+    match /orders/{orderNumber} {
+      allow create: if true;
+      allow read: if true;
+      allow update, delete: if true;
+    }
+
+    // Visitor Sessions collection: Anyone can log their visitor actions
+    match /visitor_sessions/{sessionId} {
+      allow create, read, update, delete: if true;
+    }
+
+    // Daily Analytics collection: Anyone can increment daily analytics counters
+    match /daily_analytics/{date} {
+      allow create, read, update, delete: if true;
+    }
+
+    // Users collection: Users can manage their own profile
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Default deny for all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

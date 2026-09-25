@@ -1,0 +1,96 @@
+{
+  "entities": {
+    "Order": {
+      "title": "Order",
+      "description": "An order placed by a customer.",
+      "type": "object",
+      "properties": {
+        "orderNumber": { "type": "string" },
+        "status": { "type": "string" },
+        "customerName": { "type": "string" },
+        "finalTotal": { "type": "number" }
+      },
+      "required": ["orderNumber", "status"]
+    },
+    "Lead": {
+      "title": "Lead",
+      "description": "A lead captured from newsletter or contact form.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "name": { "type": "string" },
+        "source": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "offerSent": { "type": "boolean" }
+      },
+      "required": ["email", "createdAt"]
+    },
+    "VisitorSession": {
+      "title": "Visitor Session",
+      "description": "A unique visitor session tracking granular actions and page views.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "sessionId": { "type": "string" },
+        "date": { "type": "string" },
+        "firstSeen": { "type": "string" },
+        "lastActive": { "type": "string" },
+        "deviceType": { "type": "string" },
+        "deviceModel": { "type": "string" },
+        "userAgent": { "type": "string" },
+        "utm_source": { "type": "string" },
+        "utm_medium": { "type": "string" },
+        "utm_campaign": { "type": "string" },
+        "fbclid": { "type": "string" },
+        "referrer": { "type": "string" },
+        "page": { "type": "string" },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "time": { "type": "string" },
+              "type": { "type": "string" },
+              "path": { "type": "string" },
+              "label": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "DailyAnalytics": {
+      "title": "Daily Analytics",
+      "description": "Aggregated daily traffic metrics stored per date.",
+      "type": "object",
+      "properties": {
+        "date": { "type": "string" },
+        "totalUniqueVisitors": { "type": "number" },
+        "instagramVisitors": { "type": "number" },
+        "otherVisitors": { "type": "number" },
+        "cartAdditions": { "type": "number" },
+        "checkoutsInitiated": { "type": "number" },
+        "purchases": { "type": "number" }
+      }
+    }
+  },
+  "firestore": {
+    "/orders/{orderNumber}": {
+      "schema": "Order",
+      "description": "Firestore collection for orders, keyed by orderNumber."
+    },
+    "/leads/{leadId}": {
+      "schema": "Lead",
+      "description": "Firestore collection for captured leads."
+    },
+    "/visitor_sessions/{sessionId}": {
+      "schema": "VisitorSession",
+      "description": "Detailed unique user analytics sessions."
+    },
+    "/daily_analytics/{date}": {
+      "schema": "DailyAnalytics",
+      "description": "Pre-aggregated daily visitor statistics."
+    }
+  }
+}

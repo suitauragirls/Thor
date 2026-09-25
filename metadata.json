@@ -1,0 +1,7 @@
+{
+  "name": "Suit Bliss Aura",
+  "description": "Premium Indian women's fashion and ethnic clothing store - Elegance That Feels Like You.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
