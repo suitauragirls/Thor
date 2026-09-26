@@ -4,7 +4,6 @@ import { useShop } from '../context/ShopContext';
 import { supabase } from '../lib/supabase';
 import { db } from '../lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { sendBrevoOtpEmail } from '../utils/brevoService';
 import { 
   ArrowLeft,
   ShieldCheck,
@@ -46,7 +45,6 @@ export const LoginPage: React.FC = () => {
   // OTP Verification Flow State
   const [otpStep, setOtpStep] = useState(false); // true when waiting for 6-digit OTP input
   const [otpCode, setOtpCode] = useState(['', '', '', '', '', '']);
-  const [generatedCode, setGeneratedCode] = useState('');
   const [resendCooldown, setResendCooldown] = useState(0);
 
   const [loading, setLoading] = useState(false);
@@ -97,6 +95,28 @@ export const LoginPage: React.FC = () => {
         setFullName(derived);
       }
     }
+  };
+
+  const requestEmailOtp = async (email: string, name: string, purpose: 'signup' | 'login' | 'password_reset') => {
+    const response = await fetch('/api/customer-auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ action: 'send', email: email.trim().toLowerCase(), name, purpose }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || result.success !== true) throw new Error(result.error || 'Could not send verification code.');
+  };
+
+  const verifyEmailOtp = async (email: string, code: string, purpose: 'signup' | 'login' | 'password_reset') => {
+    const response = await fetch('/api/customer-auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ action: 'verify', email: email.trim().toLowerCase(), code, purpose }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || result.verified !== true) throw new Error(result.error || 'Invalid or expired verification code.');
   };
 
   // Helper to get local stored user database
@@ -279,7 +299,7 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  // --- 1. SIGNUP: SEND BREVO OTP ---
+  // --- 1. SIGNUP: REQUEST SERVER-ISSUED EMAIL OTP ---
   const handleSignUpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -312,9 +332,8 @@ export const LoginPage: React.FC = () => {
     }
 
     // Check if account already exists
-    const users = getStoredUsers();
-    const existing = users.find((u: any) => u.email.toLowerCase() === normEmail);
-    if (existing && existing.password && existing.password !== 'BrevoVerifiedUser') {
+    const existing = await getRegisteredCustomer(normEmail);
+    if (existing) {
       setError('An account with this email address already exists. Please Sign In instead.');
       return;
     }
@@ -322,34 +341,20 @@ export const LoginPage: React.FC = () => {
     setLoading(true);
 
     try {
-      // Record user in Cloud DBs so admin sees account, but DO NOT log in until OTP is verified
-      await registerRealCustomerInSupabase(normEmail, fullName.trim(), mobileNumber.trim(), password, false);
-      const internalCode = Math.floor(100000 + Math.random() * 900000).toString();
-      setGeneratedCode(internalCode);
-
-      const brevoRes = await sendBrevoOtpEmail({
-        email: normEmail,
-        code: internalCode,
-        name: fullName.trim(),
-      });
-
-      if (brevoRes.success) {
-        showToast(`📩 Verification code sent to ${normEmail}! Please check your email inbox.`, 'success');
-      } else {
-        showToast(`📩 Verification code sent to ${normEmail}!`, 'info');
-      }
-
+      await requestEmailOtp(normEmail, fullName.trim(), 'signup');
+      showToast(`Verification code sent to ${normEmail}. Please check your Gmail inbox.`, 'success');
+      setOtpCode(['', '', '', '', '', '']);
       setOtpStep(true);
       setResendCooldown(30);
     } catch (err: any) {
-      setError(err.message || 'Failed to send Brevo verification code. Please try again.');
+      setError(err.message || 'Unable to send verification code. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  // --- 2. SIGNUP: VERIFY BREVO OTP & CREATE ACCOUNT ---
-  const handleVerifySignUpOtp = async (e: React.FormEvent) => {
+  // --- 2. VERIFY SERVER-ISSUED OTP & CREATE ACCOUNT ---
+  const handleVerifyEmailOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -362,27 +367,27 @@ export const LoginPage: React.FC = () => {
     setLoading(true);
 
     try {
-      let isVerified = false;
-      if (enteredOtp === generatedCode) {
-        isVerified = true;
+      const normalizedEmail = emailAddress.trim().toLowerCase();
+      const purpose = mode === 'signup' ? 'signup' : 'login';
+      await verifyEmailOtp(normalizedEmail, enteredOtp, purpose);
+      if (mode === 'signup') {
+        await registerRealCustomerInSupabase(normalizedEmail, fullName, mobileNumber, password);
+        showToast(`Account created successfully. Welcome, ${fullName}.`, 'success');
       } else {
-        try {
-          const { data, error: supErr } = await supabase.auth.verifyOtp({
-            email: emailAddress.trim().toLowerCase(),
-            token: enteredOtp,
-            type: 'email'
-          });
-          if (!supErr && data?.session) isVerified = true;
-        } catch {}
+        const user = await getRegisteredCustomer(normalizedEmail);
+        if (!user) {
+          await supabase.auth.signOut();
+          setError('No registered account found for this email. Please sign up first.');
+          return;
+        }
+        await registerRealCustomerInSupabase(
+          normalizedEmail,
+          user.name || deriveNameFromEmail(normalizedEmail),
+          user.phone || ''
+        );
+        showToast(`Welcome back, ${user.name || normalizedEmail}!`, 'success');
       }
-
-      if (isVerified) {
-        await registerRealCustomerInSupabase(emailAddress, fullName, mobileNumber, password);
-        showToast(`🎉 Account created successfully! Welcome, ${fullName}.`, 'success');
-        setActivePage('account');
-      } else {
-        setError('Invalid verification code. Please enter the correct code sent to your email inbox.');
-      }
+      setActivePage('account');
     } catch (err: any) {
       setError(err.message || 'Verification failed. Please try again.');
     } finally {
@@ -469,20 +474,13 @@ export const LoginPage: React.FC = () => {
           return;
         }
 
-        const internalCode = Math.floor(100000 + Math.random() * 900000).toString();
-        setGeneratedCode(internalCode);
-
-        await sendBrevoOtpEmail({
-          email: normEmail,
-          code: internalCode,
-          name: (user?.name || deriveNameFromEmail(normEmail)) || 'Customer',
-        });
-
-        showToast(`📩 Login OTP code sent to ${normEmail}!`, 'success');
+        await requestEmailOtp(normEmail, user?.name || deriveNameFromEmail(normEmail), 'login');
+        showToast(`Login code sent to ${normEmail}. Check your Gmail inbox.`, 'success');
+        setOtpCode(['', '', '', '', '', '']);
         setOtpStep(true);
         setResendCooldown(30);
       } catch (err: any) {
-        setError('Failed to send OTP code. Please try again.');
+        setError(err?.message || 'Failed to send login code. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -511,16 +509,9 @@ export const LoginPage: React.FC = () => {
         return;
       }
 
-      const internalCode = Math.floor(100000 + Math.random() * 900000).toString();
-      setGeneratedCode(internalCode);
-
-      await sendBrevoOtpEmail({
-        email: normEmail,
-        code: internalCode,
-        name: (user?.name || deriveNameFromEmail(normEmail)) || 'Customer',
-      });
-
-      showToast(`📩 Password Reset Code sent to ${normEmail}!`, 'success');
+      await requestEmailOtp(normEmail, user?.name || deriveNameFromEmail(normEmail), 'password_reset');
+      showToast(`Password reset code sent to ${normEmail}. Check your Gmail inbox.`, 'success');
+      setOtpCode(['', '', '', '', '', '']);
       setOtpStep(true);
       setResendCooldown(30);
     } catch (err: any) {
@@ -554,12 +545,10 @@ export const LoginPage: React.FC = () => {
     setLoading(true);
 
     try {
-      if (enteredOtp !== generatedCode) {
-        setError('Invalid reset code. Please check the OTP sent to your email inbox.');
-        return;
-      }
+      const normalizedEmail = emailAddress.trim().toLowerCase();
+      await verifyEmailOtp(normalizedEmail, enteredOtp, 'password_reset');
 
-      const normEmail = emailAddress.trim().toLowerCase();
+      const normEmail = normalizedEmail;
       const users = getStoredUsers();
       const userIndex = users.findIndex((u: any) => u.email.toLowerCase() === normEmail);
       const userName = userIndex >= 0 ? users[userIndex].name : deriveNameFromEmail(normEmail);
@@ -828,14 +817,14 @@ export const LoginPage: React.FC = () => {
                   </form>
                 ) : (
                   /* VERIFY SIGNUP OTP */
-                  <form onSubmit={handleVerifySignUpOtp} className="space-y-5 text-left">
+                  <form onSubmit={handleVerifyEmailOtp} className="space-y-5 text-left">
                     <div className="p-4 bg-[#F1E8DF] border border-[#9A6A3A]/40 rounded-xl text-left space-y-2 shadow-2xs">
                       <div className="flex items-center gap-2 text-[#211C1A] font-bold text-xs uppercase tracking-wider">
                         <Mail className="w-4 h-4 text-black" />
                         <span>VERIFY YOUR EMAIL OTP</span>
                       </div>
                       <p className="text-xs text-gray-700 leading-relaxed">
-                        A 6-digit verification code has been dispatched to <strong className="text-[#211C1A] font-semibold">{emailAddress}</strong> via Brevo API. Enter code below to confirm account creation:
+                        A 6-digit verification code has been sent to <strong className="text-[#211C1A] font-semibold">{emailAddress}</strong>. Enter it to confirm account creation:
                       </p>
                     </div>
 
@@ -872,15 +861,17 @@ export const LoginPage: React.FC = () => {
                           <button
                             type="button"
                             onClick={async () => {
-                              const internalCode = Math.floor(100000 + Math.random() * 900000).toString();
-                              setGeneratedCode(internalCode);
-                              await sendBrevoOtpEmail({
-                                email: emailAddress.trim().toLowerCase(),
-                                code: internalCode,
-                                name: fullName || 'Customer',
-                              });
-                              showToast(`📩 New Brevo OTP code sent to ${emailAddress}`, 'info');
-                              setResendCooldown(30);
+                              try {
+                                setLoading(true);
+                                await requestEmailOtp(emailAddress, fullName || 'Customer', 'signup');
+                                setOtpCode(['', '', '', '', '', '']);
+                                showToast(`A new verification code was sent to ${emailAddress}.`, 'success');
+                                setResendCooldown(30);
+                              } catch (resendError: any) {
+                                setError(resendError?.message || 'Could not resend the verification code.');
+                              } finally {
+                                setLoading(false);
+                              }
                             }}
                             className="text-[#211C1A] font-bold underline hover:text-black cursor-pointer inline-flex items-center gap-1"
                           >
@@ -1035,14 +1026,14 @@ export const LoginPage: React.FC = () => {
                   </form>
                 ) : (
                   /* VERIFY LOGIN OTP */
-                  <form onSubmit={handleVerifySignUpOtp} className="space-y-5 text-left">
+                  <form onSubmit={handleVerifyEmailOtp} className="space-y-5 text-left">
                     <div className="p-4 bg-[#F1E8DF] border border-[#9A6A3A]/40 rounded-xl text-left space-y-2 shadow-2xs">
                       <div className="flex items-center gap-2 text-[#211C1A] font-bold text-xs uppercase tracking-wider">
                         <Mail className="w-4 h-4 text-black" />
                         <span>LOGIN OTP SENT</span>
                       </div>
                       <p className="text-xs text-gray-700 leading-relaxed">
-                        A 6-digit login verification code has been dispatched to <strong className="text-[#211C1A] font-semibold">{emailAddress}</strong> via Brevo API:
+                        A 6-digit login verification code has been sent to <strong className="text-[#211C1A] font-semibold">{emailAddress}</strong>:
                       </p>
                     </div>
 
@@ -1079,15 +1070,17 @@ export const LoginPage: React.FC = () => {
                           <button
                             type="button"
                             onClick={async () => {
-                              const internalCode = Math.floor(100000 + Math.random() * 900000).toString();
-                              setGeneratedCode(internalCode);
-                              await sendBrevoOtpEmail({
-                                email: emailAddress.trim().toLowerCase(),
-                                code: internalCode,
-                                name: deriveNameFromEmail(emailAddress) || 'Customer',
-                              });
-                              showToast(`📩 New Brevo OTP code sent to ${emailAddress}`, 'info');
-                              setResendCooldown(30);
+                              try {
+                                setLoading(true);
+                                await requestEmailOtp(emailAddress, deriveNameFromEmail(emailAddress) || 'Customer', 'login');
+                                setOtpCode(['', '', '', '', '', '']);
+                                showToast(`A new login code was sent to ${emailAddress}.`, 'success');
+                                setResendCooldown(30);
+                              } catch (resendError: any) {
+                                setError(resendError?.message || 'Could not resend the login code.');
+                              } finally {
+                                setLoading(false);
+                              }
                             }}
                             className="text-[#211C1A] font-bold underline hover:text-black cursor-pointer inline-flex items-center gap-1"
                           >
