@@ -216,13 +216,13 @@ export const AdminHero: React.FC = () => {
     <div id="admin-hero-page" className="space-y-6 pb-12">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-\[#FAF7F5\] p-5 rounded-2xl border border-rose-100 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-\[#FAF7F2\] p-5 rounded-2xl border border-rose-100 shadow-xs">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-widest text-[#8B2635]">
             Storefront Banners
           </span>
           <h2 className="font-serif text-2xl font-bold text-gray-900 flex items-center gap-2 mt-0.5">
-            <Sparkles className="w-6 h-6 text-[#DFBE65]" />
+            <Sparkles className="w-6 h-6 text-black" />
             Hero Slides Manager (1:1 Square + Real Products Sync)
           </h2>
           <p className="text-xs text-gray-500 mt-1">
@@ -246,7 +246,7 @@ export const AdminHero: React.FC = () => {
           <button
             type="button"
             onClick={addSlide}
-            className="px-3.5 py-2 bg-gradient-to-r from-[#58152D] to-[#7E1D3B] hover:brightness-110 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer"
+            className="px-3.5 py-2 bg-gradient-to-r from-[#241D1B] to-[#241D1B] hover:brightness-110 text-[#211C1A] rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Add Slide</span>
@@ -255,7 +255,7 @@ export const AdminHero: React.FC = () => {
           <button
             type="button"
             onClick={() => setActivePage('home')}
-            className="px-3.5 py-2 bg-[#E0BFB8]/20 hover:bg-[#E0BFB8]/40 text-[#58152D] border border-rose-200 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-2 bg-[#D8C8B8]/20 hover:bg-[#D8C8B8]/40 text-[#211C1A] border border-rose-200 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
           >
             <Eye className="w-3.5 h-3.5" />
             <span>View Home</span>
@@ -268,7 +268,7 @@ export const AdminHero: React.FC = () => {
         {/* Slides List */}
         <div className="space-y-6">
           {(!heroForm.slides || heroForm.slides.length === 0) ? (
-            <div className="text-center py-12 bg-\[#FAF7F5\] rounded-2xl border-2 border-dashed border-gray-200">
+            <div className="text-center py-12 bg-\[#FAF7F2\] rounded-2xl border-2 border-dashed border-gray-200">
               <ImageIcon className="w-12 h-12 text-gray-300 mx-auto mb-3" />
               <p className="text-sm text-gray-600 font-bold">No custom slides added yet.</p>
               <p className="text-xs text-gray-400 mt-1">Click the button below to auto-populate from your active live products.</p>
@@ -284,7 +284,7 @@ export const AdminHero: React.FC = () => {
                 <button
                   type="button"
                   onClick={addSlide}
-                  className="px-4 py-2 bg-[#58152D] text-white rounded-xl text-xs font-bold inline-flex items-center gap-1.5"
+                  className="px-4 py-2 bg-[#241D1B] text-[#211C1A] rounded-xl text-xs font-bold inline-flex items-center gap-1.5"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add Manual Slide</span>
@@ -298,11 +298,11 @@ export const AdminHero: React.FC = () => {
               return (
                 <div 
                   key={slide.id || index}
-                  className="bg-\[#FAF7F5\] p-5 sm:p-6 rounded-2xl border border-rose-100 shadow-sm space-y-5"
+                  className="bg-\[#FAF7F2\] p-5 sm:p-6 rounded-2xl border border-rose-100 shadow-sm space-y-5"
                 >
                   <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                     <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-[#58152D] text-white flex items-center justify-center text-xs font-bold">
+                      <span className="w-6 h-6 rounded-full bg-[#241D1B] text-[#211C1A] flex items-center justify-center text-xs font-bold">
                         {index + 1}
                       </span>
                       <h3 className="font-serif text-base font-bold text-gray-900">
@@ -343,9 +343,9 @@ export const AdminHero: React.FC = () => {
                           setProductPickerSlideId(slide.id);
                           setProductSearch('');
                         }}
-                        className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
+                        className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-black border border-amber-200 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
                       >
-                        <ShoppingBag className="w-3.5 h-3.5 text-amber-700" />
+                        <ShoppingBag className="w-3.5 h-3.5 text-black" />
                         <span>Link Product</span>
                       </button>
 
@@ -353,7 +353,7 @@ export const AdminHero: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => removeSlide(slide.id)}
-                        className="p-1.5 text-\[#800020\] hover:bg-[#E0BFB8]/20 rounded-lg transition"
+                        className="p-1.5 text-\[#800020\] hover:bg-[#D8C8B8]/20 rounded-lg transition"
                         title="Remove Slide"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -389,7 +389,7 @@ export const AdminHero: React.FC = () => {
 
                       {/* Image actions */}
                       <div className="space-y-2">
-                        <label className="w-full py-2 bg-[#E0BFB8]/20 hover:bg-[#E0BFB8]/40 text-[#58152D] border border-rose-200 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+                        <label className="w-full py-2 bg-[#D8C8B8]/20 hover:bg-[#D8C8B8]/40 text-[#211C1A] border border-rose-200 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
                           <Upload className="w-3.5 h-3.5" />
                           <span>Upload Banner Photo</span>
                           <input
@@ -465,7 +465,7 @@ export const AdminHero: React.FC = () => {
                             placeholder="1299"
                             value={slide.price || ''}
                             onChange={(e) => updateSlide(slide.id, { price: Number(e.target.value) || 0 })}
-                            className="w-full px-3 py-2 text-xs bg-\[#FAF7F5\] border border-gray-200 rounded-xl focus:border-rose-300 outline-none font-black text-amber-900"
+                            className="w-full px-3 py-2 text-xs bg-\[#FAF7F2\] border border-gray-200 rounded-xl focus:border-rose-300 outline-none font-black text-black"
                           />
                         </div>
 
@@ -478,7 +478,7 @@ export const AdminHero: React.FC = () => {
                             placeholder="2499"
                             value={slide.originalPrice || ''}
                             onChange={(e) => updateSlide(slide.id, { originalPrice: Number(e.target.value) || 0 })}
-                            className="w-full px-3 py-2 text-xs bg-\[#FAF7F5\] border border-gray-200 rounded-xl focus:border-rose-300 outline-none text-gray-600"
+                            className="w-full px-3 py-2 text-xs bg-\[#FAF7F2\] border border-gray-200 rounded-xl focus:border-rose-300 outline-none text-gray-600"
                           />
                         </div>
                       </div>
@@ -491,7 +491,7 @@ export const AdminHero: React.FC = () => {
                           </label>
                           <input
                             type="text"
-                            placeholder="e.g. Suits or sba-001"
+                            placeholder="e.g. Suits or product UUID"
                             value={slide.link || ''}
                             onChange={(e) => updateSlide(slide.id, { link: e.target.value })}
                             className="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl focus:border-rose-300 outline-none"
@@ -522,7 +522,7 @@ export const AdminHero: React.FC = () => {
         </div>
 
         {/* Save Bar */}
-        <div className="sticky bottom-4 z-20 flex items-center justify-between bg-\[#FAF7F5\] p-4 rounded-2xl border border-rose-200 shadow-xl">
+        <div className="sticky bottom-4 z-20 flex items-center justify-between bg-\[#FAF7F2\] p-4 rounded-2xl border border-rose-200 shadow-xl">
           <div className="text-xs text-gray-500">
             Total Slides: <span className="font-bold text-gray-900">{heroForm.slides?.length || 0}</span>
           </div>
@@ -530,7 +530,7 @@ export const AdminHero: React.FC = () => {
           <button
             type="submit"
             disabled={isSaving}
-            className="px-6 py-3 bg-gradient-to-r from-[#58152D] via-[#7E1D3B] to-[#58152D] hover:brightness-110 active:scale-95 text-white font-bold text-sm rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer disabled:opacity-50"
+            className="px-6 py-3 bg-gradient-to-r from-[#241D1B] via-[#241D1B] to-[#241D1B] hover:brightness-110 active:scale-95 text-[#211C1A] font-bold text-sm rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer disabled:opacity-50"
           >
             {isSaving ? (
               <>
@@ -539,7 +539,7 @@ export const AdminHero: React.FC = () => {
               </>
             ) : (
               <>
-                <Save className="w-4 h-4 text-[#DFBE65]" />
+                <Save className="w-4 h-4 text-black" />
                 <span>Save & Publish All Slides</span>
               </>
             )}
@@ -551,13 +551,13 @@ export const AdminHero: React.FC = () => {
       {/* Product Picker Modal */}
       {productPickerSlideId && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-\[#FAF7F5\] w-full max-w-xl rounded-3xl overflow-hidden shadow-2xl border border-rose-100 flex flex-col max-h-[85vh]">
+          <div className="bg-\[#FAF7F2\] w-full max-w-xl rounded-3xl overflow-hidden shadow-2xl border border-rose-100 flex flex-col max-h-[85vh]">
             
             {/* Modal Header */}
-            <div className="p-4 sm:p-5 border-b border-gray-100 flex items-center justify-between bg-[#E0BFB8]/50">
+            <div className="p-4 sm:p-5 border-b border-gray-100 flex items-center justify-between bg-[#D8C8B8]/50">
               <div>
                 <h3 className="font-serif text-lg font-bold text-gray-900 flex items-center gap-2">
-                  <ShoppingBag className="w-5 h-5 text-[#58152D]" />
+                  <ShoppingBag className="w-5 h-5 text-[#211C1A]" />
                   Select Product for Slide
                 </h3>
                 <p className="text-xs text-gray-500">
@@ -601,7 +601,7 @@ export const AdminHero: React.FC = () => {
                     <div
                       key={p.id}
                       onClick={() => handleSelectProductForSlide(productPickerSlideId, p)}
-                      className="pt-2.5 first:pt-0 flex items-center justify-between gap-3 p-2.5 hover:bg-[#E0BFB8]/60 rounded-xl cursor-pointer transition group"
+                      className="pt-2.5 first:pt-0 flex items-center justify-between gap-3 p-2.5 hover:bg-[#D8C8B8]/60 rounded-xl cursor-pointer transition group"
                     >
                       <div className="flex items-center gap-3">
                         <img
@@ -610,7 +610,7 @@ export const AdminHero: React.FC = () => {
                           className="w-12 h-12 rounded-lg object-cover border border-gray-200"
                         />
                         <div>
-                          <h4 className="text-xs font-bold text-gray-900 group-hover:text-[#58152D] line-clamp-1">
+                          <h4 className="text-xs font-bold text-gray-900 group-hover:text-[#211C1A] line-clamp-1">
                             {p.name}
                           </h4>
                           <div className="flex items-center gap-2 mt-0.5">
@@ -625,7 +625,7 @@ export const AdminHero: React.FC = () => {
 
                       <button
                         type="button"
-                        className="px-3 py-1.5 bg-[#58152D] text-white rounded-lg text-xs font-bold group-hover:brightness-110 flex items-center gap-1"
+                        className="px-3 py-1.5 bg-[#241D1B] text-[#211C1A] rounded-lg text-xs font-bold group-hover:brightness-110 flex items-center gap-1"
                       >
                         <Check className="w-3.5 h-3.5" />
                         <span>Select</span>

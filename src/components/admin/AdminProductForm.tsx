@@ -33,7 +33,7 @@ const ALL_CATEGORIES: ProductCategory[] = [
 const ALL_SIZES: ProductSize[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 const PRESET_COLORS: ProductColor[] = [
-  { name: 'Burgundy / Maroon', hex: '#58152D' },
+  { name: 'Burgundy / Maroon', hex: '#241D1B' },
   { name: 'Blush Pink', hex: '#E8A598' },
   { name: 'Emerald Green', hex: '#1B4D3E' },
   { name: 'Mustard Yellow', hex: '#D4AF37' },
@@ -62,7 +62,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
   const [price, setPrice] = useState<number>(999);
   const [originalPrice, setOriginalPrice] = useState<number>(1599);
   const [discount, setDiscount] = useState<number>(38);
-  const [sku, setSku] = useState(`SBA-COT-${Math.floor(1000 + Math.random() * 9000)}`);
+  const [sku, setSku] = useState(`SAG-COT-${Math.floor(1000 + Math.random() * 9000)}`);
   const [stockQuantity, setStockQuantity] = useState<number>(35);
   const [fabric, setFabric] = useState('100% Pure Cambric Cotton with Kota Doria Dupatta');
   const [fit, setFit] = useState('Relaxed Regular Straight Fit');
@@ -78,7 +78,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
   // Colors
   const [colors, setColors] = useState<ProductColor[]>(existingProduct?.colors || []);
 
-  const addColor = () => setColors([...colors, { name: 'New Color', hex: '#58152D' }]);
+  const addColor = () => setColors([...colors, { name: 'New Color', hex: '#241D1B' }]);
   const removeColor = (idx: number) => setColors(colors.filter((_, i) => i !== idx));
   const updateColor = (idx: number, field: keyof ProductColor, value: string) => {
     setColors(colors.map((c, i) => i === idx ? { ...c, [field]: value } : c));
@@ -203,7 +203,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
         setImages((currentImages) => [...currentImages, imageUrl]);
         setColors((currentColors) => {
           if (!currentColors.some(c => c.imageUrl === imageUrl)) {
-            return [...currentColors, { name: `Shade ${currentColors.length + 1}`, hex: '#58152D', imageUrl }];
+            return [...currentColors, { name: `Shade ${currentColors.length + 1}`, hex: '#241D1B', imageUrl }];
           }
           return currentColors;
         });
@@ -277,7 +277,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
       price: Number(price),
       originalPrice: Number(originalPrice),
       discount: Number(discount),
-      sku: sku.trim() || `SBA-${Date.now().toString().slice(-4)}`,
+      sku: sku.trim() || `SAG-${Date.now().toString().slice(-4)}`,
       rating: existingProduct?.rating || 5.0,
       reviewCount: existingProduct?.reviewCount || 1,
       images,
@@ -321,12 +321,12 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
     <div id="admin-product-form-page" className="space-y-6 pb-12">
       
       {/* Top Header & Breadcrumb */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#FAF7F5] p-5 rounded-2xl border border-rose-100 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#FAF7F2] p-5 rounded-2xl border border-rose-100 shadow-xs">
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => navigate('/admin/products')}
-            className="p-2 bg-[#E0BFB8]/20 hover:bg-[#E0BFB8]/40 text-[#58152D] rounded-xl transition"
+            className="p-2 bg-[#D8C8B8]/20 hover:bg-[#D8C8B8]/40 text-[#211C1A] rounded-xl transition"
             title="Back to Products"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -356,7 +356,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
             type="submit"
             form="product-edit-form"
             disabled={isSaving}
-            className="px-5 py-2.5 bg-[#58152D] hover:bg-[#7E1D3B] disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl text-xs font-bold uppercase tracking-wider transition shadow-sm flex items-center gap-2"
+            className="px-5 py-2.5 bg-[#241D1B] hover:bg-[#241D1B] disabled:opacity-50 disabled:cursor-not-allowed text-[#211C1A] rounded-xl text-xs font-bold uppercase tracking-wider transition shadow-sm flex items-center gap-2"
           >
             {isSaving ? (
               <RefreshCw className="w-4 h-4 animate-spin" />
@@ -371,9 +371,9 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
       <form id="product-edit-form" onSubmit={handleSave} className="space-y-6">
         
         {/* Section 1: Basic Information */}
-        <div className="bg-\[#FAF7F5\] p-6 rounded-2xl border border-rose-100 shadow-xs space-y-5">
+        <div className="bg-\[#FAF7F2\] p-6 rounded-2xl border border-rose-100 shadow-xs space-y-5">
           <h3 className="font-serif text-lg font-bold text-gray-900 pb-2 border-b border-rose-100 flex items-center gap-2">
-            <Package className="w-5 h-5 text-[#58152D]" />
+            <Package className="w-5 h-5 text-[#211C1A]" />
             Basic Product Information
           </h3>
 
@@ -388,7 +388,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Gulab Handblock Pure Cotton Anarkali Set"
-                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#58152D] text-gray-900 font-medium"
+                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B] text-gray-900 font-medium"
               />
             </div>
 
@@ -399,7 +399,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as ProductCategory)}
-                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm bg-\[#FAF7F5\] text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#58152D]"
+                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm bg-\[#FAF7F2\] text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#241D1B]"
               >
                 {ALL_CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>{cat}</option>
@@ -416,7 +416,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                 value={subcategory}
                 onChange={(e) => setSubcategory(e.target.value)}
                 placeholder="e.g. Cambric Cotton Suit Sets"
-                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#58152D] text-gray-900"
+                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B] text-gray-900"
               />
             </div>
 
@@ -428,8 +428,8 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                 type="text"
                 value={sku}
                 onChange={(e) => setSku(e.target.value)}
-                placeholder="e.g. SBA-COT-9901"
-                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#58152D] text-gray-900 font-mono text-xs"
+                placeholder="e.g. SAG-COT-9901"
+                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B] text-gray-900 font-mono text-xs"
               />
             </div>
 
@@ -447,7 +447,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                   if (val === 0) setInStock(false);
                   else setInStock(true);
                 }}
-                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#58152D] text-gray-900"
+                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B] text-gray-900"
               />
             </div>
 
@@ -460,16 +460,16 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Write full product craftsmanship, silhouette, and drape details..."
-                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#58152D] text-gray-900"
+                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B] text-gray-900"
               />
             </div>
           </div>
         </div>
 
         {/* Section 2: Pricing & Discount */}
-        <div className="bg-\[#FAF7F5\] p-6 rounded-2xl border border-rose-100 shadow-xs space-y-5">
+        <div className="bg-\[#FAF7F2\] p-6 rounded-2xl border border-rose-100 shadow-xs space-y-5">
           <h3 className="font-serif text-lg font-bold text-gray-900 pb-2 border-b border-rose-100 flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-[#58152D]" />
+            <DollarSign className="w-5 h-5 text-[#211C1A]" />
             Pricing & Currency (₹ INR)
           </h3>
 
@@ -484,7 +484,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                 required
                 value={price}
                 onChange={(e) => handlePriceChange(Number(e.target.value))}
-                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#58152D] text-gray-900 font-bold"
+                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B] text-gray-900 font-bold"
               />
             </div>
 
@@ -497,7 +497,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                 min="1"
                 value={originalPrice}
                 onChange={(e) => handleOriginalPriceChange(Number(e.target.value))}
-                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#58152D] text-gray-900"
+                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B] text-gray-900"
               />
             </div>
 
@@ -512,7 +512,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                   max="100"
                   value={discount}
                   onChange={(e) => setDiscount(Number(e.target.value))}
-                  className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm bg-[#E0BFB8]/50 text-[#58152D] font-bold focus:outline-none focus:ring-2 focus:ring-[#58152D]"
+                  className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm bg-[#D8C8B8]/50 text-[#211C1A] font-bold focus:outline-none focus:ring-2 focus:ring-[#241D1B]"
                 />
                 <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-rose-700">% OFF</span>
               </div>
@@ -527,7 +527,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                 <button 
                   type="button" 
                   onClick={addColor} 
-                  className="text-xs bg-[#58152D] text-white px-3 py-1.5 rounded-lg hover:bg-opacity-90 font-bold transition shadow-sm"
+                  className="text-xs bg-[#241D1B] text-[#211C1A] px-3 py-1.5 rounded-lg hover:bg-opacity-90 font-bold transition shadow-sm"
                 >
                   + Add Color
                 </button>
@@ -556,7 +556,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                           >
                             <input
                               type="color"
-                              value={previewHex.length === 7 ? previewHex : '#58152D'}
+                              value={previewHex.length === 7 ? previewHex : '#241D1B'}
                               onChange={(e) => updateColor(idx, 'hex', e.target.value.toUpperCase())}
                               className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
                             />
@@ -572,7 +572,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                               placeholder="e.g. Royal Blue"
                               value={color.name}
                               onChange={(e) => updateColor(idx, 'name', e.target.value)}
-                              className="w-full px-2 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#58152D]"
+                              className="w-full px-2 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#241D1B]"
                             />
                           </div>
                         </div>
@@ -591,7 +591,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                                 const finalHex = typedVal.startsWith('#') ? typedVal : `#${typedVal}`;
                                 updateColor(idx, 'hex', finalHex);
                               }}
-                              className="w-full pl-6 pr-2 py-1.5 text-xs border border-gray-200 rounded-lg font-mono focus:outline-none focus:ring-1 focus:ring-[#58152D]"
+                              className="w-full pl-6 pr-2 py-1.5 text-xs border border-gray-200 rounded-lg font-mono focus:outline-none focus:ring-1 focus:ring-[#241D1B]"
                             />
                           </div>
                         </div>
@@ -617,14 +617,14 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                               }}
                               className={`relative w-12 h-16 rounded-md overflow-hidden border-2 transition ${
                                 color.imageUrl === imgUrl 
-                                  ? 'border-[#58152D] ring-2 ring-[#58152D]/10 shadow-sm scale-105 opacity-100' 
+                                  ? 'border-[#241D1B] ring-2 ring-[#241D1B]/10 shadow-sm scale-105 opacity-100' 
                                   : 'border-transparent hover:border-gray-200 opacity-60 hover:opacity-100'
                               }`}
                             >
                               <img src={imgUrl} className="w-full h-full object-cover" alt={`Product ${imgIdx + 1}`} referrerPolicy="no-referrer" />
                               {color.imageUrl === imgUrl && (
-                                <div className="absolute inset-0 bg-[#58152D]/10 flex items-center justify-center">
-                                  <span className="text-[9px] font-bold text-white bg-[#58152D] px-1 py-0.5 rounded shadow-sm">Sync</span>
+                                <div className="absolute inset-0 bg-[#241D1B]/10 flex items-center justify-center">
+                                  <span className="text-[9px] font-bold text-[#211C1A] bg-[#241D1B] px-1 py-0.5 rounded shadow-sm">Sync</span>
                                 </div>
                               )}
                             </button>
@@ -643,20 +643,20 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
         </div>
 
         {/* Section 3: Product Imagery */}
-        <div className="bg-[#FAFBF7] p-6 rounded-2xl border border-[#B8935A]/35 shadow-sm space-y-5">
-          <h3 className="font-serif text-lg font-bold text-[#3D0F1F] pb-2 border-b border-[#B8935A]/20 flex items-center gap-2">
-            <ImageIcon className="w-5 h-5 text-[#3D0F1F]" />
+        <div className="bg-[#FAFBF7] p-6 rounded-2xl border border-[#9A6A3A]/35 shadow-sm space-y-5">
+          <h3 className="font-serif text-lg font-bold text-[#211C1A] pb-2 border-b border-[#9A6A3A]/20 flex items-center gap-2">
+            <ImageIcon className="w-5 h-5 text-[#211C1A]" />
             Product Gallery
           </h3>
 
           <div className="space-y-6">
             {/* Upload Area */}
-            <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-[#B8935A]/30 rounded-2xl bg-[#FAFBF7] hover:border-[#3D0F1F]/50 transition-colors cursor-pointer group">
+            <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-[#9A6A3A]/30 rounded-2xl bg-[#FAFBF7] hover:border-[#241D1B]/50 transition-colors cursor-pointer group">
               <label className="flex flex-col items-center gap-3 cursor-pointer">
-                <div className="w-12 h-12 rounded-full bg-[#3D0F1F]/5 flex items-center justify-center text-[#3D0F1F] group-hover:scale-105 transition-transform">
+                <div className="w-12 h-12 rounded-full bg-[#241D1B]/5 flex items-center justify-center text-[#211C1A] group-hover:scale-105 transition-transform">
                   <ImageIcon className="w-6 h-6" />
                 </div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#3D0F1F]">Upload Product Images</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#211C1A]">Upload Product Images</span>
                 <span className="text-[11px] text-gray-500">Drag & drop or click to browse</span>
                 <input
                   type="file"
@@ -671,7 +671,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
             {/* Gallery Grid Preview */}
             <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-4">
               {images.map((imgUrl, idx) => (
-                <div key={idx} className="relative group rounded-xl overflow-hidden border border-[#B8935A]/20 aspect-3/4 bg-white shadow-inner">
+                <div key={idx} className="relative group rounded-xl overflow-hidden border border-[#9A6A3A]/20 aspect-3/4 bg-white shadow-inner">
                   {imgUrl && imgUrl.trim() !== "" ? (
                     <img src={imgUrl} alt={`Product preview ${idx + 1}`} className="w-full h-full object-cover" />
                   ) : (
@@ -679,7 +679,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                   )}
                   
                   {/* Image Badge */}
-                  <div className="absolute top-2 left-2 px-2 py-0.5 bg-[#3D0F1F]/80 text-[#FAF5EB] text-[10px] font-bold rounded-md backdrop-blur-sm">
+                  <div className="absolute top-2 left-2 px-2 py-0.5 bg-[#241D1B]/80 text-[#211C1A] text-[10px] font-bold rounded-md backdrop-blur-sm">
                     {idx === 0 ? 'Cover' : `#${idx + 1}`}
                   </div>
 
@@ -703,9 +703,9 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
         </div>
 
         {/* Section 4: Sizes, Colors & Fabric Specs */}
-        <div className="bg-\[#FAF7F5\] p-6 rounded-2xl border border-rose-100 shadow-xs space-y-6">
+        <div className="bg-\[#FAF7F2\] p-6 rounded-2xl border border-rose-100 shadow-xs space-y-6">
           <h3 className="font-serif text-lg font-bold text-gray-900 pb-2 border-b border-rose-100 flex items-center gap-2">
-            <Layers className="w-5 h-5 text-[#58152D]" />
+            <Layers className="w-5 h-5 text-[#211C1A]" />
             Sizes, Colors & Fabric Specifications
           </h3>
 
@@ -724,8 +724,8 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                     onClick={() => toggleSize(sz)}
                     className={`px-4 py-2 rounded-xl text-xs font-bold border transition ${
                       isSelected 
-                        ? 'bg-[#58152D] text-white border-[#58152D] shadow-xs' 
-                        : 'bg-\[#FAF7F5\] text-gray-700 border-gray-200 hover:border-rose-300'
+                        ? 'bg-[#241D1B] text-[#211C1A] border-[#241D1B] shadow-xs' 
+                        : 'bg-\[#FAF7F2\] text-gray-700 border-gray-200 hover:border-rose-300'
                     }`}
                   >
                     {sz} {isSelected && '✓'}
@@ -748,7 +748,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                 value={fabric}
                 onChange={(e) => setFabric(e.target.value)}
                 placeholder="e.g. 100% Pure Cambric Cotton with Chiffon Dupatta"
-                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#58152D] text-gray-900"
+                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B] text-gray-900"
               />
             </div>
 
@@ -761,7 +761,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                 value={fit}
                 onChange={(e) => setFit(e.target.value)}
                 placeholder="e.g. Regular Straight Cut Anarkali"
-                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#58152D] text-gray-900"
+                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B] text-gray-900"
               />
             </div>
 
@@ -774,7 +774,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                 value={occasion}
                 onChange={(e) => setOccasion(e.target.value)}
                 placeholder="e.g. Festive, Wedding, Office, Daily Wear"
-                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#58152D] text-gray-900"
+                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B] text-gray-900"
               />
             </div>
 
@@ -787,86 +787,86 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
                 value={washCare}
                 onChange={(e) => setWashCare(e.target.value)}
                 placeholder="e.g. Gentle Hand Wash / Dry Clean for First Wash"
-                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#58152D] text-gray-900"
+                className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B] text-gray-900"
               />
             </div>
           </div>
         </div>
 
         {/* Section 5: Storefront Badges & Visibility */}
-        <div className="bg-\[#FAF7F5\] p-6 rounded-2xl border border-rose-100 shadow-xs space-y-4">
+        <div className="bg-\[#FAF7F2\] p-6 rounded-2xl border border-rose-100 shadow-xs space-y-4">
           <h3 className="font-serif text-lg font-bold text-gray-900 pb-2 border-b border-rose-100 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-[#58152D]" />
+            <Sparkles className="w-5 h-5 text-[#211C1A]" />
             Merchandising Badges & Visibility
           </h3>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            <label className="flex items-center gap-2.5 p-3 rounded-xl border border-rose-100 bg-[#E0BFB8]/30 cursor-pointer hover:bg-[#E0BFB8]/20 transition">
+            <label className="flex items-center gap-2.5 p-3 rounded-xl border border-rose-100 bg-[#D8C8B8]/30 cursor-pointer hover:bg-[#D8C8B8]/20 transition">
               <input
                 type="checkbox"
                 checked={isFeatured}
                 onChange={(e) => setIsFeatured(e.target.checked)}
-                className="rounded border-gray-300 text-[#58152D] focus:ring-[#58152D] w-4 h-4"
+                className="rounded border-gray-300 text-[#211C1A] focus:ring-[#241D1B] w-4 h-4"
               />
               <span className="text-xs font-bold text-gray-800">Featured Product</span>
             </label>
 
-            <label className="flex items-center gap-2.5 p-3 rounded-xl border border-rose-100 bg-[#E0BFB8]/30 cursor-pointer hover:bg-[#E0BFB8]/20 transition">
+            <label className="flex items-center gap-2.5 p-3 rounded-xl border border-rose-100 bg-[#D8C8B8]/30 cursor-pointer hover:bg-[#D8C8B8]/20 transition">
               <input
                 type="checkbox"
                 checked={isNewArrival}
                 onChange={(e) => setIsNewArrival(e.target.checked)}
-                className="rounded border-gray-300 text-[#58152D] focus:ring-[#58152D] w-4 h-4"
+                className="rounded border-gray-300 text-[#211C1A] focus:ring-[#241D1B] w-4 h-4"
               />
               <span className="text-xs font-bold text-gray-800">New Arrival</span>
             </label>
 
-            <label className="flex items-center gap-2.5 p-3 rounded-xl border border-rose-100 bg-[#E0BFB8]/30 cursor-pointer hover:bg-[#E0BFB8]/20 transition">
+            <label className="flex items-center gap-2.5 p-3 rounded-xl border border-rose-100 bg-[#D8C8B8]/30 cursor-pointer hover:bg-[#D8C8B8]/20 transition">
               <input
                 type="checkbox"
                 checked={isBestSeller}
                 onChange={(e) => setIsBestSeller(e.target.checked)}
-                className="rounded border-gray-300 text-[#58152D] focus:ring-[#58152D] w-4 h-4"
+                className="rounded border-gray-300 text-[#211C1A] focus:ring-[#241D1B] w-4 h-4"
               />
               <span className="text-xs font-bold text-gray-800">Best Seller</span>
             </label>
 
-            <label className="flex items-center gap-2.5 p-3 rounded-xl border border-rose-100 bg-[#E0BFB8]/30 cursor-pointer hover:bg-[#E0BFB8]/20 transition">
+            <label className="flex items-center gap-2.5 p-3 rounded-xl border border-rose-100 bg-[#D8C8B8]/30 cursor-pointer hover:bg-[#D8C8B8]/20 transition">
               <input
                 type="checkbox"
                 checked={isSale}
                 onChange={(e) => setIsSale(e.target.checked)}
-                className="rounded border-gray-300 text-[#58152D] focus:ring-[#58152D] w-4 h-4"
+                className="rounded border-gray-300 text-[#211C1A] focus:ring-[#241D1B] w-4 h-4"
               />
               <span className="text-xs font-bold text-rose-700">Sale Item</span>
             </label>
 
-            <label className="flex items-center gap-2.5 p-3 rounded-xl border border-rose-100 bg-[#E0BFB8]/30 cursor-pointer hover:bg-[#E0BFB8]/20 transition">
+            <label className="flex items-center gap-2.5 p-3 rounded-xl border border-rose-100 bg-[#D8C8B8]/30 cursor-pointer hover:bg-[#D8C8B8]/20 transition">
               <input
                 type="checkbox"
                 checked={isTrending}
                 onChange={(e) => setIsTrending(e.target.checked)}
-                className="rounded border-gray-300 text-[#58152D] focus:ring-[#58152D] w-4 h-4"
+                className="rounded border-gray-300 text-[#211C1A] focus:ring-[#241D1B] w-4 h-4"
               />
               <span className="text-xs font-bold text-gray-800">Trending Now</span>
             </label>
 
-            <label className="flex items-center gap-2.5 p-3 rounded-xl border border-rose-100 bg-[#E0BFB8]/30 cursor-pointer hover:bg-[#E0BFB8]/20 transition">
+            <label className="flex items-center gap-2.5 p-3 rounded-xl border border-rose-100 bg-[#D8C8B8]/30 cursor-pointer hover:bg-[#D8C8B8]/20 transition">
               <input
                 type="checkbox"
                 checked={isFestive}
                 onChange={(e) => setIsFestive(e.target.checked)}
-                className="rounded border-gray-300 text-[#58152D] focus:ring-[#58152D] w-4 h-4"
+                className="rounded border-gray-300 text-[#211C1A] focus:ring-[#241D1B] w-4 h-4"
               />
               <span className="text-xs font-bold text-gray-800">Festive Edit</span>
             </label>
 
-            <label className="flex items-center gap-2.5 p-3 rounded-xl border border-rose-100 bg-[#E0BFB8]/30 cursor-pointer hover:bg-[#E0BFB8]/20 transition">
+            <label className="flex items-center gap-2.5 p-3 rounded-xl border border-rose-100 bg-[#D8C8B8]/30 cursor-pointer hover:bg-[#D8C8B8]/20 transition">
               <input
                 type="checkbox"
                 checked={inStock}
                 onChange={(e) => setInStock(e.target.checked)}
-                className="rounded border-gray-300 text-[#58152D] focus:ring-[#58152D] w-4 h-4"
+                className="rounded border-gray-300 text-[#211C1A] focus:ring-[#241D1B] w-4 h-4"
               />
               <span className="text-xs font-bold text-emerald-800">In Stock Active</span>
             </label>
@@ -886,7 +886,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({ productId })
           <button
             type="submit"
             disabled={isSaving}
-            className="px-6 py-2.5 bg-[#58152D] hover:bg-[#7E1D3B] disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl text-xs font-bold uppercase tracking-wider transition shadow-sm flex items-center gap-2"
+            className="px-6 py-2.5 bg-[#241D1B] hover:bg-[#241D1B] disabled:opacity-50 disabled:cursor-not-allowed text-[#211C1A] rounded-xl text-xs font-bold uppercase tracking-wider transition shadow-sm flex items-center gap-2"
           >
             {isSaving ? (
               <RefreshCw className="w-4 h-4 animate-spin" />

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Star, CheckCircle, Quote, MessageSquarePlus, X, Loader2, Sparkles, Heart, ChevronDown, ChevronUp } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 import { useAdmin } from '../context/AdminContext';
-import { HOMEPAGE_HINGLISH_REVIEWS } from '../utils/reviewsHelper';
 
 interface ReviewItem {
   id: string;
@@ -32,7 +31,7 @@ export const CustomerReviews: React.FC = () => {
     location: '',
     rating: 5, 
     comment: '', 
-    outfit: 'Suit Bliss Ensemble' 
+    outfit: 'Signature Ensemble'
   });
 
   // Map real approved user reviews from context / database (strictly filtering out any English sentences/keywords)
@@ -54,19 +53,18 @@ export const CustomerReviews: React.FC = () => {
     })
     .map((r) => ({
       id: r.id,
-      name: r.userName || 'Verified Buyer',
+      name: r.userName || 'Customer',
       location: r.location || 'India',
-      outfit: r.productName || 'Suit Bliss Aura Ensemble',
+      outfit: r.productName || 'Suit Aura Girls Ensemble',
       rating: r.rating || 5,
       date: r.date || 'Recently',
       comment: r.comment || '',
-      verified: r.verifiedPurchase ?? true,
+      verified: r.verifiedPurchase ?? false,
       likes: 18,
       imageUrl: r.imageUrl,
     }));
 
-  // Combine user-submitted reviews with our 55+ curated authentic Hinglish reviews
-  const displayReviews = [...userSubmittedReviews, ...HOMEPAGE_HINGLISH_REVIEWS];
+  const displayReviews = userSubmittedReviews;
 
   // Initial visible reviews count (5 cards as requested), expand to show all 55+
   const visibleReviews = isExpanded ? displayReviews : displayReviews.slice(0, 5);
@@ -87,13 +85,13 @@ export const CustomerReviews: React.FC = () => {
 
     for (let i = 1; i <= 5; i++) {
       if (i <= fullStars) {
-        stars.push(<Star key={i} className="w-3.5 h-3.5 fill-[#B8935A] text-[#B8935A]" />);
+        stars.push(<Star key={i} className="w-3.5 h-3.5 fill-black text-black" />);
       } else if (i === fullStars + 1 && hasHalfStar) {
         stars.push(
           <div key={i} className="relative w-3.5 h-3.5">
             <Star className="w-3.5 h-3.5 text-gray-300 fill-gray-200" />
             <div className="absolute top-0 left-0 overflow-hidden w-[50%]">
-              <Star className="w-3.5 h-3.5 fill-[#B8935A] text-[#B8935A]" />
+              <Star className="w-3.5 h-3.5 fill-black text-black" />
             </div>
           </div>
         );
@@ -115,9 +113,11 @@ export const CustomerReviews: React.FC = () => {
     try {
       await addReview({
         productId: '0',
-        productName: newReview.outfit || 'Suit Bliss Ensemble',
+        productName: newReview.outfit || 'Signature Ensemble',
         userName: newReview.name,
         rating: Number(newReview.rating),
+        date: new Date().toISOString(),
+        verifiedPurchase: false,
         location: newReview.location || 'India',
         comment: newReview.comment,
         status: 'pending', // Requires admin approval before live display
@@ -135,32 +135,32 @@ export const CustomerReviews: React.FC = () => {
   };
 
   return (
-    <section id="customer-reviews-section" className="py-10 sm:py-16 bg-[#F7F2EA] border-b border-[#B8935A]/20">
+    <section id="customer-reviews-section" className="py-10 sm:py-16 bg-[#FAF7F2] border-b border-[#9A6A3A]/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Compact & Clean Section Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-8 sm:mb-12 gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#3D0F1F] text-[#B8935A] border border-[#B8935A]/40 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] mb-3">
-              <Star className="w-3.5 h-3.5 text-[#B8935A] fill-[#B8935A]" />
-              <span>CLIENT TESTIMONIALS • {displayReviews.length}+ VERIFIED REVIEWS</span>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#241D1B] text-[#211C1A] border border-[#9A6A3A]/40 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] mb-3">
+              <Star className="w-3.5 h-3.5 text-black fill-black" />
+              <span>CLIENT REVIEWS • {displayReviews.length} PUBLISHED</span>
             </div>
             
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#3D0F1F] leading-tight">
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#211C1A] leading-tight">
               Customer Reviews
             </h2>
             
-            <p className="text-xs sm:text-sm text-[#3D0F1F]/80 font-normal mt-1">
-              Real fit, fabric & quality feedback from verified buyers nationwide.
+            <p className="text-xs sm:text-sm text-[#211C1A]/80 font-normal mt-1">
+              Published customer feedback. Purchase verification is shown only when recorded.
             </p>
           </div>
 
           <button
             id="open-write-review-btn"
             onClick={() => setIsWriteModalOpen(true)}
-            className="px-5 py-2.5 bg-[#3D0F1F] hover:bg-[#2A0914] active:scale-95 text-white border border-[#B8935A] rounded-lg text-xs font-bold uppercase tracking-wider transition-all shadow-md flex items-center gap-2 cursor-pointer shrink-0"
+            className="px-5 py-2.5 bg-[#241D1B] hover:bg-[#241D1B] active:scale-95 text-[#211C1A] border border-[#9A6A3A] rounded-lg text-xs font-bold uppercase tracking-wider transition-all shadow-md flex items-center gap-2 cursor-pointer shrink-0"
           >
-            <MessageSquarePlus className="w-4 h-4 text-[#B8935A]" />
+            <MessageSquarePlus className="w-4 h-4 text-black" />
             <span>WRITE A REVIEW</span>
           </button>
         </div>
@@ -168,22 +168,22 @@ export const CustomerReviews: React.FC = () => {
         {/* Loading State */}
         {isLoading && (
           <div className="flex items-center justify-center py-6">
-            <Loader2 className="w-5 h-5 animate-spin text-[#B8935A]" />
-            <span className="ml-2 text-xs text-[#3D0F1F] font-semibold">Loading reviews...</span>
+            <Loader2 className="w-5 h-5 animate-spin text-black" />
+            <span className="ml-2 text-xs text-[#211C1A] font-semibold">Loading reviews...</span>
           </div>
         )}
 
         {/* Review Cards Grid or Clean Minimal Empty State */}
         {!isLoading && displayReviews.length === 0 ? (
-          <div className="text-center py-8 px-4 bg-white border border-[#B8935A]/30 rounded-2xl max-w-md mx-auto shadow-sm">
-            <div className="w-12 h-12 bg-[#B8935A]/15 border border-[#B8935A]/30 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Star className="w-6 h-6 text-[#B8935A] fill-[#B8935A]" />
+          <div className="text-center py-8 px-4 bg-white border border-[#9A6A3A]/30 rounded-2xl max-w-md mx-auto shadow-sm">
+            <div className="w-12 h-12 bg-[#9A6A3A]/15 border border-[#9A6A3A]/30 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Star className="w-6 h-6 text-black fill-black" />
             </div>
-            <h3 className="text-sm font-bold text-[#3D0F1F] uppercase tracking-wide">No Reviews Yet</h3>
+            <h3 className="text-sm font-bold text-[#211C1A] uppercase tracking-wide">No Reviews Yet</h3>
             <p className="text-xs text-gray-600 mt-1 mb-4">Be the first customer to share your experience with our ensembles!</p>
             <button
               onClick={() => setIsWriteModalOpen(true)}
-              className="px-5 py-2.5 bg-[#3D0F1F] hover:bg-[#2A0914] active:scale-95 text-white text-xs font-bold uppercase tracking-wider rounded-lg border border-[#B8935A] shadow-md cursor-pointer"
+              className="px-5 py-2.5 bg-[#241D1B] hover:bg-[#241D1B] active:scale-95 text-[#211C1A] text-xs font-bold uppercase tracking-wider rounded-lg border border-[#9A6A3A] shadow-md cursor-pointer"
             >
               Write First Review
             </button>
@@ -199,19 +199,19 @@ export const CustomerReviews: React.FC = () => {
                   <div
                     key={rev.id}
                     id={`review-card-${rev.id}`}
-                    className="bg-white p-5 sm:p-6 rounded-xl border border-[#B8935A]/25 shadow-xs hover:border-[#B8935A] transition-all duration-300 flex flex-col justify-between group"
+                    className="bg-white p-5 sm:p-6 rounded-xl border border-[#9A6A3A]/25 shadow-xs hover:border-[#9A6A3A] transition-all duration-300 flex flex-col justify-between group"
                   >
                     <div>
                       {/* Rating & Verified Badge */}
                       <div className="flex items-center justify-between gap-1 mb-3">
                         <div className="flex items-center gap-0.5">
                           {renderStars(rev.rating)}
-                          <span className="text-[11px] font-bold text-[#3D0F1F] ml-1">{rev.rating}</span>
+                          <span className="text-[11px] font-bold text-[#211C1A] ml-1">{rev.rating}</span>
                         </div>
 
                         {rev.verified && (
-                          <span className="inline-flex items-center gap-1 text-[9px] font-bold text-[#3D0F1F] bg-[#B8935A]/15 px-2 py-0.5 rounded-full border border-[#B8935A]/30">
-                            <CheckCircle className="w-2.5 h-2.5 text-[#B8935A]" />
+                          <span className="inline-flex items-center gap-1 text-[9px] font-bold text-[#211C1A] bg-[#9A6A3A]/15 px-2 py-0.5 rounded-full border border-[#9A6A3A]/30">
+                            <CheckCircle className="w-2.5 h-2.5 text-black" />
                             <span>VERIFIED BUYER</span>
                           </span>
                         )}
@@ -219,27 +219,27 @@ export const CustomerReviews: React.FC = () => {
 
                       {/* Comment */}
                       <div className="relative">
-                        <Quote className="w-4 h-4 text-[#B8935A]/30 absolute -top-1 -left-1" />
-                        <p className="text-xs sm:text-sm text-[#3D0F1F] font-normal leading-relaxed italic pl-3.5 mb-3">
+                        <Quote className="w-4 h-4 text-black/30 absolute -top-1 -left-1" />
+                        <p className="text-xs sm:text-sm text-[#211C1A] font-normal leading-relaxed italic pl-3.5 mb-3">
                           &ldquo;{rev.comment}&rdquo;
                         </p>
                       </div>
                     </div>
 
                     {/* Author Meta */}
-                    <div className="pt-3 border-t border-[#B8935A]/15 flex items-center justify-between mt-2">
+                    <div className="pt-3 border-t border-[#9A6A3A]/15 flex items-center justify-between mt-2">
                       <div>
-                        <h4 className="text-xs font-bold text-[#3D0F1F]">{rev.name}</h4>
-                        <p className="text-[10px] text-gray-500">{rev.location} • Bought: <span className="text-[#B8935A] font-semibold">{rev.outfit}</span></p>
+                        <h4 className="text-xs font-bold text-[#211C1A]">{rev.name}</h4>
+                        <p className="text-[10px] text-gray-500">{rev.location} • Bought: <span className="text-black font-semibold">{rev.outfit}</span></p>
                       </div>
 
                       <button
                         onClick={() => handleLike(rev.id)}
                         className={`flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-md transition-colors cursor-pointer ${
-                          isLiked ? 'text-[#B8935A] bg-[#B8935A]/15' : 'text-gray-400 hover:text-[#3D0F1F]'
+                          isLiked ? 'text-black bg-[#9A6A3A]/15' : 'text-gray-400 hover:text-[#211C1A]'
                         }`}
                       >
-                        <Heart className={`w-3.5 h-3.5 ${isLiked ? 'fill-[#B8935A] text-[#B8935A]' : ''}`} />
+                        <Heart className={`w-3.5 h-3.5 ${isLiked ? 'fill-black text-black' : ''}`} />
                         <span>{likeCount}</span>
                       </button>
                     </div>
@@ -254,7 +254,7 @@ export const CustomerReviews: React.FC = () => {
                 <button
                   id="toggle-see-more-reviews-btn"
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="px-8 py-3.5 bg-[#3D0F1F] hover:bg-[#2A0914] active:scale-95 text-white border border-[#B8935A] rounded-xl text-xs sm:text-sm font-bold uppercase tracking-widest transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2.5 cursor-pointer group"
+                  className="px-8 py-3.5 bg-[#241D1B] hover:bg-[#241D1B] active:scale-95 text-[#211C1A] border border-[#9A6A3A] rounded-xl text-xs sm:text-sm font-bold uppercase tracking-widest transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2.5 cursor-pointer group"
                 >
                   <span>
                     {isExpanded 
@@ -262,9 +262,9 @@ export const CustomerReviews: React.FC = () => {
                       : `SCROLL TO SEE MORE REVIEWS (${displayReviews.length - 5}+ MORE VERIFIED REVIEWS)`}
                   </span>
                   {isExpanded ? (
-                    <ChevronUp className="w-4 h-4 text-[#B8935A] group-hover:-translate-y-0.5 transition-transform" />
+                    <ChevronUp className="w-4 h-4 text-black group-hover:-translate-y-0.5 transition-transform" />
                   ) : (
-                    <ChevronDown className="w-4 h-4 text-[#B8935A] group-hover:translate-y-0.5 transition-transform" />
+                    <ChevronDown className="w-4 h-4 text-black group-hover:translate-y-0.5 transition-transform" />
                   )}
                 </button>
               </div>
@@ -277,28 +277,28 @@ export const CustomerReviews: React.FC = () => {
       {/* Write Review Modal */}
       {isWriteModalOpen && (
         <div id="write-review-modal-overlay" className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-[#F7F2EA] rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl relative border border-[#B8935A]/40 animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-[#FAF7F2] rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl relative border border-[#9A6A3A]/40 animate-in fade-in zoom-in-95 duration-200">
             <button
               onClick={() => {
                 setIsWriteModalOpen(false);
                 setSubmittedSuccess(false);
               }}
-              className="absolute top-4 right-4 text-gray-400 hover:text-[#3D0F1F] p-1.5 rounded-full hover:bg-[#B8935A]/20 transition cursor-pointer"
+              className="absolute top-4 right-4 text-gray-400 hover:text-[#211C1A] p-1.5 rounded-full hover:bg-[#9A6A3A]/20 transition cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
             {submittedSuccess ? (
               <div className="text-center py-4 space-y-4">
-                <div className="w-16 h-16 bg-[#B8935A]/15 border-2 border-[#B8935A] rounded-full flex items-center justify-center mx-auto text-[#B8935A]">
+                <div className="w-16 h-16 bg-[#9A6A3A]/15 border-2 border-[#9A6A3A] rounded-full flex items-center justify-center mx-auto text-black">
                   <CheckCircle className="w-9 h-9" />
                 </div>
 
-                <h3 className="font-serif text-2xl font-bold text-[#3D0F1F]">
+                <h3 className="font-serif text-2xl font-bold text-[#211C1A]">
                   Dhanyawad! Thanks For Your Review! 🙏
                 </h3>
 
-                <p className="text-xs text-[#3D0F1F]/80 leading-relaxed bg-white p-3.5 rounded-xl border border-[#B8935A]/30">
+                <p className="text-xs text-[#211C1A]/80 leading-relaxed bg-white p-3.5 rounded-xl border border-[#9A6A3A]/30">
                   Aapka review safaltapoorvak submit ho gaya hai. Quality check ke liye ye pehle Admin Panel me jayega. Admin approve karte hi ye site par live dikhai dega.
                 </p>
 
@@ -307,9 +307,9 @@ export const CustomerReviews: React.FC = () => {
                   onClick={() => {
                     setIsWriteModalOpen(false);
                     setSubmittedSuccess(false);
-                    setNewReview({ name: '', location: '', rating: 5, comment: '', outfit: 'Suit Bliss Ensemble' });
+                    setNewReview({ name: '', location: '', rating: 5, comment: '', outfit: 'Signature Ensemble' });
                   }}
-                  className="w-full py-3 bg-[#3D0F1F] text-white hover:bg-[#2A0914] text-xs font-bold uppercase tracking-wider rounded-xl border border-[#B8935A] shadow-md cursor-pointer transition"
+                  className="w-full py-3 bg-[#241D1B] text-[#211C1A] hover:bg-[#241D1B] text-xs font-bold uppercase tracking-wider rounded-xl border border-[#9A6A3A] shadow-md cursor-pointer transition"
                 >
                   THIK HAI (OKAY)
                 </button>
@@ -317,8 +317,8 @@ export const CustomerReviews: React.FC = () => {
             ) : (
               <>
                 <div className="flex items-center gap-2 mb-1">
-                  <Sparkles className="w-5 h-5 text-[#B8935A]" />
-                  <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#3D0F1F]">
+                  <Sparkles className="w-5 h-5 text-black" />
+                  <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#211C1A]">
                     Share Your Experience
                   </h3>
                 </div>
@@ -327,13 +327,13 @@ export const CustomerReviews: React.FC = () => {
                   Help fellow buyers choose the perfect ethnic ensemble!
                 </p>
 
-                <p className="text-[11px] text-amber-900 bg-amber-50 p-2.5 rounded-lg border border-amber-200 font-medium mb-3">
+                <p className="text-[11px] text-black bg-amber-50 p-2.5 rounded-lg border border-amber-200 font-medium mb-3">
                   ℹ️ Note: Review submit karne ke baad ye pehle Admin Panel me jayega. Admin approve karega fir site par live dikhega.
                 </p>
 
                 <form onSubmit={handleReviewSubmit} className="space-y-3">
                   <div>
-                    <label className="block text-[11px] font-bold text-[#3D0F1F] uppercase mb-1">
+                    <label className="block text-[11px] font-bold text-[#211C1A] uppercase mb-1">
                       Your Name *
                     </label>
                     <input
@@ -342,25 +342,25 @@ export const CustomerReviews: React.FC = () => {
                       value={newReview.name}
                       onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
                       placeholder="e.g. Radhika Sharma"
-                      className="w-full px-3 py-2 border border-[#B8935A]/30 rounded-lg text-xs focus:ring-2 focus:ring-[#3D0F1F] focus:outline-none bg-white"
+                      className="w-full px-3 py-2 border border-[#9A6A3A]/30 rounded-lg text-xs focus:ring-2 focus:ring-[#241D1B] focus:outline-none bg-white"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-bold text-[#3D0F1F] uppercase mb-1">
+                    <label className="block text-[11px] font-bold text-[#211C1A] uppercase mb-1">
                       City / Location
                     </label>
                     <input
                       type="text"
                       value={newReview.location}
                       onChange={(e) => setNewReview({ ...newReview, location: e.target.value })}
-                      placeholder="e.g. Jaipur, Rajasthan"
-                      className="w-full px-3 py-2 border border-[#B8935A]/30 rounded-lg text-xs focus:ring-2 focus:ring-[#3D0F1F] focus:outline-none bg-white"
+                      placeholder="e.g. Artisan, Rajasthan"
+                      className="w-full px-3 py-2 border border-[#9A6A3A]/30 rounded-lg text-xs focus:ring-2 focus:ring-[#241D1B] focus:outline-none bg-white"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-bold text-[#3D0F1F] uppercase mb-1">
+                    <label className="block text-[11px] font-bold text-[#211C1A] uppercase mb-1">
                       Outfit Purchased
                     </label>
                     <input
@@ -368,12 +368,12 @@ export const CustomerReviews: React.FC = () => {
                       value={newReview.outfit}
                       onChange={(e) => setNewReview({ ...newReview, outfit: e.target.value })}
                       placeholder="e.g. Floral Printed Cotton Suit Set"
-                      className="w-full px-3 py-2 border border-[#B8935A]/30 rounded-lg text-xs focus:ring-2 focus:ring-[#3D0F1F] focus:outline-none bg-white"
+                      className="w-full px-3 py-2 border border-[#9A6A3A]/30 rounded-lg text-xs focus:ring-2 focus:ring-[#241D1B] focus:outline-none bg-white"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-bold text-[#3D0F1F] uppercase mb-1">
+                    <label className="block text-[11px] font-bold text-[#211C1A] uppercase mb-1">
                       Rating *
                     </label>
                     <div className="flex items-center gap-1.5">
@@ -387,7 +387,7 @@ export const CustomerReviews: React.FC = () => {
                           <Star
                             className={`w-6 h-6 ${
                               star <= newReview.rating
-                                ? 'fill-[#B8935A] text-[#B8935A]'
+                                ? 'fill-black text-black'
                                 : 'text-gray-300'
                             }`}
                           />
@@ -397,7 +397,7 @@ export const CustomerReviews: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-bold text-[#3D0F1F] uppercase mb-1">
+                    <label className="block text-[11px] font-bold text-[#211C1A] uppercase mb-1">
                       Review & Fabric / Fit Feedback *
                     </label>
                     <textarea
@@ -406,7 +406,7 @@ export const CustomerReviews: React.FC = () => {
                       value={newReview.comment}
                       onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
                       placeholder="How was the fabric feel, stitching precision, and drape?"
-                      className="w-full px-3 py-2 border border-[#B8935A]/30 rounded-lg text-xs focus:ring-2 focus:ring-[#3D0F1F] focus:outline-none bg-white"
+                      className="w-full px-3 py-2 border border-[#9A6A3A]/30 rounded-lg text-xs focus:ring-2 focus:ring-[#241D1B] focus:outline-none bg-white"
                     />
                   </div>
 
@@ -414,9 +414,9 @@ export const CustomerReviews: React.FC = () => {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full py-3 bg-[#3D0F1F] hover:bg-[#2A0914] text-white rounded-lg text-xs font-bold uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer border border-[#B8935A]"
+                      className="w-full py-3 bg-[#241D1B] hover:bg-[#241D1B] text-[#211C1A] rounded-lg text-xs font-bold uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer border border-[#9A6A3A]"
                     >
-                      {isSubmitting && <Loader2 className="w-4 h-4 animate-spin text-[#B8935A]" />}
+                      {isSubmitting && <Loader2 className="w-4 h-4 animate-spin text-black" />}
                       <span>{isSubmitting ? 'Submitting...' : 'SUBMIT REVIEW'}</span>
                     </button>
                   </div>

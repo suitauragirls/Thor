@@ -96,7 +96,7 @@ export const SizeGuideModal: React.FC = () => {
         <button 
           id="close-size-guide-btn"
           onClick={() => setIsSizeGuideOpen(false)}
-          className="absolute top-4 right-4 sm:top-5 sm:right-5 text-gray-400 hover:text-[#8B1E3F] p-2 rounded-full hover:bg-[#E0BFB8]/20 transition-colors cursor-pointer"
+          className="absolute top-4 right-4 sm:top-5 sm:right-5 text-gray-400 hover:text-[#8B1E3F] p-2 rounded-full hover:bg-[#D8C8B8]/20 transition-colors cursor-pointer"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
@@ -138,7 +138,7 @@ export const SizeGuideModal: React.FC = () => {
                     value={bodyBustInput}
                     onChange={(e) => handleBustInputChange(e.target.value)}
                     placeholder={unit === 'inches' ? 'e.g. 36' : 'e.g. 91'}
-                    className="w-full bg-\[#FAF7F5\] border border-[#F3C5D1] rounded-lg px-3 py-2 text-sm focus:outline-hidden focus:ring-1 focus:ring-[#8B1E3F] focus:border-[#8B1E3F] font-bold text-gray-800"
+                    className="w-full bg-\[#FAF7F2\] border border-[#F3C5D1] rounded-lg px-3 py-2 text-sm focus:outline-hidden focus:ring-1 focus:ring-[#8B1E3F] focus:border-[#8B1E3F] font-bold text-gray-800"
                   />
                   <span className="absolute right-3 top-2.5 text-xs text-gray-400 font-bold uppercase">
                     {unit === 'inches' ? 'In' : 'CM'}
@@ -147,7 +147,7 @@ export const SizeGuideModal: React.FC = () => {
               </div>
 
               {suggestedSize ? (
-                <div className="bg-\[#FAF7F5\] border border-emerald-100 rounded-lg p-3 text-center animate-in fade-in slide-in-from-bottom-2 duration-200">
+                <div className="bg-\[#FAF7F2\] border border-emerald-100 rounded-lg p-3 text-center animate-in fade-in slide-in-from-bottom-2 duration-200">
                   <p className="text-[10px] text-emerald-700 font-bold uppercase tracking-wider mb-0.5">Recommended Size:</p>
                   <p className="text-3xl font-black text-emerald-600 tracking-wide">{suggestedSize}</p>
                   <p className="text-[10px] text-gray-500 mt-1">
@@ -164,7 +164,7 @@ export const SizeGuideModal: React.FC = () => {
                   </button>
                 </div>
               ) : bodyBustInput ? (
-                <div className="bg-[#E0BFB8]/50 border border-rose-100 rounded-lg p-2.5 text-center text-[10px] text-rose-700 font-bold">
+                <div className="bg-[#D8C8B8]/50 border border-rose-100 rounded-lg p-2.5 text-center text-[10px] text-rose-700 font-bold">
                   Invalid measurement! Please input correct numbers.
                 </div>
               ) : null}
@@ -178,7 +178,7 @@ export const SizeGuideModal: React.FC = () => {
               <span className="text-[11px] text-gray-500 font-medium italic">
                 💡 Size row select karke measurement check karein
               </span>
-              <div className="inline-flex rounded-lg border border-rose-200 p-0.5 bg-[#E0BFB8]/50 shrink-0">
+              <div className="inline-flex rounded-lg border border-rose-200 p-0.5 bg-[#D8C8B8]/50 shrink-0">
                 <button
                   id="unit-inches-btn"
                   onClick={() => handleUnitSwitch('inches')}
@@ -205,7 +205,7 @@ export const SizeGuideModal: React.FC = () => {
             </div>
 
             {/* Table wrapper */}
-            <div className="overflow-x-auto border border-rose-100/70 rounded-xl bg-\[#FAF7F5\] shadow-xs">
+            <div className="overflow-x-auto border border-rose-100/70 rounded-xl bg-\[#FAF7F2\] shadow-xs">
               <table className="w-full text-left text-xs sm:text-sm text-[#2C1820]">
                 <thead className="bg-[#FFF5F7] text-[10px] uppercase tracking-wider text-[#8B1E3F] font-black border-b border-rose-100/80">
                   <tr>
@@ -228,8 +228,8 @@ export const SizeGuideModal: React.FC = () => {
                         onClick={() => setSelectedRowSize(isRowHighlighted ? null : row.size)}
                         className={`transition-all cursor-pointer duration-150 ${
                           isRowHighlighted 
-                            ? 'bg-[#E0BFB8]/40/50 text-[#8B1E3F] font-bold' 
-                            : 'hover:bg-[#E0BFB8]/30 text-gray-700'
+                            ? 'bg-[#D8C8B8]/40/50 text-[#8B1E3F] font-bold' 
+                            : 'hover:bg-[#D8C8B8]/30 text-gray-700'
                         }`}
                       >
                         <td className="py-3 px-3 sm:px-4 font-black text-center text-[#8B1E3F]">
@@ -271,12 +271,12 @@ export const SizeGuideModal: React.FC = () => {
           </div>
 
           {/* Size Warning / Note */}
-          <div className="bg-[#E0BFB8]/20 border border-rose-100 rounded-xl p-4 flex gap-2.5 items-start">
+          <div className="bg-[#D8C8B8]/20 border border-rose-100 rounded-xl p-4 flex gap-2.5 items-start">
             <Info className="w-4.5 h-4.5 text-[#8B1E3F] shrink-0 mt-0.5" />
             <div>
               <h5 className="font-bold text-[#8B1E3F] text-[11px] sm:text-xs uppercase tracking-wide mb-1">Earthy/Handcrafted Garment Note</h5>
               <p className="text-[10px] sm:text-[11px] text-gray-600 leading-relaxed">
-                Hamare sabhi Jaipuri and Gota Patti suits premium handloom cotton fabrics se banaye jate hain. Thode thode shrink hone ki natural tendency ko dhyaan me rakhte hue, standard sizes comfortable fit ke liye optimal loose alignment me design kiye gaye hain.
+                Hamare sabhi Heritage and Gota Patti suits premium handloom cotton fabrics se banaye jate hain. Thode thode shrink hone ki natural tendency ko dhyaan me rakhte hue, standard sizes comfortable fit ke liye optimal loose alignment me design kiye gaye hain.
               </p>
             </div>
           </div>

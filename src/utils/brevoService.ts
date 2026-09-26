@@ -1,4 +1,4 @@
-// Brevo Direct REST API Integration Service for Suit Bliss Aura OTP Emails
+// Brevo Direct REST API Integration Service for Suit Aura Girls OTP Emails
 
 export interface SendOtpParams {
   email: string;
@@ -11,14 +11,14 @@ const DEFAULT_BREVO_API_KEY = '';
 export const getStoredBrevoKey = (): string => {
   return (
     import.meta.env.VITE_BREVO_API_KEY ||
-    localStorage.getItem('SUITBLISS_BREVO_API_KEY') ||
+            localStorage.getItem('SUITAURAGIRLS_BREVO_API_KEY') ||
     DEFAULT_BREVO_API_KEY
   );
 };
 
 export const setStoredBrevoKey = (key: string): void => {
   if (key && key.trim()) {
-    localStorage.setItem('SUITBLISS_BREVO_API_KEY', key.trim());
+    localStorage.setItem('SUITAURAGIRLS_BREVO_API_KEY', key.trim());
   }
 };
 
@@ -47,7 +47,7 @@ export const sendBrevoOtpEmail = async ({
       },
       body: JSON.stringify({
         sender: {
-          name: 'Suit Bliss Aura',
+          name: 'Suit Aura Girls',
           email: 'starkhell69@gmail.com',
         },
         to: [
@@ -56,38 +56,38 @@ export const sendBrevoOtpEmail = async ({
             name: name,
           },
         ],
-        subject: `${code} is your Suit Bliss Aura Verification Code`,
+        subject: `${code} is your Suit Aura Girls Verification Code`,
         htmlContent: `
           <!DOCTYPE html>
           <html>
             <head>
               <meta charset="utf-8">
               <style>
-                body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #FAF5EB; margin: 0; padding: 20px; }
-                .container { max-width: 520px; margin: 0 auto; background-color: #3D0F1F; border-radius: 16px; padding: 32px; border: 1px solid #B8935A; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-                .brand-title { color: #DFBE65; font-size: 26px; font-weight: bold; text-align: center; margin: 0 0 4px 0; letter-spacing: 2px; text-transform: uppercase; }
-                .brand-sub { color: #FAF5EB; font-size: 12px; text-align: center; margin: 0 0 24px 0; letter-spacing: 3px; text-transform: uppercase; opacity: 0.8; }
-                .divider { height: 1px; background: linear-gradient(90deg, transparent, #B8935A, transparent); margin: 20px 0; }
-                .content-box { background-color: #FAF5EB; border-radius: 12px; padding: 24px; text-align: center; border: 1px solid #B8935A; margin: 20px 0; }
-                .otp-title { color: #3D0F1F; font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
-                .otp-code { font-family: monospace; font-size: 36px; font-weight: bold; color: #3D0F1F; letter-spacing: 8px; background-color: #ffffff; border: 2px dashed #B8935A; padding: 12px 20px; border-radius: 8px; display: inline-block; }
-                .instructions { color: #FAF5EB; font-size: 13px; text-align: center; line-height: 1.6; margin-top: 16px; opacity: 0.9; }
-                .footer { color: #B8935A; font-size: 11px; text-align: center; margin-top: 24px; opacity: 0.7; }
+                body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #F1E8DF; margin: 0; padding: 20px; }
+                .container { max-width: 520px; margin: 0 auto; background-color: #241D1B; border-radius: 16px; padding: 32px; border: 1px solid #9A6A3A; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+                .brand-title { color: #C7A77A; font-size: 26px; font-weight: bold; text-align: center; margin: 0 0 4px 0; letter-spacing: 2px; text-transform: uppercase; }
+                .brand-sub { color: #F1E8DF; font-size: 12px; text-align: center; margin: 0 0 24px 0; letter-spacing: 3px; text-transform: uppercase; opacity: 0.8; }
+                .divider { height: 1px; background: linear-gradient(90deg, transparent, #9A6A3A, transparent); margin: 20px 0; }
+                .content-box { background-color: #F1E8DF; border-radius: 12px; padding: 24px; text-align: center; border: 1px solid #9A6A3A; margin: 20px 0; }
+                .otp-title { color: #241D1B; font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+                .otp-code { font-family: monospace; font-size: 36px; font-weight: bold; color: #241D1B; letter-spacing: 8px; background-color: #ffffff; border: 2px dashed #9A6A3A; padding: 12px 20px; border-radius: 8px; display: inline-block; }
+                .instructions { color: #F1E8DF; font-size: 13px; text-align: center; line-height: 1.6; margin-top: 16px; opacity: 0.9; }
+                .footer { color: #9A6A3A; font-size: 11px; text-align: center; margin-top: 24px; opacity: 0.7; }
               </style>
             </head>
             <body>
               <div class="container">
-                <div class="brand-title">Suit Bliss Aura</div>
-                <div class="brand-sub">Jaipur Royal Couture</div>
+                <div class="brand-title">Suit Aura Girls</div>
+                <div class="brand-sub">Artisan Royal Couture</div>
                 <div class="divider"></div>
-                <p style="color: #FAF5EB; text-align: center; font-size: 15px;">Namaste ${name},</p>
+                <p style="color: #F1E8DF; text-align: center; font-size: 15px;">Namaste ${name},</p>
                 <div class="content-box">
                   <div class="otp-title">Your Verification OTP Code</div>
                   <div class="otp-code">${code}</div>
                 </div>
                 <p class="instructions">Enter this 6-digit code on the website to sign in and complete your order. This code is valid for 10 minutes.</p>
                 <div class="divider"></div>
-                <div class="footer">&copy; Suit Bliss Aura • Jaipur, Rajasthan, India</div>
+                <div class="footer">&copy; Suit Aura Girls • Artisan, Rajasthan, India</div>
               </div>
             </body>
           </html>

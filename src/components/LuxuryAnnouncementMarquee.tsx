@@ -32,7 +32,7 @@ export const LuxuryAnnouncementMarquee: React.FC = () => {
   const [adminCustomText, setAdminCustomText] = useState<string>(() => {
     try {
       if (storeSettings?.announcementText) return storeSettings.announcementText;
-      const saved = localStorage.getItem('sba_store_settings');
+      const saved = localStorage.getItem('sag_store_settings');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.announcementText) return parsed.announcementText;
@@ -45,7 +45,7 @@ export const LuxuryAnnouncementMarquee: React.FC = () => {
   useEffect(() => {
     const handleSync = () => {
       try {
-        const saved = localStorage.getItem('sba_store_settings');
+        const saved = localStorage.getItem('sag_store_settings');
         if (saved) {
           const parsed = JSON.parse(saved);
           if (parsed.announcementText) {
@@ -60,10 +60,10 @@ export const LuxuryAnnouncementMarquee: React.FC = () => {
     };
 
     window.addEventListener('storage', handleSync);
-    window.addEventListener('sba_settings_updated', handleSync);
+    window.addEventListener('sag_settings_updated', handleSync);
     return () => {
       window.removeEventListener('storage', handleSync);
-      window.removeEventListener('sba_settings_updated', handleSync);
+      window.removeEventListener('sag_settings_updated', handleSync);
     };
   }, [storeSettings?.announcementText]);
 
@@ -103,11 +103,11 @@ export const LuxuryAnnouncementMarquee: React.FC = () => {
       list.push(
         {
           id: 'home-brand',
-          leadPrefix: 'SUIT BLISS AURA',
-          badge: 'JAIPUR ATELIER',
+          leadPrefix: 'SUIT AURA GIRLS',
+          badge: 'ARTISAN ATELIER',
           badgeType: 'outline',
           text: 'Elegance That Feels Like You',
-          highlight: '100% Pure Jaipuri Silk & Gotapatti Couture',
+          highlight: '100% Pure Heritage Silk & Gotapatti Couture',
           separatorIcon: 'crown',
           actionType: 'none',
         },
@@ -185,7 +185,7 @@ export const LuxuryAnnouncementMarquee: React.FC = () => {
         },
         {
           id: 'kurti-statement',
-          text: 'Your Style • Your Statement • Hand-Blocked Jaipur Prints for Every Mood',
+          text: 'Your Style • Your Statement • Hand-Blocked Artisan Prints for Every Mood',
           separatorIcon: 'crown',
           actionType: 'none',
         },
@@ -232,7 +232,7 @@ export const LuxuryAnnouncementMarquee: React.FC = () => {
           id: 'dupatta-sets',
           badge: 'ROYAL DRAPES',
           badgeType: 'gold',
-          text: 'Exquisite Pure Organza & Handloom Silk Jaipuri Dupatta Sets',
+          text: 'Exquisite Pure Organza & Handloom Silk Heritage Dupatta Sets',
           separatorIcon: 'crown',
           actionType: 'category',
           targetCategory: 'Dupatta Sets',
@@ -259,7 +259,7 @@ export const LuxuryAnnouncementMarquee: React.FC = () => {
           id: 'festive-celebrate',
           badge: 'ROYAL OCCASIONS',
           badgeType: 'gold',
-          text: 'Celebrate in Luxury • Shine in Authentic Jaipuri Heritage & Zardozi',
+          text: 'Celebrate in Luxury • Shine in Authentic Heritage Heritage & Zardozi',
           separatorIcon: 'crown',
           actionType: 'category',
           targetCategory: 'Festive Wear',
@@ -341,7 +341,7 @@ export const LuxuryAnnouncementMarquee: React.FC = () => {
           id: 'suits-timeless',
           badge: 'SIGNATURE WEAVES',
           badgeType: 'gold',
-          text: 'Explore Elegant Jaipuri Suit Sets • Crafted for Every Beautiful Occasion',
+          text: 'Explore Elegant Heritage Suit Sets • Crafted for Every Beautiful Occasion',
           separatorIcon: 'crown',
           actionType: 'category',
           targetCategory: 'Suits',
@@ -391,7 +391,7 @@ export const LuxuryAnnouncementMarquee: React.FC = () => {
       setActivePage('shop');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      showToast('Suit Bliss Aura • Jaipur Luxury Handloom Atelier', 'info');
+      showToast('Suit Aura Girls • Artisan Luxury Handloom Atelier', 'info');
     }
   }, [setActivePage, setIsCouponDrawerOpen, setSelectedCategory, showToast]);
 
@@ -399,14 +399,14 @@ export const LuxuryAnnouncementMarquee: React.FC = () => {
   const renderSeparator = (type?: string) => {
     switch (type) {
       case 'crown':
-        return <Crown className="w-3 h-3 text-[#DFBE65] shrink-0 mx-3 sm:mx-4 opacity-90 inline-block" />;
+        return <Crown className="w-3 h-3 text-black shrink-0 mx-3 sm:mx-4 opacity-90 inline-block" />;
       case 'star':
-        return <span className="text-[#DFBE65] text-[11px] sm:text-xs shrink-0 mx-3 sm:mx-4 select-none opacity-80">✦</span>;
+        return <span className="text-black text-[11px] sm:text-xs shrink-0 mx-3 sm:mx-4 select-none opacity-80">✦</span>;
       case 'diamond':
-        return <span className="text-[#B8935A] text-[11px] sm:text-xs shrink-0 mx-3 sm:mx-4 select-none opacity-80">❖</span>;
+        return <span className="text-black text-[11px] sm:text-xs shrink-0 mx-3 sm:mx-4 select-none opacity-80">❖</span>;
       case 'dot':
       default:
-        return <span className="w-1.5 h-1.5 rounded-full bg-[#DFBE65]/70 shrink-0 mx-3 sm:mx-4 inline-block" />;
+        return <span className="w-1.5 h-1.5 rounded-full bg-[#C7A77A]/70 shrink-0 mx-3 sm:mx-4 inline-block" />;
     }
   };
 
@@ -419,7 +419,7 @@ export const LuxuryAnnouncementMarquee: React.FC = () => {
         key={`${msg.id}-${index}`}
         onClick={() => handleMessageClick(msg)}
         className={`inline-flex items-center gap-2 group/item text-[10.5px] sm:text-[11.5px] tracking-[0.06em] select-none py-1 transition-colors duration-200 ${
-          isInteractive ? 'cursor-pointer hover:text-[#DFBE65]' : 'cursor-default'
+          isInteractive ? 'cursor-pointer hover:text-black' : 'cursor-default'
         }`}
       >
         {/* Luxury Badge if present */}
@@ -427,37 +427,37 @@ export const LuxuryAnnouncementMarquee: React.FC = () => {
           <span
             className={`text-[8.5px] sm:text-[9px] font-mono font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-[3px] shrink-0 flex items-center gap-1 transition-all ${
               msg.badgeType === 'gold'
-                ? 'bg-[#B8935A] text-[#1E050E] font-bold shadow-xs'
-                : 'bg-[#2A0914] text-[#DFBE65] border border-[#B8935A]/50'
+                ? 'bg-[#9A6A3A] text-[#1E050E] font-bold shadow-xs'
+                : 'bg-[#241D1B] text-[#FAF7F2] border border-[#9A6A3A]/50'
             }`}
           >
-            {msg.badgeType === 'gold' && <Zap className="w-2.5 h-2.5 fill-[#1E050E] text-[#1E050E]" />}
+            {msg.badgeType === 'gold' && <Zap className="w-2.5 h-2.5 fill-[#241D1B] text-[#1E050E]" />}
             <span>{msg.badge}</span>
           </span>
         )}
 
         {/* Lead Prefix / Brand Title */}
         {msg.leadPrefix && (
-          <span className="font-serif font-extrabold uppercase tracking-[0.15em] text-[#DFBE65] shrink-0 text-[11px] sm:text-xs">
+          <span className="font-serif font-extrabold uppercase tracking-[0.15em] text-black shrink-0 text-[11px] sm:text-xs">
             {msg.leadPrefix}
           </span>
         )}
 
         {/* Main Announcement Text */}
-        <span className="font-medium text-[#FAF5EB] group-hover/item:text-[#DFBE65] transition-colors whitespace-nowrap">
+        <span className="font-medium text-[#F1E8DF] group-hover/item:text-black transition-colors whitespace-nowrap">
           {msg.text}
         </span>
 
         {/* Optional Highlight Note */}
         {msg.highlight && (
-          <span className="hidden md:inline-block text-[#DFBE65] font-semibold text-[10px] sm:text-[10.5px] whitespace-nowrap opacity-90">
+          <span className="hidden md:inline-block text-black font-semibold text-[10px] sm:text-[10.5px] whitespace-nowrap opacity-90">
             • {msg.highlight}
           </span>
         )}
 
         {/* Subtle arrow indicator for interactive items on desktop hover */}
         {isInteractive && (
-          <ArrowRight className="w-2.5 h-2.5 text-[#DFBE65] opacity-0 -translate-x-1 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all hidden sm:inline-block shrink-0" />
+          <ArrowRight className="w-2.5 h-2.5 text-black opacity-0 -translate-x-1 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all hidden sm:inline-block shrink-0" />
         )}
 
         {/* Sophisticated Separator Glyph */}
@@ -475,14 +475,14 @@ export const LuxuryAnnouncementMarquee: React.FC = () => {
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={() => setIsPaused(true)}
       onTouchEnd={() => setIsPaused(false)}
-      className="relative w-full bg-[#3D0F1F] text-[#FAF5EB] border-b border-[#B8935A]/30 shadow-xs select-none z-50 overflow-hidden group h-[34px] sm:h-[38px] flex items-center"
+      className="relative w-full bg-[#241D1B] text-[#211C1A] border-b border-[#9A6A3A]/30 shadow-xs select-none z-50 overflow-hidden group h-[34px] sm:h-[38px] flex items-center"
     >
-      {/* Subtle Jaipur Gold Runway Gradients at left and right edges for smooth feathering */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-8 sm:w-14 bg-gradient-to-r from-[#3D0F1F] via-[#3D0F1F]/80 to-transparent z-20" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-8 sm:w-14 bg-gradient-to-l from-[#3D0F1F] via-[#3D0F1F]/80 to-transparent z-20" />
+      {/* Subtle Artisan Gold Runway Gradients at left and right edges for smooth feathering */}
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-8 sm:w-14 bg-gradient-to-r from-[#241D1B] via-[#241D1B]/80 to-transparent z-20" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-8 sm:w-14 bg-gradient-to-l from-[#241D1B] via-[#241D1B]/80 to-transparent z-20" />
 
       {/* Very subtle ambient gold hairline border reflection */}
-      <div className="pointer-events-none absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#DFBE65]/30 to-transparent z-10" />
+      <div className="pointer-events-none absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#C7A77A]/30 to-transparent z-10" />
 
       {/* Infinite Seamless Scrolling Container (Track A + Track B for uninterrupted right-to-left loop) */}
       <div

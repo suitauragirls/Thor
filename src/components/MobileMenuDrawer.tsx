@@ -78,22 +78,22 @@ export const MobileMenuDrawer: React.FC = () => {
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
             transition={{ type: 'tween', duration: 0.3, ease: 'easeOut' }}
-            className="lg:hidden fixed top-0 bottom-0 left-0 w-[85vw] max-w-[360px] bg-[#F7F2EA] z-[10000] shadow-2xl flex flex-col h-full border-r border-[#B8935A]/30 overscroll-contain select-none text-[#3D0F1F]"
+            className="lg:hidden fixed top-0 bottom-0 left-0 w-[85vw] max-w-[360px] bg-[#FDFBF7] z-[10000] flex flex-col h-full border-r border-[#B8935A]/30 overscroll-contain select-none text-[#3D0F1F]"
           >
             {/* Drawer Header Area with Close button and Brand Logo */}
-            <div className="p-5 border-b border-[#B8935A]/30 bg-white flex items-center justify-between shadow-2xs shrink-0">
+            <div className="p-5 border-b border-[#B8935A]/30 bg-[#FAF5EB] flex items-center justify-between shrink-0">
               <div className="flex flex-col">
-                <span className="font-serif text-lg font-black tracking-widest text-[#3D0F1F] uppercase">
-                  SUIT BLISS AURA
+                <span className="font-serif text-lg font-semibold text-[#3D0F1F] uppercase">
+                  SUIT AURA GIRLS
                 </span>
-                <span className="text-[9px] uppercase tracking-[0.15em] text-[#B8935A] font-bold mt-0.5">
-                  House of Jaipur Couture
+                <span className="text-[9px] uppercase tracking-[0.15em] text-[#B8935A] font-semibold mt-0.5">
+                  House of Artisan Couture
                 </span>
               </div>
               <button
                 id="close-mobile-menu"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="w-9 h-9 rounded-full bg-[#3D0F1F]/5 hover:bg-[#3D0F1F]/10 text-[#3D0F1F] transition flex items-center justify-center border border-[#B8935A]/30 cursor-pointer"
+                className="w-10 h-10 bg-transparent hover:bg-[#3D0F1F] hover:text-[#FAF5EB] text-[#3D0F1F] transition-colors flex items-center justify-center border border-[#B8935A]/35 cursor-pointer"
                 aria-label="Close menu"
               >
                 <X className="w-4 h-4" />
@@ -104,16 +104,16 @@ export const MobileMenuDrawer: React.FC = () => {
             <div className="flex-1 overflow-y-auto p-5 pb-16 space-y-6 scrollbar-thin">
               
               {/* Couture Statement Badge */}
-              <div className="bg-[#3D0F1F] text-[#F7F2EA] p-3 rounded-xl border border-[#B8935A]/40 text-center shadow-xs">
-                <p className="text-[9px] text-[#DFBE65] tracking-wider uppercase font-black">
-                  Handcrafted Silhouettes • Authentic Jaipur Couture
+              <div className="bg-[#3D0F1F] text-[#FAF5EB] p-3 border border-[#B8935A]/35 text-center">
+                <p className="text-[9px] text-[#DFBE65] tracking-wider uppercase font-semibold">
+                  Handcrafted Silhouettes • Authentic Artisan Couture
                 </p>
               </div>
 
               {/* Collections Navigation Group */}
               <div className="space-y-3">
-                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#B8935A] px-1 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#B8935A]"></span>
+                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-black px-1 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#9A6A3A]"></span>
                   Shop Collections
                 </p>
 
@@ -135,19 +135,19 @@ export const MobileMenuDrawer: React.FC = () => {
                         navigateToCategory(cat.name as any);
                         setIsMobileMenuOpen(false);
                       }}
-                      className="relative overflow-hidden p-3.5 rounded-2xl text-left bg-white hover:bg-[#3D0F1F]/5 border border-[#B8935A]/25 shadow-2xs transition-all duration-200 cursor-pointer flex flex-col justify-between min-h-[82px] group"
+                      className="relative overflow-hidden p-3.5 text-left bg-[#FAF5EB] hover:bg-[#FDFBF7] border border-[#B8935A]/25 transition-colors cursor-pointer flex flex-col justify-between min-h-[82px] group"
                     >
                       <div>
-                        <p className={`text-[8px] font-extrabold uppercase tracking-wider ${cat.isSale ? 'text-red-600' : 'text-[#B8935A]'}`}>
+                        <p className={`text-[8px] font-extrabold uppercase tracking-wider ${cat.isSale ? 'text-red-600' : 'text-black'}`}>
                           {cat.desc}
                         </p>
-                        <h4 className="font-serif text-sm font-extrabold tracking-wide mt-0.5 text-[#3D0F1F]">
+                        <h4 className="font-serif text-sm font-semibold mt-0.5 text-[#3D0F1F]">
                           {cat.label}
                         </h4>
                       </div>
 
                       <div className="mt-1 flex items-center justify-end w-full">
-                        <span className="p-0.5 rounded-full text-xs bg-[#3D0F1F] group-hover:bg-[#B8935A] text-[#DFBE65] group-hover:text-white transition-colors duration-200">
+                        <span className="p-0.5 rounded-full text-xs bg-[#241D1B] group-hover:bg-[#9A6A3A] text-[#211C1A] group-hover:text-[#211C1A] transition-colors duration-200">
                           <ChevronRight className="w-3.5 h-3.5" />
                         </span>
                       </div>
@@ -157,8 +157,8 @@ export const MobileMenuDrawer: React.FC = () => {
               </div>
 
               {/* Utility / Customer Service Section */}
-              <div className="pt-5 border-t border-[#B8935A]/20 space-y-3">
-                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#B8935A] px-1">
+              <div className="pt-5 border-t border-[#9A6A3A]/20 space-y-3">
+                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-black px-1">
                   Customer Experience
                 </p>
                 
@@ -169,9 +169,9 @@ export const MobileMenuDrawer: React.FC = () => {
                       setActivePage('track-order');
                       setIsMobileMenuOpen(false);
                     }}
-                    className="p-3 bg-white hover:bg-[#3D0F1F]/5 text-[#3D0F1F] rounded-xl border border-[#B8935A]/25 shadow-2xs flex flex-col items-start gap-1 transition-all text-left cursor-pointer group"
+                    className="p-3 bg-white hover:bg-[#241D1B]/5 text-[#211C1A] rounded-xl border border-[#9A6A3A]/25 shadow-2xs flex flex-col items-start gap-1 transition-all text-left cursor-pointer group"
                   >
-                    <Package className="w-4 h-4 text-[#B8935A] group-hover:text-[#3D0F1F] transition-colors" />
+                    <Package className="w-4 h-4 text-black group-hover:text-[#211C1A] transition-colors" />
                     <span className="text-[10px] font-black uppercase tracking-wider">Track Order</span>
                   </button>
 
@@ -181,9 +181,9 @@ export const MobileMenuDrawer: React.FC = () => {
                       setActivePage('account');
                       setIsMobileMenuOpen(false);
                     }}
-                    className="p-3 bg-white hover:bg-[#3D0F1F]/5 text-[#3D0F1F] rounded-xl border border-[#B8935A]/25 shadow-2xs flex flex-col items-start gap-1 transition-all text-left cursor-pointer group"
+                    className="p-3 bg-white hover:bg-[#241D1B]/5 text-[#211C1A] rounded-xl border border-[#9A6A3A]/25 shadow-2xs flex flex-col items-start gap-1 transition-all text-left cursor-pointer group"
                   >
-                    <User className="w-4 h-4 text-[#B8935A] group-hover:text-[#3D0F1F] transition-colors" />
+                    <User className="w-4 h-4 text-black group-hover:text-[#211C1A] transition-colors" />
                     <span className="text-[10px] font-black uppercase tracking-wider">My Profile</span>
                   </button>
 
@@ -193,9 +193,9 @@ export const MobileMenuDrawer: React.FC = () => {
                       setActivePage('about');
                       setIsMobileMenuOpen(false);
                     }}
-                    className="p-3 bg-white hover:bg-[#3D0F1F]/5 text-[#3D0F1F] rounded-xl border border-[#B8935A]/25 shadow-2xs flex flex-col items-start gap-1 transition-all text-left cursor-pointer group"
+                    className="p-3 bg-white hover:bg-[#241D1B]/5 text-[#211C1A] rounded-xl border border-[#9A6A3A]/25 shadow-2xs flex flex-col items-start gap-1 transition-all text-left cursor-pointer group"
                   >
-                    <Info className="w-4 h-4 text-[#B8935A] group-hover:text-[#3D0F1F] transition-colors" />
+                    <Info className="w-4 h-4 text-black group-hover:text-[#211C1A] transition-colors" />
                     <span className="text-[10px] font-black uppercase tracking-wider">About Us</span>
                   </button>
 
@@ -205,28 +205,28 @@ export const MobileMenuDrawer: React.FC = () => {
                       setActivePage('contact');
                       setIsMobileMenuOpen(false);
                     }}
-                    className="p-3 bg-white hover:bg-[#3D0F1F]/5 text-[#3D0F1F] rounded-xl border border-[#B8935A]/25 shadow-2xs flex flex-col items-start gap-1 transition-all text-left cursor-pointer group"
+                    className="p-3 bg-white hover:bg-[#241D1B]/5 text-[#211C1A] rounded-xl border border-[#9A6A3A]/25 shadow-2xs flex flex-col items-start gap-1 transition-all text-left cursor-pointer group"
                   >
-                    <Headphones className="w-4 h-4 text-[#B8935A] group-hover:text-[#3D0F1F] transition-colors" />
+                    <Headphones className="w-4 h-4 text-black group-hover:text-[#211C1A] transition-colors" />
                     <span className="text-[10px] font-black uppercase tracking-wider">VIP Support</span>
                   </button>
                 </div>
 
-                {/* Suit Bliss Aura Official WhatsApp Concierge Card */}
+                {/* Suit Aura Girls Official WhatsApp Concierge Card */}
                 <a
                   id="mobile-menu-whatsapp-concierge"
                   href="https://wa.me/918238451017?text=Hi%20Suit%20Bliss%20Aura!%20I%20need%20assistance%20with%20sizing%20or%20my%20order."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-3 flex items-center justify-between p-3.5 bg-gradient-to-r from-[#3D0F1F] to-[#2B0914] text-[#FAF5EB] rounded-2xl border border-[#B8935A]/40 shadow-md transition-all active:scale-[0.98] cursor-pointer group hover:border-[#DFBE65]"
+                  className="mt-3 flex items-center justify-between p-3.5 bg-gradient-to-r from-[#241D1B] to-[#2B0914] text-[#211C1A] rounded-2xl border border-[#9A6A3A]/40 shadow-md transition-all active:scale-[0.98] cursor-pointer group hover:border-[#C7A77A]"
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-9 h-9 rounded-xl bg-[#25D366]/20 border border-[#25D366]/50 flex items-center justify-center shrink-0 text-[#25D366]">
                       <MessageSquare className="w-4.5 h-4.5 fill-[#25D366]/30 stroke-[2]" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-xs font-bold tracking-wide flex items-center gap-1.5 text-[#DFBE65] truncate">
-                        Suit Bliss Aura Support Desk
+                      <div className="text-xs font-bold tracking-wide flex items-center gap-1.5 text-black truncate">
+                        Suit Aura Girls Support Desk
                         <span className="text-[8px] bg-emerald-500/25 text-emerald-300 font-extrabold px-1.5 py-0.5 rounded-full border border-emerald-400/30 uppercase tracking-widest flex items-center gap-1 shrink-0">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
                           ONLINE
@@ -235,7 +235,7 @@ export const MobileMenuDrawer: React.FC = () => {
                       <div className="text-[10px] text-gray-300 font-medium mt-0.5 truncate">Direct WhatsApp Connect • Sizing & Orders</div>
                     </div>
                   </div>
-                  <div className="w-7 h-7 rounded-lg bg-[#FAF5EB]/10 group-hover:bg-[#DFBE65] group-hover:text-[#3D0F1F] text-[#DFBE65] flex items-center justify-center shrink-0 transition-colors">
+                  <div className="w-7 h-7 rounded-lg bg-[#F1E8DF]/10 group-hover:bg-[#C7A77A] group-hover:text-[#211C1A] text-black flex items-center justify-center shrink-0 transition-colors">
                     <MessageSquare className="w-3.5 h-3.5" />
                   </div>
                 </a>
@@ -243,8 +243,8 @@ export const MobileMenuDrawer: React.FC = () => {
 
               {/* Aesthetic Footer Note */}
               <div className="pt-6 text-center space-y-1">
-                <p className="text-[10px] uppercase tracking-widest text-[#B8935A] font-extrabold">
-                  Suit Bliss Aura
+                <p className="text-[10px] uppercase tracking-widest text-black font-extrabold">
+                        Suit Aura Girls
                 </p>
                 <p className="text-[8px] text-gray-500">
                   Version 2.4.0 • Secured Checkout Guaranteed

@@ -39,7 +39,7 @@ export const AdminLeads: React.FC = () => {
     }
 
     const cleanPhone = lead.phone.replace(/\D/g, '');
-    const message = `Namaste ${lead.name || ''}! Thank you for showing interest in Suit Bliss Aura. We have a special boutique offer just for you. Use code AURA10 for 10% OFF on your first designer suit set. Shop now: https://suitblissaura.com`;
+    const message = `Namaste ${lead.name || ''}! Thank you for showing interest in Suit Aura Girls. We have a special boutique offer just for you. Use code AURA10 for 10% OFF on your first designer suit set. Shop now: https://suitauragirls.com`;
     
     window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, '_blank');
     updateLeadOfferStatus(lead.id, true);
@@ -69,7 +69,7 @@ export const AdminLeads: React.FC = () => {
         </div>
         <div className="flex items-center gap-2">
           <button 
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-rose-100 rounded-xl text-xs font-bold text-[#58152D] hover:bg-rose-50 transition shadow-sm cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-rose-100 rounded-xl text-xs font-bold text-[#211C1A] hover:bg-rose-50 transition shadow-sm cursor-pointer"
             onClick={() => {
               const csvContent = "data:text/csv;charset=utf-8," 
                 + "Email,Name,Phone,Source,Date,Offer Sent\n"
@@ -77,7 +77,7 @@ export const AdminLeads: React.FC = () => {
               const encodedUri = encodeURI(csvContent);
               const link = document.createElement("a");
               link.setAttribute("href", encodedUri);
-              link.setAttribute("download", `sba_leads_${new Date().toISOString().split('T')[0]}.csv`);
+              link.setAttribute("download", `sag_leads_${new Date().toISOString().split('T')[0]}.csv`);
               document.body.appendChild(link);
               link.click();
             }}
@@ -91,7 +91,7 @@ export const AdminLeads: React.FC = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-rose-50 text-[#58152D] flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-rose-50 text-[#211C1A] flex items-center justify-center">
             <Users className="w-6 h-6" />
           </div>
           <div>
@@ -109,7 +109,7 @@ export const AdminLeads: React.FC = () => {
           </div>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-amber-50 text-black flex items-center justify-center">
             <Zap className="w-6 h-6" />
           </div>
           <div>
@@ -126,7 +126,7 @@ export const AdminLeads: React.FC = () => {
           <input 
             type="text"
             placeholder="Search leads by name, email or phone..."
-            className="w-full pl-10 pr-4 py-2 bg-rose-50/30 border border-rose-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#58152D] focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 bg-rose-50/30 border border-rose-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B] focus:border-transparent"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -134,7 +134,7 @@ export const AdminLeads: React.FC = () => {
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <Filter className="w-4 h-4 text-gray-400" />
           <select 
-            className="flex-1 sm:flex-none px-3 py-2 bg-rose-50/30 border border-rose-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#58152D]"
+            className="flex-1 sm:flex-none px-3 py-2 bg-rose-50/30 border border-rose-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B]"
             value={filterSource}
             onChange={(e) => setFilterSource(e.target.value as any)}
           >
@@ -210,7 +210,7 @@ export const AdminLeads: React.FC = () => {
                           Offer Sent
                         </span>
                       ) : (
-                        <span className="flex items-center gap-1 text-amber-500 text-[10px] font-bold uppercase">
+                        <span className="flex items-center gap-1 text-black text-[10px] font-bold uppercase">
                           <Clock className="w-3.5 h-3.5" />
                           Pending
                         </span>

@@ -28,10 +28,10 @@ const RouterContext = createContext<RouterContextType | undefined>(undefined);
 function parsePath(pathname: string, search: string = ''): RouteState {
   const cleanPath = pathname.trim() || '/';
   
-  // Check for Secret Admin Vault Routes (e.g. /sba-vault, /admin-vault, or configured slug)
-  let secretSlug = 'sba-vault';
+  // Check for Secret Admin Vault Routes (e.g. /sag-vault, /admin-vault, or configured slug)
+  let secretSlug = 'sag-vault';
   try {
-    const saved = typeof window !== 'undefined' ? localStorage.getItem('sba_admin_security_v2') : null;
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('sag_admin_security_v2') : null;
     if (saved) {
       const parsed = JSON.parse(saved);
       if (parsed.secretPathSlug) secretSlug = parsed.secretPathSlug.trim().toLowerCase();
@@ -40,7 +40,7 @@ function parsePath(pathname: string, search: string = ''): RouteState {
 
   const isSecretVault = 
     cleanPath === `/${secretSlug}` || 
-    cleanPath === '/sba-vault' || 
+    cleanPath === '/sag-vault' || 
     cleanPath === '/admin-vault';
 
   if (isSecretVault) {

@@ -84,11 +84,11 @@ export const AdminSettings: React.FC = () => {
       showToast('Security PIN must be exactly 6 digits.', 'error');
       return;
     }
-    const cleanSlug = (secForm.secretPathSlug || 'sba-vault')
+    const cleanSlug = (secForm.secretPathSlug || 'sag-vault')
       .trim()
       .toLowerCase()
       .replace(/[^a-z0-9-_]/g, '');
-    const finalSlug = cleanSlug || 'sba-vault';
+    const finalSlug = cleanSlug || 'sag-vault';
     
     updateSecurityConfig({
       adminUsername: secForm.adminUsername.trim(),
@@ -106,13 +106,13 @@ export const AdminSettings: React.FC = () => {
     if (window.confirm('Revoke all active sessions? Anyone who had the old password or an active session on another device (including friends) will be instantly disconnected.')) {
       invalidateAllAdminSessions();
       showToast('All sessions invalidated. Logging out...', 'info');
-      window.location.href = `/${secForm.secretPathSlug || 'sba-vault'}`;
+      window.location.href = `/${secForm.secretPathSlug || 'sag-vault'}`;
     }
   };
 
   const handleCopySecretLink = () => {
     const origin = window.location.origin;
-    const secretUrl = `${origin}/${secForm.secretPathSlug || 'sba-vault'}`;
+    const secretUrl = `${origin}/${secForm.secretPathSlug || 'sag-vault'}`;
     navigator.clipboard.writeText(secretUrl);
     setCopiedLink(true);
     showToast('Secret Admin URL copied to clipboard!', 'success');
@@ -130,7 +130,7 @@ export const AdminSettings: React.FC = () => {
     <div id="admin-settings-page" className="space-y-6">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-\[#FAF7F5\] p-5 rounded-2xl border border-rose-100 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-\[#FAF7F2\] p-5 rounded-2xl border border-rose-100 shadow-xs">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-widest text-[#8B2635]">
             Configuration & Infrastructure
@@ -141,11 +141,11 @@ export const AdminSettings: React.FC = () => {
         </div>
 
         {/* Tab switcher */}
-        <div className="flex items-center gap-1.5 bg-[#E0BFB8]/70 p-1 rounded-xl border border-rose-100 text-xs font-semibold">
+        <div className="flex items-center gap-1.5 bg-[#D8C8B8]/70 p-1 rounded-xl border border-rose-100 text-xs font-semibold">
           <button
             onClick={() => setActiveTab('general')}
             className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 ${
-              activeTab === 'general' ? 'bg-[#58152D] text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'
+              activeTab === 'general' ? 'bg-[#241D1B] text-[#211C1A] shadow-xs' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             <Store className="w-3.5 h-3.5" />
@@ -155,7 +155,7 @@ export const AdminSettings: React.FC = () => {
           <button
             onClick={() => setActiveTab('payment')}
             className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 ${
-              activeTab === 'payment' ? 'bg-[#58152D] text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'
+              activeTab === 'payment' ? 'bg-[#241D1B] text-[#211C1A] shadow-xs' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             <CreditCard className="w-3.5 h-3.5" />
@@ -165,7 +165,7 @@ export const AdminSettings: React.FC = () => {
           <button
             onClick={() => setActiveTab('database')}
             className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 ${
-              activeTab === 'database' ? 'bg-[#58152D] text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'
+              activeTab === 'database' ? 'bg-[#241D1B] text-[#211C1A] shadow-xs' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             <Database className="w-3.5 h-3.5" />
@@ -175,7 +175,7 @@ export const AdminSettings: React.FC = () => {
           <button
             onClick={() => setActiveTab('security')}
             className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 ${
-              activeTab === 'security' ? 'bg-[#58152D] text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'
+              activeTab === 'security' ? 'bg-[#241D1B] text-[#211C1A] shadow-xs' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             <ShieldCheck className="w-3.5 h-3.5" />
@@ -185,7 +185,7 @@ export const AdminSettings: React.FC = () => {
           <button
             onClick={() => setActiveTab('brevo')}
             className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 ${
-              activeTab === 'brevo' ? 'bg-[#58152D] text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'
+              activeTab === 'brevo' ? 'bg-[#241D1B] text-[#211C1A] shadow-xs' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             <Mail className="w-3.5 h-3.5" />
@@ -196,7 +196,7 @@ export const AdminSettings: React.FC = () => {
 
       {/* Tab 1: General Store Settings */}
       {activeTab === 'general' && (
-        <div className="bg-\[#FAF7F5\] p-6 sm:p-8 rounded-2xl border border-rose-100 shadow-xs space-y-6">
+        <div className="bg-\[#FAF7F2\] p-6 sm:p-8 rounded-2xl border border-rose-100 shadow-xs space-y-6">
           <div className="border-b border-gray-100 pb-3">
             <h3 className="font-serif text-xl font-bold text-gray-900">
               Brand Identity & Contact Details
@@ -355,7 +355,7 @@ export const AdminSettings: React.FC = () => {
               <button
                 type="button"
                 onClick={handleResetData}
-                className="px-4 py-2 text-rose-700 hover:bg-[#E0BFB8]/20 rounded-xl text-xs font-bold flex items-center gap-1.5 transition"
+                className="px-4 py-2 text-rose-700 hover:bg-[#D8C8B8]/20 rounded-xl text-xs font-bold flex items-center gap-1.5 transition"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Reset Store Data to Default Seed</span>
@@ -363,7 +363,7 @@ export const AdminSettings: React.FC = () => {
 
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-[#58152D] hover:bg-[#7E1D3B] text-white rounded-xl font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md"
+                className="px-6 py-2.5 bg-[#241D1B] hover:bg-[#241D1B] text-[#211C1A] rounded-xl font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md"
               >
                 <Save className="w-4 h-4" /> Save Store Settings
               </button>
@@ -375,10 +375,10 @@ export const AdminSettings: React.FC = () => {
 
       {/* Tab 2: Razorpay Payment Gateway Settings */}
       {activeTab === 'payment' && (
-        <div className="bg-\[#FAF7F5\] p-6 sm:p-8 rounded-2xl border border-rose-100 shadow-xs space-y-6">
+        <div className="bg-\[#FAF7F2\] p-6 sm:p-8 rounded-2xl border border-rose-100 shadow-xs space-y-6">
           <div className="border-b border-gray-100 pb-3">
             <h3 className="font-serif text-xl font-bold text-gray-900 flex items-center gap-2">
-              <CreditCard className="w-5 h-5 text-[#58152D]" />
+              <CreditCard className="w-5 h-5 text-[#211C1A]" />
               Razorpay Gateway & Prepaid Policy Configuration
             </h3>
             <p className="text-xs text-gray-500">
@@ -401,12 +401,12 @@ export const AdminSettings: React.FC = () => {
 
           {/* Security Notice on Backend Environment Variables */}
           <div className="p-4 bg-amber-50 rounded-xl border border-amber-200 flex items-start gap-3">
-            <Lock className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-            <div className="text-xs space-y-1 text-amber-900">
+            <Lock className="w-5 h-5 text-black shrink-0 mt-0.5" />
+            <div className="text-xs space-y-1 text-black">
               <p className="font-bold">
                 Production Key Security Architecture
               </p>
-              <p className="leading-relaxed text-amber-800">
+              <p className="leading-relaxed text-black">
                 To protect store funds and customer data, <strong>live Razorpay Key Secrets and Webhook Secrets must NEVER be stored in client-side code</strong>. When connecting a production server, inject them as server-side environment variables (`process.env.RAZORPAY_KEY_SECRET`).
               </p>
             </div>
@@ -420,7 +420,7 @@ export const AdminSettings: React.FC = () => {
                 <select
                   value={payForm.mode}
                   onChange={(e) => setPayForm({ ...payForm, mode: e.target.value as any })}
-                  className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl bg-\[#FAF7F5\] font-bold text-gray-800"
+                  className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl bg-\[#FAF7F2\] font-bold text-gray-800"
                 >
                   <option value="test">Test / Sandbox Mode</option>
                   <option value="live">Production / Live Mode</option>
@@ -484,7 +484,7 @@ export const AdminSettings: React.FC = () => {
                     type="checkbox"
                     checked={payForm.enableUpi}
                     onChange={(e) => setPayForm({ ...payForm, enableUpi: e.target.checked })}
-                    className="rounded text-[#58152D] focus:ring-[#58152D]"
+                    className="rounded text-[#211C1A] focus:ring-[#241D1B]"
                   />
                   <span>UPI Instant (GPay, PhonePe, Paytm)</span>
                 </label>
@@ -494,7 +494,7 @@ export const AdminSettings: React.FC = () => {
                     type="checkbox"
                     checked={payForm.enableCards}
                     onChange={(e) => setPayForm({ ...payForm, enableCards: e.target.checked })}
-                    className="rounded text-[#58152D] focus:ring-[#58152D]"
+                    className="rounded text-[#211C1A] focus:ring-[#241D1B]"
                   />
                   <span>Credit & Debit Cards (Visa/Mastercard/RuPay)</span>
                 </label>
@@ -504,7 +504,7 @@ export const AdminSettings: React.FC = () => {
                     type="checkbox"
                     checked={payForm.enableNetBanking}
                     onChange={(e) => setPayForm({ ...payForm, enableNetBanking: e.target.checked })}
-                    className="rounded text-[#58152D] focus:ring-[#58152D]"
+                    className="rounded text-[#211C1A] focus:ring-[#241D1B]"
                   />
                   <span>Net Banking (50+ Indian Banks)</span>
                 </label>
@@ -514,7 +514,7 @@ export const AdminSettings: React.FC = () => {
             <div className="flex justify-end pt-4 border-t border-gray-100">
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-[#58152D] hover:bg-[#7E1D3B] text-white rounded-xl font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md"
+                className="px-6 py-2.5 bg-[#241D1B] hover:bg-[#241D1B] text-[#211C1A] rounded-xl font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md"
               >
                 <Save className="w-4 h-4" /> Save Gateway Settings
               </button>
@@ -526,10 +526,10 @@ export const AdminSettings: React.FC = () => {
 
       {/* Tab 3: Database-Ready Architecture & Supabase Credentials */}
       {activeTab === 'database' && (
-        <div className="bg-\[#FAF7F5\] p-6 sm:p-8 rounded-2xl border border-rose-100 shadow-xs space-y-6">
+        <div className="bg-\[#FAF7F2\] p-6 sm:p-8 rounded-2xl border border-rose-100 shadow-xs space-y-6">
           <div className="border-b border-gray-100 pb-3">
             <h3 className="font-serif text-xl font-bold text-gray-900 flex items-center gap-2">
-              <Database className="w-5 h-5 text-[#58152D]" />
+              <Database className="w-5 h-5 text-[#211C1A]" />
               Supabase Database & Schema Configuration
             </h3>
             <p className="text-xs text-gray-500">
@@ -538,8 +538,8 @@ export const AdminSettings: React.FC = () => {
           </div>
 
           {/* Supabase Key Inputs Form */}
-          <div className="p-5 bg-[#E0BFB8]/40 rounded-xl border border-rose-100 space-y-4">
-            <h4 className="font-bold text-[#58152D] uppercase tracking-wider text-xs">Supabase Project Connection</h4>
+          <div className="p-5 bg-[#D8C8B8]/40 rounded-xl border border-rose-100 space-y-4">
+            <h4 className="font-bold text-[#211C1A] uppercase tracking-wider text-xs">Supabase Project Connection</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
                 <label className="block font-bold text-gray-700 uppercase mb-1">Supabase Project URL</label>
@@ -548,7 +548,7 @@ export const AdminSettings: React.FC = () => {
                   value={storeForm.supabaseUrl || ''}
                   onChange={(e) => setStoreForm({ ...storeForm, supabaseUrl: e.target.value })}
                   placeholder="https://xxx.supabase.co"
-                  className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl font-mono bg-\[#FAF7F5\] text-gray-800"
+                  className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl font-mono bg-\[#FAF7F2\] text-gray-800"
                 />
               </div>
               <div>
@@ -558,7 +558,7 @@ export const AdminSettings: React.FC = () => {
                   value={storeForm.supabaseAnonKey || ''}
                   onChange={(e) => setStoreForm({ ...storeForm, supabaseAnonKey: e.target.value })}
                   placeholder="eyJhbGciOiJIUzI1Ni..."
-                  className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl font-mono bg-\[#FAF7F5\] text-gray-800"
+                  className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl font-mono bg-\[#FAF7F2\] text-gray-800"
                 />
               </div>
             </div>
@@ -566,7 +566,7 @@ export const AdminSettings: React.FC = () => {
               <button
                 type="button"
                 onClick={handleSaveGeneral}
-                className="px-5 py-2 bg-[#58152D] hover:bg-[#7E1D3B] text-white rounded-lg text-xs font-bold uppercase tracking-wider transition shadow-xs flex items-center gap-1.5"
+                className="px-5 py-2 bg-[#241D1B] hover:bg-[#241D1B] text-[#211C1A] rounded-lg text-xs font-bold uppercase tracking-wider transition shadow-xs flex items-center gap-1.5"
               >
                 <Save className="w-3.5 h-3.5" /> Save Supabase Keys
               </button>
@@ -651,10 +651,10 @@ export const AdminSettings: React.FC = () => {
       {activeTab === 'security' && (
         <div className="space-y-6">
           {/* Security Status Banner */}
-          <div className="bg-gradient-to-r from-[#58152D] to-[#3B0E1E] text-white p-6 rounded-2xl shadow-md space-y-3">
+          <div className="bg-gradient-to-r from-[#241D1B] to-[#3B0E1E] text-[#211C1A] p-6 rounded-2xl shadow-md space-y-3">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center gap-2">
-                <span className="w-8 h-8 rounded-xl bg-\[#FAF7F5\]/10 flex items-center justify-center text-[#DFBE65]">
+                <span className="w-8 h-8 rounded-xl bg-\[#FAF7F2\]/10 flex items-center justify-center text-black">
                   <ShieldCheck className="w-5 h-5" />
                 </span>
                 <div>
@@ -670,7 +670,7 @@ export const AdminSettings: React.FC = () => {
                 <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-400/30 uppercase tracking-wider">
                   Active Protection
                 </span>
-                <span className="px-2.5 py-1 rounded-full bg-\[#FAF7F5\]/10 text-rose-100 text-[10px] font-mono">
+                <span className="px-2.5 py-1 rounded-full bg-\[#FAF7F2\]/10 text-rose-100 text-[10px] font-mono">
                   Session v{securityConfig.sessionVersion}
                 </span>
               </div>
@@ -683,11 +683,11 @@ export const AdminSettings: React.FC = () => {
           <form onSubmit={handleSaveSecurity} className="space-y-6">
             
             {/* Section 1: Secret URL Route Slug */}
-            <div className="bg-\[#FAF7F5\] p-6 sm:p-8 rounded-2xl border border-rose-100 shadow-xs space-y-5">
+            <div className="bg-\[#FAF7F2\] p-6 sm:p-8 rounded-2xl border border-rose-100 shadow-xs space-y-5">
               <div className="border-b border-gray-100 pb-3 flex items-center justify-between flex-wrap gap-2">
                 <div>
                   <h4 className="font-serif text-base font-bold text-gray-900 flex items-center gap-2">
-                    <Link className="w-4 h-4 text-[#58152D]" />
+                    <Link className="w-4 h-4 text-[#211C1A]" />
                     Secret Administrative URL (Route Obfuscation)
                   </h4>
                   <p className="text-xs text-gray-500">
@@ -709,20 +709,20 @@ export const AdminSettings: React.FC = () => {
                       type="text"
                       value={secForm.secretPathSlug}
                       onChange={(e) => setSecForm({ ...secForm, secretPathSlug: e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, '') })}
-                      placeholder="e.g. sba-vault or secret-portal"
-                      className="flex-1 px-3.5 py-2 border border-gray-200 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#58152D]"
+                      placeholder="e.g. sag-vault or secret-portal"
+                      className="flex-1 px-3.5 py-2 border border-gray-200 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B]"
                     />
                     <button
                       type="button"
                       onClick={handleCopySecretLink}
-                      className="px-3.5 py-2 bg-[#E0BFB8]/20 hover:bg-[#E0BFB8]/40 text-[#58152D] font-semibold rounded-lg border border-rose-200 transition flex items-center gap-1.5 cursor-pointer"
+                      className="px-3.5 py-2 bg-[#D8C8B8]/20 hover:bg-[#D8C8B8]/40 text-[#211C1A] font-semibold rounded-lg border border-rose-200 transition flex items-center gap-1.5 cursor-pointer"
                     >
                       {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                       <span>{copiedLink ? 'Copied!' : 'Copy Secret Link'}</span>
                     </button>
                   </div>
                   <p className="text-[11px] text-gray-500 mt-1">
-                    Your secret admin link: <code className="bg-[#E0BFB8]/20 text-[#58152D] px-1.5 py-0.5 rounded font-mono font-bold">/{secForm.secretPathSlug || 'sba-vault'}</code>. Bookmark this in your browser.
+                    Your secret admin link: <code className="bg-[#D8C8B8]/20 text-[#211C1A] px-1.5 py-0.5 rounded font-mono font-bold">/{secForm.secretPathSlug || 'sag-vault'}</code>. Bookmark this in your browser.
                   </p>
                 </div>
 
@@ -740,17 +740,17 @@ export const AdminSettings: React.FC = () => {
                       onChange={(e) => setSecForm({ ...secForm, allowDirectAdminRoute: !e.target.checked })}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-\[#FAF7F5\] after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#58152D]"></div>
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-\[#FAF7F2\] after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#241D1B]"></div>
                   </label>
                 </div>
               </div>
             </div>
 
             {/* Section 2: Master Credentials */}
-            <div className="bg-\[#FAF7F5\] p-6 sm:p-8 rounded-2xl border border-rose-100 shadow-xs space-y-5">
+            <div className="bg-\[#FAF7F2\] p-6 sm:p-8 rounded-2xl border border-rose-100 shadow-xs space-y-5">
               <div className="border-b border-gray-100 pb-3">
                 <h4 className="font-serif text-base font-bold text-gray-900 flex items-center gap-2">
-                  <Key className="w-4 h-4 text-[#58152D]" />
+                  <Key className="w-4 h-4 text-[#211C1A]" />
                   Master Admin Credentials
                 </h4>
                 <p className="text-xs text-gray-500">
@@ -769,10 +769,10 @@ export const AdminSettings: React.FC = () => {
                     value={secForm.adminUsername}
                     onChange={(e) => setSecForm({ ...secForm, adminUsername: e.target.value })}
                     placeholder="e.g. muskan"
-                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#58152D] font-mono"
+                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B] font-mono"
                   />
                   <p className="text-[11px] text-gray-400 mt-1">
-                    Accepts either &quot;{secForm.adminUsername}&quot; or &quot;{secForm.adminUsername}@suitblissaura.com&quot;.
+                    Accepts either &quot;{secForm.adminUsername}&quot; or &quot;{secForm.adminUsername}@suitauragirls.com&quot;.
                   </p>
                 </div>
 
@@ -787,7 +787,7 @@ export const AdminSettings: React.FC = () => {
                       value={secForm.adminPassword}
                       onChange={(e) => setSecForm({ ...secForm, adminPassword: e.target.value })}
                       placeholder="Enter strong password"
-                      className="w-full pl-3.5 pr-10 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#58152D] font-mono"
+                      className="w-full pl-3.5 pr-10 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B] font-mono"
                     />
                     <button
                       type="button"
@@ -805,10 +805,10 @@ export const AdminSettings: React.FC = () => {
             </div>
 
             {/* Section 3: 2FA Security PIN */}
-            <div className="bg-\[#FAF7F5\] p-6 sm:p-8 rounded-2xl border border-rose-100 shadow-xs space-y-5">
+            <div className="bg-\[#FAF7F2\] p-6 sm:p-8 rounded-2xl border border-rose-100 shadow-xs space-y-5">
               <div className="border-b border-gray-100 pb-3">
                 <h4 className="font-serif text-base font-bold text-gray-900 flex items-center gap-2">
-                  <KeyRound className="w-4 h-4 text-[#58152D]" />
+                  <KeyRound className="w-4 h-4 text-[#211C1A]" />
                   Two-Factor Authentication (6-Digit Security PIN)
                 </h4>
                 <p className="text-xs text-gray-500">
@@ -828,14 +828,14 @@ export const AdminSettings: React.FC = () => {
                     value={secForm.securityPin}
                     onChange={(e) => setSecForm({ ...secForm, securityPin: e.target.value.replace(/\[#B76E79\]/g, '') })}
                     placeholder="829146"
-                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-lg tracking-widest font-mono text-center focus:outline-none focus:ring-2 focus:ring-[#58152D]"
+                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-lg tracking-widest font-mono text-center focus:outline-none focus:ring-2 focus:ring-[#241D1B]"
                   />
                   <p className="text-[11px] text-gray-400 mt-1">
                     Store this in a safe place. Default: <code className="font-mono">829146</code>.
                   </p>
                 </div>
 
-                <div className="p-4 bg-[#E0BFB8]/70 border border-rose-100 rounded-xl space-y-2">
+                <div className="p-4 bg-[#D8C8B8]/70 border border-rose-100 rounded-xl space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-gray-900">Enforce PIN on Login</span>
                     <label className="relative inline-flex items-center cursor-pointer">
@@ -845,7 +845,7 @@ export const AdminSettings: React.FC = () => {
                         onChange={(e) => setSecForm({ ...secForm, requirePin: e.target.checked })}
                         className="sr-only peer"
                       />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-\[#FAF7F5\] after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#58152D]"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-\[#FAF7F2\] after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#241D1B]"></div>
                     </label>
                   </div>
                   <p className="text-[11px] text-gray-600">
@@ -857,7 +857,7 @@ export const AdminSettings: React.FC = () => {
               <div className="pt-3 border-t border-gray-100 flex justify-end">
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-[#58152D] hover:bg-[#7E1D3B] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer"
+                  className="px-6 py-2.5 bg-[#241D1B] hover:bg-[#241D1B] text-[#211C1A] font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer"
                 >
                   <Save className="w-4 h-4" />
                   <span>Save All Security Changes</span>
@@ -902,7 +902,7 @@ export const AdminSettings: React.FC = () => {
 
       {/* Tab 5: Brevo Direct Email API Settings */}
       {activeTab === 'brevo' && (
-        <div className="bg-[#FAF7F5] p-6 sm:p-8 rounded-2xl border border-rose-100 shadow-xs space-y-6 text-xs text-left">
+        <div className="bg-[#FAF7F2] p-6 sm:p-8 rounded-2xl border border-rose-100 shadow-xs space-y-6 text-xs text-left">
           <div className="border-b border-gray-100 pb-3">
             <div className="flex items-center gap-2">
               <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 font-bold text-[10px] rounded-full uppercase tracking-wider">
@@ -936,7 +936,7 @@ export const AdminSettings: React.FC = () => {
                     setStoredBrevoKey(brevoKeyInput);
                     showToast('✅ Brevo API Key updated & saved successfully!', 'success');
                   }}
-                  className="px-5 py-2.5 bg-[#58152D] hover:bg-[#7E1D3B] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition flex items-center gap-1.5 cursor-pointer shrink-0"
+                  className="px-5 py-2.5 bg-[#241D1B] hover:bg-[#241D1B] text-[#211C1A] font-bold text-xs uppercase tracking-wider rounded-xl transition flex items-center gap-1.5 cursor-pointer shrink-0"
                 >
                   <Save className="w-4 h-4" />
                   <span>Save Key</span>
@@ -994,7 +994,7 @@ export const AdminSettings: React.FC = () => {
                       showToast(`❌ Brevo Error: ${res.message}`, 'error');
                     }
                   }}
-                  className="px-4 py-2 bg-[#B8935A] hover:bg-[#A37F46] text-white font-bold text-xs uppercase tracking-wider rounded-lg transition flex items-center gap-1.5 cursor-pointer shrink-0"
+                  className="px-4 py-2 bg-[#9A6A3A] hover:bg-[#A37F46] text-white font-bold text-xs uppercase tracking-wider rounded-lg transition flex items-center gap-1.5 cursor-pointer shrink-0"
                 >
                   {sendingTest ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />

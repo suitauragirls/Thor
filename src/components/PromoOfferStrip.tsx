@@ -16,17 +16,17 @@ export const PromoOfferStrip: React.FC = () => {
   };
 
   return (
-    <div id="promo-offer-strip" className="bg-gradient-to-r from-[#2C1820] via-[#58152D] to-[#2C1820] text-white py-3 px-4 shadow-sm border-y border-[#DFBE65]/30">
+    <div id="promo-offer-strip" className="bg-gradient-to-r from-[#241D1B] via-[#241D1B] to-[#241D1B] text-[#211C1A] py-3 px-4 shadow-sm border-y border-[#C7A77A]/30">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
         
         {/* Offer Text */}
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-[#DFBE65] text-black flex items-center justify-center shrink-0 shadow-xs">
-            <Flame className="w-4 h-4 text-[#58152D]" />
+          <div className="w-8 h-8 rounded-full bg-[#C7A77A] text-black flex items-center justify-center shrink-0 shadow-xs">
+            <Flame className="w-4 h-4 text-[#211C1A]" />
           </div>
           <div>
             <p className="text-xs sm:text-sm font-bold tracking-wide">
-              Festive Season Offer: <span className="text-[#DFBE65]">Flat 10% OFF</span> on Prepaid Orders
+              Festive Season Offer: <span className="text-black">Flat 10% OFF</span> on Prepaid Orders
             </p>
             <p className="text-[10px] sm:text-[11px] text-rose-200/90 font-light">
               Complimentary Priority Express Dispatch Across India
@@ -36,15 +36,15 @@ export const PromoOfferStrip: React.FC = () => {
 
         {/* Copy Coupon Action */}
         <div className="flex items-center gap-2 shrink-0">
-          <div className="flex items-center bg-\[#FAF7F5\]/15 backdrop-blur-xs border border-white/20 rounded-xl px-3 py-1.5 gap-2">
+          <div className="flex items-center bg-\[#FAF7F2\]/15 backdrop-blur-xs border border-white/20 rounded-xl px-3 py-1.5 gap-2">
             <span className="text-[10px] uppercase font-bold text-rose-200">Use Code:</span>
-            <span className="font-mono font-black text-xs text-[#DFBE65] tracking-wider">BLISS10</span>
+            <span className="font-mono font-black text-xs text-black tracking-wider">BLISS10</span>
           </div>
 
           <button
             type="button"
             onClick={handleCopyCode}
-            className="px-3.5 py-1.5 bg-[#DFBE65] hover:bg-[#ebd087] text-black rounded-xl text-xs font-bold tracking-wide transition transform active:scale-95 flex items-center gap-1.5 shadow-sm cursor-pointer"
+            className="px-3.5 py-1.5 bg-[#C7A77A] hover:bg-[#ebd087] text-black rounded-xl text-xs font-bold tracking-wide transition transform active:scale-95 flex items-center gap-1.5 shadow-sm cursor-pointer"
           >
             {copied ? (
               <>

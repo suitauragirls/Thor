@@ -10,7 +10,7 @@ export const Toast: React.FC = () => {
   return (
     <div 
       id="app-toast"
-      className="fixed bottom-20 sm:bottom-8 left-1/2 -translate-x-1/2 z-[10000] w-[90%] sm:w-auto max-w-md bg-[#5C0E2B] text-[#FAF6EF] px-4 py-3 rounded-2xl shadow-2xl border border-[#C9A55C]/40 flex items-center justify-between gap-3 transition-all duration-300 animate-in slide-in-from-bottom-5 fade-in"
+      className="fixed bottom-20 sm:bottom-8 left-1/2 -translate-x-1/2 z-[10000] w-[90%] sm:w-auto max-w-md bg-[#241D1B] text-[#FAF6EF] px-4 py-3 rounded-2xl shadow-2xl border border-[#C9A55C]/40 flex items-center justify-between gap-3 transition-all duration-300 animate-in slide-in-from-bottom-5 fade-in"
     >
       <div className="flex items-center gap-2.5 min-w-0">
         {toast.type === 'success' && (
@@ -20,7 +20,7 @@ export const Toast: React.FC = () => {
           <AlertCircle className="w-5 h-5 text-rose-300 shrink-0" />
         )}
         {toast.type === 'info' && (
-          <Info className="w-5 h-5 text-amber-300 shrink-0" />
+          <Info className="w-5 h-5 text-black shrink-0" />
         )}
         <p className="text-xs sm:text-sm font-semibold text-[#FAF6EF] leading-snug">
           {toast.message}

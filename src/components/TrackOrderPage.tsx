@@ -69,7 +69,7 @@ export const TrackOrderPage: React.FC = () => {
 
     return [
       { label: 'Order Verified', desc: 'Order confirmed & VIP tailoring queued', date: today, done: currentIndex >= 0, current: currentIndex === 0 },
-      { label: 'Artisanal Tailoring & QC', desc: 'Handcrafted garments inspected and packaged in Jaipur', date: currentIndex >= 1 ? today : 'Pending', done: currentIndex >= 1, current: currentIndex === 1 },
+      { label: 'Artisanal Tailoring & QC', desc: 'Handcrafted garments inspected and packaged in Artisan', date: currentIndex >= 1 ? today : 'Pending', done: currentIndex >= 1, current: currentIndex === 1 },
       { label: 'Dispatched via Express Air', desc: 'Handed over to priority courier partner', date: currentIndex >= 2 ? today : 'Pending', done: currentIndex >= 2, current: currentIndex === 2 },
       { label: 'Out for Delivery', desc: 'Courier agent assigned for doorstep delivery', date: currentIndex >= 3 ? 'Today' : 'Pending', done: currentIndex >= 3, current: currentIndex === 3 },
       { label: 'Delivered', desc: 'Package successfully handed over to customer', date: currentIndex >= 4 ? 'Today' : 'Pending', done: currentIndex >= 4, current: currentIndex === 4 },
@@ -77,70 +77,55 @@ export const TrackOrderPage: React.FC = () => {
   };
 
   const executeSearch = async (orderIdStr: string, phoneStr: string) => {
+    const cleanOrderId = orderIdStr.trim().toUpperCase();
+    const cleanPhone = phoneStr.trim().replace(/\D/g, '');
+    if (!cleanOrderId || !cleanPhone) {
+      setError('Enter both the exact Order ID and registered mobile number to view tracking details.');
+      setTrackedResult(null);
+      setHasSearched(true);
+      setIsSearching(false);
+      return;
+    }
+
     setIsSearching(true);
     setError('');
     setHasSearched(true);
-
-    const cleanOrderId = orderIdStr.trim().toUpperCase();
-    const cleanPhone = phoneStr.trim().replace(/\D/g, '');
 
     try {
       // 1. Check local recentOrders from ShopContext
       let foundOrder: any = null;
       if (recentOrders && recentOrders.length > 0) {
         foundOrder = recentOrders.find((o) => {
-          const matchId = cleanOrderId && o.orderNumber?.toUpperCase().includes(cleanOrderId);
-          const matchPhone = cleanPhone && o.customerMobile?.includes(cleanPhone);
-          return matchId || matchPhone;
+          const matchId = cleanOrderId && o.orderNumber?.toUpperCase() === cleanOrderId;
+          const matchPhone = cleanPhone && o.customerMobile?.replace(/\D/g, '') === cleanPhone;
+          return matchId && matchPhone;
         });
       }
 
       // 2. Check confirmedOrder if not found in recentOrders
       if (!foundOrder && confirmedOrder) {
-        const matchId = cleanOrderId && confirmedOrder.orderNumber?.toUpperCase().includes(cleanOrderId);
-        const matchPhone = cleanPhone && confirmedOrder.customerMobile?.includes(cleanPhone);
-        if (matchId || matchPhone) {
+        const matchId = cleanOrderId && confirmedOrder.orderNumber?.toUpperCase() === cleanOrderId;
+        const matchPhone = cleanPhone && confirmedOrder.customerMobile?.replace(/\D/g, '') === cleanPhone;
+        if (matchId && matchPhone) {
           foundOrder = confirmedOrder;
         }
       }
 
       // 3. Query Supabase database
-      if (!foundOrder && (cleanOrderId || cleanPhone)) {
+      if (!foundOrder) {
         try {
-          const { data: supaOrders, error: supaErr } = await supabase.from('orders').select('*');
-          if (!supaErr && supaOrders && supaOrders.length > 0) {
-            const mapped = supaOrders.map(mapOrderFromSupabase);
-            foundOrder = mapped.find((o) => {
-              const matchId = cleanOrderId && o.orderNumber?.toUpperCase().includes(cleanOrderId);
-              const matchPhone = cleanPhone && (o.customerMobile?.includes(cleanPhone) || o.customerEmail?.includes(cleanPhone));
-              return matchId || matchPhone;
-            });
+          const { data: supaOrder, error: supaErr } = await supabase
+            .from('orders')
+            .select('*')
+            .eq('order_number', cleanOrderId)
+            .maybeSingle();
+          if (!supaErr && supaOrder) {
+            const mapped = mapOrderFromSupabase(supaOrder);
+            const mobileMatches = mapped.customerMobile?.replace(/\D/g, '') === cleanPhone;
+            if (mobileMatches) foundOrder = mapped;
           }
         } catch (supaErr) {
           console.warn('Supabase order lookup notice:', supaErr);
-        }
-      }
-
-      // 4. Query Firestore if available
-      if (!foundOrder && (cleanOrderId || cleanPhone)) {
-        try {
-          if (cleanOrderId) {
-            const docRef = doc(db, 'orders', cleanOrderId);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-              foundOrder = docSnap.data();
-            }
-          }
-
-          if (!foundOrder && cleanPhone) {
-            const q = query(collection(db, 'orders'), where('customerMobile', '==', cleanPhone));
-            const querySnap = await getDocs(q);
-            if (!querySnap.empty) {
-              foundOrder = querySnap.docs[0].data();
-            }
-          }
-        } catch (fsErr) {
-          console.warn('Firestore order lookup notice:', fsErr);
         }
       }
 
@@ -151,9 +136,9 @@ export const TrackOrderPage: React.FC = () => {
           customerName: foundOrder.customerName || foundOrder.deliveryAddress?.fullName || 'Valued Customer',
           customerMobile: foundOrder.customerMobile || foundOrder.deliveryAddress?.mobile || cleanPhone,
           status: foundOrder.status || 'Processing',
-          carrier: foundOrder.courierPartner || 'BlueDart Express Air',
-          awb: foundOrder.trackingNumber || 'SBA-BLUEDART-882194',
-          estimatedDelivery: foundOrder.estimatedDeliveryDate || '3 - 5 Business Days',
+          carrier: foundOrder.courierPartner || '',
+          awb: foundOrder.trackingNumber || '',
+          estimatedDelivery: foundOrder.estimatedDeliveryDate || '',
           date: foundOrder.date || new Date().toLocaleDateString('en-IN'),
           finalTotal: foundOrder.finalTotal || foundOrder.subtotal || 0,
           items: foundOrder.items || [],
@@ -175,8 +160,8 @@ export const TrackOrderPage: React.FC = () => {
 
   const handleTrackSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!orderQuery.trim() && !phoneQuery.trim()) {
-      setError('Please enter either your Order ID or your 10-digit Mobile Number.');
+    if (!orderQuery.trim() || !phoneQuery.trim()) {
+      setError('Please enter both your Order ID and registered 10-digit Mobile Number.');
       return;
     }
     executeSearch(orderQuery, phoneQuery);
@@ -190,29 +175,29 @@ export const TrackOrderPage: React.FC = () => {
   };
 
   return (
-    <div id="track-order-page" className="py-10 sm:py-16 bg-[#FAF5EB] min-h-screen font-sans">
+    <div id="track-order-page" className="py-8 sm:py-12 bg-[#FDFBF7] min-h-screen font-sans">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         {/* Breadcrumb Navigation */}
-        <nav className="flex items-center gap-2 text-xs text-gray-500">
+        <nav className="flex items-center gap-2 text-xs text-[#3D0F1F]/55">
           <button onClick={() => setActivePage('home')} className="hover:text-[#3D0F1F] transition font-medium cursor-pointer">
             Home
           </button>
           <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
-          <span className="text-[#3D0F1F] font-bold">Track Order Shipment</span>
+          <span className="text-[#3D0F1F] font-semibold">Track Order Shipment</span>
         </nav>
 
         {/* Page Title & Header */}
         <div className="text-center max-w-xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#3D0F1F] text-[#DFBE65] text-[10px] font-bold uppercase tracking-widest border border-[#B8935A]/40 shadow-xs">
-            <Crown className="w-3.5 h-3.5 text-[#B8935A]" />
+          <div className="inline-flex items-center gap-1.5 text-[#B8935A] text-[10px] font-semibold uppercase tracking-widest">
+            <Crown className="w-3.5 h-3.5" />
             <span>Priority Order Tracker</span>
           </div>
-          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#3D0F1F] tracking-tight">
+          <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-[#3D0F1F]">
             Track Your Shipment
           </h1>
           <p className="text-xs sm:text-sm text-gray-700 leading-relaxed font-medium">
-            Enter your Order ID (e.g. <span className="font-mono text-[#3D0F1F] font-bold">SBA-2026-XXXXXX</span>) or 10-digit mobile number to view live parcel updates.
+            Enter your Order ID (e.g. <span className="font-mono text-[#211C1A] font-bold">SAG-2026-XXXXXX</span>) or 10-digit mobile number to view live parcel updates.
           </p>
         </div>
 
@@ -227,9 +212,9 @@ export const TrackOrderPage: React.FC = () => {
                   setOrderQuery(ro.orderNumber);
                   executeSearch(ro.orderNumber, ro.customerMobile || '');
                 }}
-                className="px-3.5 py-1.5 bg-[#FAF5EB] hover:bg-[#3D0F1F] hover:text-[#FAF5EB] text-[#3D0F1F] border border-[#B8935A]/40 rounded-full text-xs font-mono font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+                className="px-3.5 py-1.5 bg-[#FAF5EB] hover:bg-[#3D0F1F] hover:text-[#FAF5EB] text-[#3D0F1F] border border-[#B8935A]/35 text-xs font-mono font-medium transition flex items-center gap-1.5 cursor-pointer"
               >
-                <Package className="w-3.5 h-3.5 text-[#B8935A]" />
+                <Package className="w-3.5 h-3.5 text-black" />
                 {ro.orderNumber}
               </button>
             ))}
@@ -237,12 +222,12 @@ export const TrackOrderPage: React.FC = () => {
         )}
 
         {/* Search Form Card */}
-        <div className="bg-[#FDFBF7] border-2 border-[#B8935A]/35 rounded-2xl p-6 sm:p-8 shadow-lg max-w-2xl mx-auto text-left space-y-5">
+        <div className="bg-[#FAF5EB] border border-[#B8935A]/35 p-6 sm:p-8 max-w-2xl mx-auto text-left space-y-5">
           
           <form onSubmit={handleTrackSubmit} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#3D0F1F] mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#211C1A] mb-1.5">
                   Order ID / AWB Number
                 </label>
                 <input
@@ -250,13 +235,13 @@ export const TrackOrderPage: React.FC = () => {
                   type="text"
                   value={orderQuery}
                   onChange={(e) => setOrderQuery(e.target.value)}
-                  placeholder="e.g. SBA-2026-891023"
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-xs sm:text-sm font-medium focus:outline-none focus:border-[#3D0F1F] focus:ring-1 focus:ring-[#3D0F1F] transition"
+                  placeholder="e.g. SAG-2026-891023"
+                  className="w-full px-4 py-3 bg-[#FDFBF7] border border-[#B8935A]/35 text-xs sm:text-sm font-medium focus:outline-none focus:border-[#3D0F1F] focus:ring-1 focus:ring-[#3D0F1F] transition"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#3D0F1F] mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#211C1A] mb-1.5">
                   Mobile Number
                 </label>
                 <input
@@ -266,7 +251,7 @@ export const TrackOrderPage: React.FC = () => {
                   value={phoneQuery}
                   onChange={(e) => setPhoneQuery(e.target.value.replace(/\D/g, ''))}
                   placeholder="10-digit registered mobile"
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-xs sm:text-sm font-medium focus:outline-none focus:border-[#3D0F1F] focus:ring-1 focus:ring-[#3D0F1F] transition"
+                  className="w-full px-4 py-3 bg-[#FDFBF7] border border-[#B8935A]/35 text-xs sm:text-sm font-medium focus:outline-none focus:border-[#3D0F1F] focus:ring-1 focus:ring-[#3D0F1F] transition"
                 />
               </div>
             </div>
@@ -282,16 +267,16 @@ export const TrackOrderPage: React.FC = () => {
               id="track-order-submit-btn"
               type="submit"
               disabled={isSearching}
-              className="w-full py-4 bg-[#3D0F1F] hover:bg-[#20050E] text-[#FAF5EB] rounded-xl text-xs sm:text-sm font-bold tracking-widest uppercase transition-all duration-300 flex items-center justify-center gap-2 shadow-md cursor-pointer disabled:opacity-75"
+              className="w-full py-4 bg-[#3D0F1F] hover:bg-[#3D0F1F]/90 text-[#FAF5EB] text-xs sm:text-sm font-semibold tracking-widest uppercase transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75"
             >
               {isSearching ? (
                 <>
-                  <RefreshCw className="w-4 h-4 animate-spin text-[#DFBE65]" />
+                  <RefreshCw className="w-4 h-4 animate-spin text-black" />
                   <span>Fetching Order Status...</span>
                 </>
               ) : (
                 <>
-                  <Search className="w-4 h-4 text-[#DFBE65]" />
+                  <Search className="w-4 h-4 text-black" />
                   <span>Track Live Package</span>
                 </>
               )}
@@ -301,15 +286,15 @@ export const TrackOrderPage: React.FC = () => {
 
         {/* Output Results Card */}
         {hasSearched && trackedResult && (
-          <div className="bg-[#FDFBF7] border-2 border-[#B8935A]/35 rounded-2xl p-6 sm:p-8 shadow-xl space-y-7 text-left">
+          <div className="bg-[#FDFBF7] border-2 border-[#9A6A3A]/35 rounded-2xl p-6 sm:p-8 shadow-xl space-y-7 text-left">
             
             {/* Status Header Banner */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-[#B8935A]/30 gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-[#9A6A3A]/30 gap-4">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#B8935A] block">
-                  Suit Bliss Aura Package:
+                <span className="text-[10px] font-bold uppercase tracking-widest text-black block">
+                  Suit Aura Girls Package:
                 </span>
-                <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#3D0F1F]">
+                <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#211C1A]">
                   {trackedResult.orderNumber}
                 </h3>
                 <p className="text-xs text-gray-600 mt-0.5">
@@ -331,64 +316,56 @@ export const TrackOrderPage: React.FC = () => {
             {/* Courier Partner & Estimated Delivery */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               
-              <div className="p-4 bg-[#FAF5EB] rounded-xl border border-[#B8935A]/30 space-y-3">
+              <div className="p-4 bg-[#F1E8DF] rounded-xl border border-[#9A6A3A]/30 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Truck className="w-5 h-5 text-[#3D0F1F]" />
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#3D0F1F]">
+                    <Truck className="w-5 h-5 text-[#211C1A]" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#211C1A]">
                       Courier Express Partner
                     </span>
                   </div>
-                  <span className="text-[10px] bg-[#3D0F1F] text-[#DFBE65] px-2 py-0.5 rounded border border-[#B8935A]/40 font-bold uppercase">
-                    Air Freight
+                  <span className="text-[10px] bg-[#FAF5EB] text-[#3D0F1F] px-2 py-0.5 border border-[#B8935A]/35 font-semibold uppercase">
+                    {trackedResult.awb ? 'In Transit' : 'Dispatch Pending'}
                   </span>
                 </div>
 
                 <div>
-                  <p className="text-sm font-bold text-gray-900">{trackedResult.carrier}</p>
-                  <div className="mt-2 flex items-center justify-between bg-white px-3 py-2 rounded-lg border border-gray-300">
-                    <span className="text-xs font-mono font-bold text-gray-800">
-                      AWB: {trackedResult.awb}
-                    </span>
-                    <button
-                      onClick={() => copyToClipboard(trackedResult.awb)}
-                      className="text-[11px] font-bold text-[#3D0F1F] hover:text-[#B8935A] flex items-center gap-1 transition cursor-pointer"
-                    >
-                      {copiedAwb ? (
-                        <>
-                          <Check className="w-3.5 h-3.5 text-emerald-600" />
-                          <span className="text-emerald-600">Copied</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-3.5 h-3.5" />
-                          <span>Copy AWB</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
+                  <p className="text-sm font-bold text-gray-900">{trackedResult.carrier || 'Carrier not assigned yet'}</p>
+                  {trackedResult.awb ? (
+                    <div className="mt-2 flex items-center justify-between bg-white px-3 py-2 border border-gray-300">
+                      <span className="text-xs font-mono font-bold text-gray-800">AWB: {trackedResult.awb}</span>
+                      <button
+                        onClick={() => copyToClipboard(trackedResult.awb)}
+                        className="text-[11px] font-bold text-[#211C1A] hover:text-black flex items-center gap-1 transition cursor-pointer"
+                      >
+                        {copiedAwb ? <><Check className="w-3.5 h-3.5 text-emerald-600" /><span className="text-emerald-600">Copied</span></> : <><Copy className="w-3.5 h-3.5" /><span>Copy AWB</span></>}
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="mt-2 text-xs text-gray-600">Tracking number will appear after dispatch.</p>
+                  )}
                 </div>
               </div>
 
-              <div className="p-4 bg-[#FAF5EB] rounded-xl border border-[#B8935A]/30 space-y-3">
+              <div className="p-4 bg-[#F1E8DF] rounded-xl border border-[#9A6A3A]/30 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-[#B8935A]" />
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#3D0F1F]">
+                    <Clock className="w-5 h-5 text-black" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#211C1A]">
                       Expected Delivery Window
                     </span>
                   </div>
-                  <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold uppercase">
-                    On Schedule
+                  <span className="text-[10px] bg-[#FAF5EB] text-[#3D0F1F] px-2 py-0.5 border border-[#B8935A]/30 font-semibold uppercase">
+                    {trackedResult.estimatedDelivery ? 'Estimated' : 'Pending'}
                   </span>
                 </div>
 
                 <div>
-                  <p className="text-base font-bold text-[#3D0F1F]">
-                    {trackedResult.estimatedDelivery}
+                  <p className="text-base font-bold text-[#211C1A]">
+                    {trackedResult.estimatedDelivery || 'Estimated delivery date is not available yet.'}
                   </p>
                   <p className="text-[11px] text-gray-600 mt-1">
-                    Direct door delivery with SMS OTP verification.
+                    Tracking updates appear once the parcel is handed to the carrier.
                   </p>
                 </div>
               </div>
@@ -396,27 +373,27 @@ export const TrackOrderPage: React.FC = () => {
             </div>
 
             {/* Stepper Timeline */}
-            <div className="space-y-4 pt-4 border-t border-[#B8935A]/30">
-              <h4 className="text-xs font-bold uppercase tracking-widest text-[#3D0F1F] flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-[#B8935A]" />
+            <div className="space-y-4 pt-4 border-t border-[#9A6A3A]/30">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-[#211C1A] flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-black" />
                 Live Shipment Milestones
               </h4>
 
-              <div className="relative pl-7 space-y-5 before:absolute before:left-3 before:top-3 before:bottom-3 before:w-[2px] before:bg-[#B8935A]/30">
+              <div className="relative pl-7 space-y-5 before:absolute before:left-3 before:top-3 before:bottom-3 before:w-[2px] before:bg-[#9A6A3A]/30">
                 {trackedResult.steps.map((step: any, idx: number) => (
                   <div 
                     key={idx} 
                     className={`relative flex items-start justify-between gap-4 p-3 rounded-xl transition-all border ${
                       step.current 
-                        ? 'bg-[#FAF5EB] border-[#B8935A] shadow-xs' 
+                        ? 'bg-[#F1E8DF] border-[#9A6A3A] shadow-xs' 
                         : 'border-transparent hover:bg-gray-50'
                     }`}
                   >
                     <div className={`absolute -left-7 w-6 h-6 rounded-full flex items-center justify-center z-10 ${
                       step.current
-                        ? 'bg-[#3D0F1F] text-[#DFBE65]'
+                        ? 'bg-[#241D1B] text-[#211C1A]'
                         : step.done 
-                        ? 'bg-[#3D0F1F] text-white' 
+                        ? 'bg-[#241D1B] text-[#211C1A]' 
                         : 'bg-gray-200 text-gray-400'
                     }`}>
                       {step.done ? <CheckCircle2 className="w-4 h-4" /> : <Clock className="w-3.5 h-3.5" />}
@@ -424,7 +401,7 @@ export const TrackOrderPage: React.FC = () => {
 
                     <div className="space-y-0.5 flex-1">
                       <p className={`text-sm font-bold ${
-                        step.current ? 'text-[#3D0F1F]' : step.done ? 'text-gray-900' : 'text-gray-400'
+                        step.current ? 'text-[#211C1A]' : step.done ? 'text-gray-900' : 'text-gray-400'
                       }`}>
                         {step.label}
                       </p>
@@ -438,9 +415,9 @@ export const TrackOrderPage: React.FC = () => {
                     <div className="shrink-0 text-right">
                       <span className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold border ${
                         step.current 
-                          ? 'bg-[#3D0F1F] text-[#DFBE65] border-[#3D0F1F]'
+                          ? 'bg-[#241D1B] text-[#211C1A] border-[#241D1B]'
                           : step.done 
-                          ? 'bg-[#FAF5EB] text-[#3D0F1F] border-[#B8935A]/30' 
+                          ? 'bg-[#F1E8DF] text-[#211C1A] border-[#9A6A3A]/30' 
                           : 'text-gray-400 bg-gray-50 border-gray-200'
                       }`}>
                         {step.date}
@@ -453,9 +430,9 @@ export const TrackOrderPage: React.FC = () => {
 
             {/* Order Items List */}
             {trackedResult.items && trackedResult.items.length > 0 && (
-              <div className="pt-5 border-t border-[#B8935A]/30 space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-widest text-[#3D0F1F] flex items-center gap-2">
-                  <ShoppingBag className="w-4 h-4 text-[#B8935A]" />
+              <div className="pt-5 border-t border-[#9A6A3A]/30 space-y-3">
+                <h4 className="text-xs font-bold uppercase tracking-widest text-[#211C1A] flex items-center gap-2">
+                  <ShoppingBag className="w-4 h-4 text-black" />
                   Items in Package ({trackedResult.items.length})
                 </h4>
                 <div className="divide-y divide-gray-200 border border-gray-200 rounded-xl bg-white overflow-hidden">
@@ -474,7 +451,7 @@ export const TrackOrderPage: React.FC = () => {
                           Size: <span className="font-semibold text-gray-800">{item.selectedSize}</span> | Qty: <span className="font-semibold text-gray-800">{item.quantity}</span>
                         </p>
                       </div>
-                      <span className="text-xs font-mono font-bold text-[#3D0F1F]">
+                      <span className="text-xs font-mono font-bold text-[#211C1A]">
                         ₹{(item.product?.price || 0) * item.quantity}
                       </span>
                     </div>
@@ -484,16 +461,16 @@ export const TrackOrderPage: React.FC = () => {
             )}
 
             {/* Support Footer Box */}
-            <div className="pt-4 border-t border-[#B8935A]/30 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs bg-[#FAF5EB] p-4 rounded-xl border border-[#B8935A]/30">
+            <div className="pt-4 border-t border-[#9A6A3A]/30 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs bg-[#F1E8DF] p-4 rounded-xl border border-[#9A6A3A]/30">
               <div className="flex items-center gap-2 text-gray-800">
-                <ShieldCheck className="w-5 h-5 text-[#3D0F1F] shrink-0" />
+                <ShieldCheck className="w-5 h-5 text-[#211C1A] shrink-0" />
                 <span>Need help with delivery timing or address change?</span>
               </div>
               <button
                 onClick={() => setActivePage('contact')}
-                className="px-4 py-2 bg-[#3D0F1F] hover:bg-[#20050E] text-[#FAF5EB] rounded-lg text-xs font-bold uppercase tracking-wider transition shrink-0 flex items-center gap-1.5 cursor-pointer shadow-xs"
+                className="px-4 py-2 bg-[#241D1B] hover:bg-[#20050E] text-[#211C1A] rounded-lg text-xs font-bold uppercase tracking-wider transition shrink-0 flex items-center gap-1.5 cursor-pointer shadow-xs"
               >
-                <Phone className="w-3.5 h-3.5 text-[#DFBE65]" />
+                <Phone className="w-3.5 h-3.5 text-black" />
                 <span>Contact VIP Support</span>
               </button>
             </div>

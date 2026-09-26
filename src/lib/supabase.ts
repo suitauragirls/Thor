@@ -3,9 +3,9 @@ import { createClient } from '@supabase/supabase-js';
 const envUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const envKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-// Hardcoded fallback credentials to guarantee connection across all devices and builds
-const fallbackUrl = 'https://cgonpvpjvdqeycdbdyrh.supabase.co';
-const fallbackKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnb25wdnBqdmRxZXljZGJkeXJoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4ODI3OTU5OCwiZXhwIjoyMTAzODU1NTk4fQ.mxWXJmymDovThgCWYGLWaUxUrhufNhQJYZsKnHDHrmo';
+// Keep the app connected to the user's active Supabase project when env vars are absent.
+const fallbackUrl = 'https://pgocqnrjzjaiicrljdvk.supabase.co';
+const fallbackKey = 'sb_publishable_6_iQnD9HWdPxGYSLAIIuWQ_R2Fr4bi_';
 
 const supabaseUrl = envUrl && envUrl.startsWith('http') ? envUrl : fallbackUrl;
 const supabaseAnonKey = envKey && envKey.length > 20 ? envKey : fallbackKey;

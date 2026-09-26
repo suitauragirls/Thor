@@ -152,7 +152,7 @@ export const AdminBanners: React.FC = () => {
     <div id="admin-banners-page" className="space-y-6">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-\[#FAF7F5\] p-5 rounded-2xl border border-rose-100 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-\[#FAF7F2\] p-5 rounded-2xl border border-rose-100 shadow-xs">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-widest text-[#8B2635]">
             Visual Merchandising
@@ -164,7 +164,7 @@ export const AdminBanners: React.FC = () => {
 
         <button
           onClick={handleOpenAdd}
-          className="px-4 py-2.5 bg-[#58152D] hover:bg-[#7E1D3B] text-white rounded-xl text-xs font-semibold tracking-wider uppercase transition shadow-sm flex items-center gap-1.5"
+          className="px-4 py-2.5 bg-[#241D1B] hover:bg-[#241D1B] text-[#211C1A] rounded-xl text-xs font-semibold tracking-wider uppercase transition shadow-sm flex items-center gap-1.5"
         >
           <Plus className="w-4 h-4" />
           <span>Add Banner</span>
@@ -176,7 +176,7 @@ export const AdminBanners: React.FC = () => {
         {banners.map((banner) => (
           <div
             key={banner.id}
-            className={`bg-\[#FAF7F5\] rounded-2xl border p-5 shadow-xs overflow-hidden transition flex flex-col md:flex-row gap-5 items-center justify-between ${
+            className={`bg-\[#FAF7F2\] rounded-2xl border p-5 shadow-xs overflow-hidden transition flex flex-col md:flex-row gap-5 items-center justify-between ${
               banner.isActive ? 'border-rose-100' : 'border-gray-200 opacity-70'
             }`}
           >
@@ -201,7 +201,7 @@ export const AdminBanners: React.FC = () => {
             {/* Banner Info */}
             <div className="flex-1 space-y-1.5 min-w-0">
               {banner.badge && (
-                <span className="px-2 py-0.5 bg-[#E0BFB8]/20 border border-rose-200 text-[#58152D] text-[10px] font-bold uppercase rounded-md">
+                <span className="px-2 py-0.5 bg-[#D8C8B8]/20 border border-rose-200 text-[#211C1A] text-[10px] font-bold uppercase rounded-md">
                   {banner.badge}
                 </span>
               )}
@@ -239,7 +239,7 @@ export const AdminBanners: React.FC = () => {
 
               <button
                 onClick={() => handleOpenEdit(banner)}
-                className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 hover:text-[#58152D]"
+                className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 hover:text-[#211C1A]"
                 title="Edit Banner"
               >
                 <Edit3 className="w-4 h-4" />
@@ -247,7 +247,7 @@ export const AdminBanners: React.FC = () => {
 
               <button
                 onClick={() => handleDelete(banner)}
-                className="p-2 hover:bg-[#E0BFB8]/20 rounded-lg text-gray-400 hover:text-\[#800020\]"
+                className="p-2 hover:bg-[#D8C8B8]/20 rounded-lg text-gray-400 hover:text-\[#800020\]"
                 title="Delete Banner"
               >
                 <Trash2 className="w-4 h-4" />
@@ -261,7 +261,7 @@ export const AdminBanners: React.FC = () => {
       {/* Add / Edit Banner Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-\[#FAF7F5\] rounded-2xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-gray-200 space-y-4">
+          <div className="bg-\[#FAF7F2\] rounded-2xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-gray-200 space-y-4">
             
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
               <h3 className="font-serif text-xl font-bold text-gray-900">
@@ -312,7 +312,7 @@ export const AdminBanners: React.FC = () => {
                 <label className="block font-bold text-gray-700 uppercase mb-1.5">Banner Image *</label>
                 
                 {/* Visual Thumbnail & Upload Trigger */}
-                <div className="border border-dashed border-gray-200 rounded-xl p-4 bg-[#E0BFB8]/20 space-y-3">
+                <div className="border border-dashed border-gray-200 rounded-xl p-4 bg-[#D8C8B8]/20 space-y-3">
                   {formData.image && formData.image.trim() !== "" ? (
                     <div className="relative w-full h-36 rounded-lg overflow-hidden bg-gray-50 border border-rose-100">
                       <img
@@ -340,7 +340,7 @@ export const AdminBanners: React.FC = () => {
                     <label className={`w-full sm:w-auto px-4 py-2 border rounded-lg font-bold text-center cursor-pointer transition flex items-center justify-center gap-1.5 ${
                       isUploading 
                         ? 'bg-gray-50 border-gray-100 text-gray-400' 
-                        : 'bg-[#58152D] border-transparent text-white hover:bg-[#7E1D3B]'
+                        : 'bg-[#241D1B] border-transparent text-[#211C1A] hover:bg-[#241D1B]'
                     }`}>
                       {isUploading ? (
                         <>
@@ -406,7 +406,7 @@ export const AdminBanners: React.FC = () => {
                     type="checkbox"
                     checked={formData.isActive}
                     onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                    className="rounded text-[#58152D] focus:ring-[#58152D]"
+                    className="rounded text-[#211C1A] focus:ring-[#241D1B]"
                   />
                   <span>Enable banner on live store</span>
                 </label>
@@ -422,7 +422,7 @@ export const AdminBanners: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-[#58152D] hover:bg-[#7E1D3B] text-white rounded-lg font-bold flex items-center gap-1.5"
+                  className="px-5 py-2 bg-[#241D1B] hover:bg-[#241D1B] text-[#211C1A] rounded-lg font-bold flex items-center gap-1.5"
                 >
                   <Save className="w-4 h-4" /> Save Banner
                 </button>

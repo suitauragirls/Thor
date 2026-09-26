@@ -51,7 +51,7 @@ export const MobileAppNavbar: React.FC = () => {
     <nav
       id="mobile-app-bottom-navbar"
       aria-label="Mobile Navigation"
-      className="md:hidden fixed bottom-0 left-0 right-0 z-[45] bg-[#F7F2EA]/95 backdrop-blur-md border-t border-[#B8935A]/30 shadow-[0_-4px_20px_rgba(61,15,31,0.12)] px-2 py-1.5 h-16 transition-all duration-300 select-none pb-safe"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-[45] bg-[#FDFBF7] border-t border-[#B8935A]/35 px-2 py-1.5 h-16 transition-colors duration-300 select-none pb-safe"
     >
       <div className="flex items-center justify-around max-w-md mx-auto pb-safe">
         {/* 1. HOME */}
@@ -59,10 +59,10 @@ export const MobileAppNavbar: React.FC = () => {
           type="button"
           id="mobile-nav-home"
           onClick={() => handleNav('home')}
-          className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 cursor-pointer ${
+            className={`relative flex flex-col items-center justify-center py-1 px-3 transition-colors duration-200 cursor-pointer ${
             activePage === 'home' && !isSearchOpen && !isCartDrawerOpen
               ? 'text-[#3D0F1F]'
-              : 'text-gray-600 hover:text-[#3D0F1F]'
+              : 'text-[#3D0F1F]/60 hover:text-[#3D0F1F]'
           }`}
         >
           <div className="relative">
@@ -71,12 +71,12 @@ export const MobileAppNavbar: React.FC = () => {
             }`} />
           </div>
           <span className={`text-[10px] tracking-tight mt-0.5 ${
-            activePage === 'home' && !isSearchOpen && !isCartDrawerOpen ? 'font-bold text-[#3D0F1F]' : 'font-medium'
+            activePage === 'home' && !isSearchOpen && !isCartDrawerOpen ? 'font-semibold text-[#3D0F1F]' : 'font-medium'
           }`}>
             Home
           </span>
           {activePage === 'home' && !isSearchOpen && !isCartDrawerOpen && (
-            <span className="absolute -bottom-1 w-5 h-0.5 bg-[#B8935A] rounded-full" />
+            <span className="absolute -bottom-1 w-5 h-px bg-[#B8935A]" />
           )}
         </button>
 
@@ -85,10 +85,10 @@ export const MobileAppNavbar: React.FC = () => {
           type="button"
           id="mobile-nav-categories"
           onClick={() => handleNav('categories')}
-          className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 cursor-pointer ${
+            className={`relative flex flex-col items-center justify-center py-1 px-3 transition-colors duration-200 cursor-pointer ${
             activePage === 'shop' && !isSearchOpen && !isCartDrawerOpen
               ? 'text-[#3D0F1F]'
-              : 'text-gray-600 hover:text-[#3D0F1F]'
+              : 'text-[#3D0F1F]/60 hover:text-[#3D0F1F]'
           }`}
         >
           <div className="relative">
@@ -97,12 +97,12 @@ export const MobileAppNavbar: React.FC = () => {
             }`} />
           </div>
           <span className={`text-[10px] tracking-tight mt-0.5 ${
-            activePage === 'shop' && !isSearchOpen && !isCartDrawerOpen ? 'font-bold text-[#3D0F1F]' : 'font-medium'
+            activePage === 'shop' && !isSearchOpen && !isCartDrawerOpen ? 'font-semibold text-[#3D0F1F]' : 'font-medium'
           }`}>
             Categories
           </span>
           {activePage === 'shop' && !isSearchOpen && !isCartDrawerOpen && (
-            <span className="absolute -bottom-1 w-5 h-0.5 bg-[#B8935A] rounded-full" />
+            <span className="absolute -bottom-1 w-5 h-px bg-[#B8935A]" />
           )}
         </button>
 
@@ -111,10 +111,10 @@ export const MobileAppNavbar: React.FC = () => {
           type="button"
           id="mobile-nav-wishlist"
           onClick={() => handleNav('wishlist')}
-          className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 cursor-pointer ${
+            className={`relative flex flex-col items-center justify-center py-1 px-3 transition-colors duration-200 cursor-pointer ${
             activePage === 'wishlist' && !isSearchOpen && !isCartDrawerOpen
               ? 'text-[#3D0F1F]'
-              : 'text-gray-600 hover:text-[#3D0F1F]'
+              : 'text-[#3D0F1F]/60 hover:text-[#3D0F1F]'
           }`}
         >
           <div className="relative">
@@ -123,19 +123,19 @@ export const MobileAppNavbar: React.FC = () => {
             }`} />
             {wishlist.length > 0 && (
               <span key={`mobile-wishlist-badge-${wishlist.length}`} className="absolute -top-1.5 -right-2 flex h-4.5 w-4.5 items-center justify-center">
-                <span className="relative inline-flex rounded-full h-4.5 w-4.5 bg-[#3D0F1F] text-white font-bold text-[9px] items-center justify-center border-1.5 border-white shadow-2xs">
+                <span className="relative inline-flex rounded-full h-4.5 w-4.5 bg-[#3D0F1F] text-[#FAF5EB] font-semibold text-[9px] items-center justify-center border border-[#FDFBF7]">
                   {wishlist.length > 99 ? '99+' : wishlist.length}
                 </span>
               </span>
             )}
           </div>
           <span className={`text-[10px] tracking-tight mt-0.5 ${
-            activePage === 'wishlist' && !isSearchOpen && !isCartDrawerOpen ? 'font-bold text-[#3D0F1F]' : 'font-medium'
+            activePage === 'wishlist' && !isSearchOpen && !isCartDrawerOpen ? 'font-semibold text-[#3D0F1F]' : 'font-medium'
           }`}>
             Wishlist
           </span>
           {activePage === 'wishlist' && !isSearchOpen && !isCartDrawerOpen && (
-            <span className="absolute -bottom-1 w-5 h-0.5 bg-[#B8935A] rounded-full" />
+            <span className="absolute -bottom-1 w-5 h-px bg-[#B8935A]" />
           )}
         </button>
 
@@ -144,10 +144,10 @@ export const MobileAppNavbar: React.FC = () => {
           type="button"
           id="mobile-nav-cart"
           onClick={() => handleNav('cart')}
-          className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 cursor-pointer ${
+            className={`relative flex flex-col items-center justify-center py-1 px-3 transition-colors duration-200 cursor-pointer ${
             (isCartDrawerOpen || activePage === 'cart') && !isSearchOpen
               ? 'text-[#3D0F1F]'
-              : 'text-gray-600 hover:text-[#3D0F1F]'
+              : 'text-[#3D0F1F]/60 hover:text-[#3D0F1F]'
           }`}
         >
           <div className="relative">
@@ -156,19 +156,19 @@ export const MobileAppNavbar: React.FC = () => {
             }`} />
             {cartCount > 0 && (
               <span key={`mobile-cart-badge-${cartCount}`} className="absolute -top-1.5 -right-2 flex h-4.5 w-4.5 items-center justify-center">
-                <span className="relative inline-flex rounded-full h-4.5 w-4.5 bg-[#3D0F1F] text-white font-bold text-[9px] items-center justify-center border-1.5 border-white shadow-2xs">
+                <span className="relative inline-flex rounded-full h-4.5 w-4.5 bg-[#3D0F1F] text-[#FAF5EB] font-semibold text-[9px] items-center justify-center border border-[#FDFBF7]">
                   {cartCount > 99 ? '99+' : cartCount}
                 </span>
               </span>
             )}
           </div>
           <span className={`text-[10px] tracking-tight mt-0.5 ${
-            (isCartDrawerOpen || activePage === 'cart') && !isSearchOpen ? 'font-bold text-[#3D0F1F]' : 'font-medium'
+            (isCartDrawerOpen || activePage === 'cart') && !isSearchOpen ? 'font-semibold text-[#3D0F1F]' : 'font-medium'
           }`}>
             Cart
           </span>
           {(isCartDrawerOpen || activePage === 'cart') && !isSearchOpen && (
-            <span className="absolute -bottom-1 w-5 h-0.5 bg-[#B8935A] rounded-full" />
+            <span className="absolute -bottom-1 w-5 h-px bg-[#B8935A]" />
           )}
         </button>
       </div>

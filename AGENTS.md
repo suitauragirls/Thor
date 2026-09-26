@@ -1,6 +1,6 @@
-# Suit Bliss Aura - Brand & UI/UX Guidelines
+# Suit Aura Girls - Brand & UI/UX Guidelines
 
-These rules are permanently set for the "Suit Bliss Aura" luxury Jaipur ethnic couture storefront. All code, styles, and UI adjustments must strictly adhere to these guidelines.
+These rules are permanently set for the "Suit Aura Girls" luxury Jaipur ethnic couture storefront. All code, styles, and UI adjustments must strictly adhere to these guidelines.
 
 ---
 
@@ -22,7 +22,7 @@ These rules are permanently set for the "Suit Bliss Aura" luxury Jaipur ethnic c
 
 ## 📸 3. Model & Media Treatment
 - **100% Unmasked Catalog Images**: Gorgeous catalog model photos contain intricate lace work, tassels, and beautiful necklines. Never cover or overlay them with dark gradients, text tags, or absolute buttons. Keep images fully bright, untouched, and unmasked.
-- **No Watermark Overlaps**: Professional catalog model images already contain the embedded "Suit Bliss Aura" watermark. Never overlay custom text logos or brand watermarks on top of the slides.
+- **No Watermark Overlaps**: Professional catalog model images already contain the embedded "Suit Aura Girls" watermark. Never overlay custom text logos or brand watermarks on top of the slides.
 - **Clean Split Layout on Desktop**: For vertical model portraits (4/5 aspect ratio), use a beautiful split-screen 12-column layout on desktop:
   - **Left 7 Cols**: The unmasked portrait model image (`aspect-[4/5]`).
   - **Right 5 Cols**: A solid Maroon `#3D0F1F` panel with gold accents hosting the clear details and flat buttons.

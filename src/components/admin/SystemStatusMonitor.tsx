@@ -34,13 +34,13 @@ export const SystemStatusMonitor: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-[#FAF7F5] p-5 sm:p-6 rounded-2xl border border-rose-100 shadow-xs space-y-4">
+    <div className="bg-[#FAF7F2] p-5 sm:p-6 rounded-2xl border border-rose-100 shadow-xs space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="font-serif text-lg font-bold text-gray-900 flex items-center gap-2">
-          <Activity className="w-5 h-5 text-[#58152D]" />
+          <Activity className="w-5 h-5 text-[#211C1A]" />
           System Status
         </h3>
-        <button onClick={checkStatus} className="text-gray-500 hover:text-[#58152D] cursor-pointer">
+        <button onClick={checkStatus} className="text-gray-500 hover:text-[#211C1A] cursor-pointer">
           <RefreshCw className="w-4 h-4" />
         </button>
       </div>
@@ -51,7 +51,7 @@ export const SystemStatusMonitor: React.FC = () => {
             <div className="flex items-center gap-2">
               <span className={`text-xs font-bold px-2 py-1 rounded-full ${
                 service.status === 'operational' ? 'bg-emerald-100 text-emerald-800' : 
-                service.status === 'degraded' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800'
+                service.status === 'degraded' ? 'bg-amber-100 text-black' : 'bg-rose-100 text-rose-800'
               }`}>
                 {service.status.toUpperCase()}
               </span>

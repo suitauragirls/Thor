@@ -23,12 +23,18 @@ export interface VisitorAnalytics {
   visitorLogs: VisitorLog[];
 }
 
-const STORAGE_KEY_VISITOR_ID = 'sba_unique_visitor_id';
-const STORAGE_KEY_TRACKED_DATE = 'sba_tracked_date_v1';
-const STORAGE_KEY_CART_DATE = 'sba_cart_date_v1';
-const STORAGE_KEY_CHECKOUT_DATE = 'sba_checkout_date_v1';
-const STORAGE_KEY_PURCHASE_DATE = 'sba_purchase_date_v1';
-const STORAGE_KEY_QUOTA_EXCEEDED = 'sba_fs_quota_exceeded';
+const STORAGE_KEY_VISITOR_ID = 'sag_unique_visitor_id';
+const STORAGE_KEY_TRACKED_DATE = 'sag_tracked_date_v1';
+const STORAGE_KEY_CART_DATE = 'sag_cart_date_v1';
+const STORAGE_KEY_CHECKOUT_DATE = 'sag_checkout_date_v1';
+const STORAGE_KEY_PURCHASE_DATE = 'sag_purchase_date_v1';
+const STORAGE_KEY_QUOTA_EXCEEDED = 'sag_fs_quota_exceeded';
+
+export function isLocalPreviewEnvironment(): boolean {
+  if (typeof window === 'undefined') return false;
+  const host = window.location.hostname.toLowerCase();
+  return host.includes('localhost') || host.includes('127.0.0.1') || host.includes('0.0.0.0') || host.includes('webcontainer') || host.includes('run.app');
+}
 
 // In-memory + sessionStorage Firestore Quota Circuit Breaker
 let isFirestoreQuotaExhausted = false;
@@ -36,8 +42,14 @@ try {
   if (typeof window !== 'undefined' && sessionStorage.getItem(STORAGE_KEY_QUOTA_EXCEEDED) === 'true') {
     isFirestoreQuotaExhausted = true;
   }
+  if (isLocalPreviewEnvironment()) {
+    isFirestoreQuotaExhausted = true;
+    sessionStorage.setItem(STORAGE_KEY_QUOTA_EXCEEDED, 'true');
+  }
 } catch {
-  // Ignore storage read errors
+  if (isLocalPreviewEnvironment()) {
+    isFirestoreQuotaExhausted = true;
+  }
 }
 
 export function markFirestoreQuotaExhausted() {

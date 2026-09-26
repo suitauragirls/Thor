@@ -35,7 +35,7 @@ export const AdminLogin: React.FC = () => {
     try {
       const res = await loginAdmin(email, password, pin);
       if (res.success) {
-        showToast('Authorized: Welcome to Suit Bliss Aura Vault.', 'success');
+        showToast('Authorized: Welcome to Suit Aura Girls Vault.', 'success');
         setAdminTab('dashboard');
         setActivePage('admin');
         navigate('/admin/dashboard');
@@ -55,17 +55,17 @@ export const AdminLogin: React.FC = () => {
   };
 
   return (
-    <div id="admin-login-page" className="min-h-screen bg-[#FAF5EB] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div id="admin-login-page" className="min-h-screen bg-[#F1E8DF] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Ambient background glows */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-[#B8935A]/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#3D0F1F]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-[#9A6A3A]/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#241D1B]/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* Return to storefront button */}
       <div className="absolute top-6 left-6 z-20">
         <button
           id="admin-login-back-to-store-btn"
           onClick={handleReturnToStorefront}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-[#FDFBF7] border border-[#B8935A]/25 rounded-xl text-xs font-semibold text-[#3D0F1F] hover:bg-[#3D0F1F] hover:text-[#FAF5EB] transition shadow-xs cursor-pointer"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-[#FDFBF7] border border-[#9A6A3A]/25 rounded-xl text-xs font-semibold text-[#211C1A] hover:bg-[#241D1B] hover:text-[#211C1A] transition shadow-xs cursor-pointer"
         >
           <Store className="w-4 h-4" />
           <span>View Storefront</span>
@@ -74,24 +74,24 @@ export const AdminLogin: React.FC = () => {
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#3D0F1F] text-[#DFBE65] border border-[#B8935A]/30 shadow-md mb-2">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#241D1B] text-[#211C1A] border border-[#9A6A3A]/30 shadow-md mb-2">
             <Sparkles className="w-7 h-7" />
           </div>
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#3D0F1F]">
-            Suit Bliss Aura Admin
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#211C1A]">
+            Suit Aura Girls Admin
           </h2>
-          <p className="text-xs uppercase tracking-[0.25em] font-semibold text-[#B8935A]">
+          <p className="text-xs uppercase tracking-[0.25em] font-semibold text-black">
             Store Operations & Catalog Control
           </p>
         </div>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
-        <div className="bg-[#FDFBF7] py-8 px-6 shadow-xl rounded-2xl sm:px-10 border border-[#B8935A]/20 space-y-6">
+        <div className="bg-[#FDFBF7] py-8 px-6 shadow-xl rounded-2xl sm:px-10 border border-[#9A6A3A]/20 space-y-6">
           
-          <div className="border-b border-[#B8935A]/15 pb-4">
-            <h3 className="text-base font-semibold text-[#3D0F1F] flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-[#B8935A]" />
+          <div className="border-b border-[#9A6A3A]/15 pb-4">
+            <h3 className="text-base font-semibold text-[#211C1A] flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-black" />
               Staff Authentication
             </h3>
             <p className="text-xs text-gray-500 mt-1">
@@ -121,7 +121,7 @@ export const AdminLogin: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter admin username"
-                  className="block w-full pl-10 pr-3.5 py-2.5 border border-[#B8935A]/25 bg-[#FAF5EB]/50 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#3D0F1F] focus:border-transparent text-gray-900"
+                  className="block w-full pl-10 pr-3.5 py-2.5 border border-[#9A6A3A]/25 bg-[#F1E8DF]/50 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B] focus:border-transparent text-gray-900"
                 />
               </div>
             </div>
@@ -141,12 +141,12 @@ export const AdminLogin: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="block w-full pl-10 pr-10 py-2.5 border border-[#B8935A]/25 bg-[#FAF5EB]/50 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#3D0F1F] focus:border-transparent text-gray-900"
+                  className="block w-full pl-10 pr-10 py-2.5 border border-[#9A6A3A]/25 bg-[#F1E8DF]/50 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#241D1B] focus:border-transparent text-gray-900"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-[#3D0F1F] cursor-pointer"
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-[#211C1A] cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -159,7 +159,7 @@ export const AdminLogin: React.FC = () => {
                 <label className="block text-xs font-bold uppercase tracking-wider text-gray-700">
                   6-Digit Security PIN (2FA)
                 </label>
-                <span className="text-[10px] font-bold text-[#3D0F1F] bg-[#FAF5EB] px-2 py-0.5 rounded-full border border-[#B8935A]/30">
+                <span className="text-[10px] font-bold text-[#211C1A] bg-[#F1E8DF] px-2 py-0.5 rounded-full border border-[#9A6A3A]/30">
                   Required
                 </span>
               </div>
@@ -175,7 +175,7 @@ export const AdminLogin: React.FC = () => {
                   value={pin}
                   onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
                   placeholder="••••••"
-                  className="block w-full pl-10 pr-3.5 py-2.5 border border-[#B8935A]/25 bg-[#FAF5EB]/50 rounded-lg text-sm tracking-widest font-mono focus:outline-none focus:ring-2 focus:ring-[#3D0F1F] focus:border-transparent text-gray-900"
+                  className="block w-full pl-10 pr-3.5 py-2.5 border border-[#9A6A3A]/25 bg-[#F1E8DF]/50 rounded-lg text-sm tracking-widest font-mono focus:outline-none focus:ring-2 focus:ring-[#241D1B] focus:border-transparent text-gray-900"
                 />
               </div>
               <p className="text-[10px] text-gray-400 mt-1">
@@ -187,7 +187,7 @@ export const AdminLogin: React.FC = () => {
               id="admin-login-submit-btn"
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl shadow-md text-xs font-bold uppercase tracking-wider text-white bg-[#3D0F1F] hover:bg-[#3D0F1F]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#3D0F1F] transition disabled:opacity-50 cursor-pointer"
+              className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl shadow-md text-xs font-bold uppercase tracking-wider text-[#211C1A] bg-[#241D1B] hover:bg-[#241D1B]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#241D1B] transition disabled:opacity-50 cursor-pointer"
             >
               {loading ? (
                 <span>Verifying Credentials...</span>

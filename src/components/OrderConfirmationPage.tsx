@@ -24,7 +24,7 @@ export const OrderConfirmationPage: React.FC = () => {
           <p className="text-xs text-gray-500">You haven't placed an order in this active session.</p>
           <button
             onClick={() => setActivePage('shop')}
-            className="px-6 py-2.5 bg-[#58152D] text-white rounded-lg text-xs font-semibold uppercase tracking-wider"
+            className="px-6 py-2.5 bg-[#241D1B] text-[#211C1A] rounded-lg text-xs font-semibold uppercase tracking-wider"
           >
             Explore Catalog
           </button>
@@ -52,7 +52,7 @@ export const OrderConfirmationPage: React.FC = () => {
           </h1>
 
           <p className="text-sm sm:text-base text-gray-600 font-medium">
-            Thank you for shopping with <strong className="text-[#58152D]">Suit Bliss Aura</strong>.
+            Thank you for shopping with <strong className="text-[#211C1A]">Suit Aura Girls</strong>.
           </p>
 
           <p className="text-xs text-gray-500">
@@ -61,13 +61,13 @@ export const OrderConfirmationPage: React.FC = () => {
         </div>
 
         {/* Order Details Card */}
-        <div className="bg-\[#FAF7F5\] border border-rose-100 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+        <div className="bg-\[#FAF7F2\] border border-rose-100 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
           
           {/* Summary Header Strip */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-[#E0BFB8]/50 rounded-xl border border-rose-100/70 text-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-[#D8C8B8]/50 rounded-xl border border-rose-100/70 text-xs">
             <div>
               <span className="text-gray-500 block">Order Number</span>
-              <strong className="font-mono text-sm text-[#58152D]">{confirmedOrder.orderNumber}</strong>
+              <strong className="font-mono text-sm text-[#211C1A]">{confirmedOrder.orderNumber}</strong>
             </div>
             <div>
               <span className="text-gray-500 block">Customer Name</span>
@@ -86,7 +86,7 @@ export const OrderConfirmationPage: React.FC = () => {
           {/* Delivery Address Block */}
           <div className="space-y-2 pt-2">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-700">
-              <MapPin className="w-4 h-4 text-[#58152D]" />
+              <MapPin className="w-4 h-4 text-[#211C1A]" />
               <span>Delivery Address</span>
             </div>
             <div className="p-4 bg-[#FFF9FA] rounded-xl border border-rose-100 text-xs sm:text-sm text-gray-700 leading-relaxed">
@@ -101,7 +101,7 @@ export const OrderConfirmationPage: React.FC = () => {
           {/* Items Purchased List */}
           <div className="space-y-3 pt-2">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-700">
-              <Package className="w-4 h-4 text-[#58152D]" />
+              <Package className="w-4 h-4 text-[#211C1A]" />
               <span>Items in this Order ({confirmedOrder.items.reduce((a, b) => a + b.quantity, 0)})</span>
             </div>
 
@@ -117,7 +117,7 @@ export const OrderConfirmationPage: React.FC = () => {
                   || '';
 
                 return (
-                  <div key={item.id} className="p-4 flex items-center justify-between gap-4 bg-\[#FAF7F5\]">
+                  <div key={item.id} className="p-4 flex items-center justify-between gap-4 bg-\[#FAF7F2\]">
                     <div className="flex items-center gap-3">
                       {itemImg ? (
                         <img src={itemImg} alt={item.product.name} className="w-14 h-16 object-cover rounded-lg border border-rose-100 shrink-0" />
@@ -131,7 +131,7 @@ export const OrderConfirmationPage: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  <span className="font-bold text-[#58152D] text-sm shrink-0">
+                  <span className="font-bold text-[#211C1A] text-sm shrink-0">
                     ₹{(item.product.price * item.quantity).toLocaleString('en-IN')}
                   </span>
                 </div>
@@ -141,7 +141,7 @@ export const OrderConfirmationPage: React.FC = () => {
           </div>
 
           {/* Pricing Totals */}
-          <div className="p-4 bg-[#E0BFB8]/40 rounded-xl border border-rose-100 space-y-2 text-xs sm:text-sm text-gray-600">
+          <div className="p-4 bg-[#D8C8B8]/40 rounded-xl border border-rose-100 space-y-2 text-xs sm:text-sm text-gray-600">
             <div className="flex justify-between">
               <span>Subtotal</span>
               <span className="font-semibold text-gray-900">₹{confirmedOrder.subtotal.toLocaleString('en-IN')}</span>
@@ -158,7 +158,7 @@ export const OrderConfirmationPage: React.FC = () => {
             </div>
             <div className="flex justify-between text-base font-bold text-[#2C1820] pt-2 border-t border-rose-100">
               <span>Total Paid (Prepaid)</span>
-              <span className="font-serif text-xl text-[#58152D]">₹{confirmedOrder.finalTotal.toLocaleString('en-IN')}</span>
+              <span className="font-serif text-xl text-[#211C1A]">₹{confirmedOrder.finalTotal.toLocaleString('en-IN')}</span>
             </div>
           </div>
 
@@ -167,7 +167,7 @@ export const OrderConfirmationPage: React.FC = () => {
             <button
               id="confirm-continue-shopping-btn"
               onClick={() => navigateToCategory('All')}
-              className="flex-1 py-3.5 bg-[#58152D] hover:bg-[#7E1D3B] text-white rounded-lg text-xs sm:text-sm font-semibold tracking-wider uppercase transition flex items-center justify-center gap-2 shadow-sm"
+              className="flex-1 py-3.5 bg-[#241D1B] hover:bg-[#241D1B] text-[#211C1A] rounded-lg text-xs sm:text-sm font-semibold tracking-wider uppercase transition flex items-center justify-center gap-2 shadow-sm"
             >
               <span>Continue Shopping</span>
               <ArrowRight className="w-4 h-4" />
@@ -176,7 +176,7 @@ export const OrderConfirmationPage: React.FC = () => {
             <button
               id="confirm-track-order-btn"
               onClick={() => setActivePage('track-order')}
-              className="px-6 py-3.5 bg-\[#FAF7F5\] border border-rose-200 text-[#58152D] hover:bg-[#E0BFB8]/20 rounded-lg text-xs sm:text-sm font-semibold tracking-wider uppercase transition"
+              className="px-6 py-3.5 bg-\[#FAF7F2\] border border-rose-200 text-[#211C1A] hover:bg-[#D8C8B8]/20 rounded-lg text-xs sm:text-sm font-semibold tracking-wider uppercase transition"
             >
               Track Order Live
             </button>

@@ -38,7 +38,7 @@ export const sendWhatsAppOrderConfirmation = async (order: Order) => {
       }
     };
 
-    const fallbackTextMessage = `🎉 *Order Confirmed!*\n\nHi ${order.customerName},\nYour payment of ₹${order.finalTotal.toLocaleString('en-IN')} is successful! We've received your order *${order.orderNumber}*.\n\n🚚 *Track your shipment live here:*\n${trackingUrl}\n\nThank you for shopping with SuitBliss Aura! ✨`;
+    const fallbackTextMessage = `🎉 *Order Confirmed!*\n\nHi ${order.customerName},\nYour payment of ₹${order.finalTotal.toLocaleString('en-IN')} is successful! We've received your order *${order.orderNumber}*.\n\n🚚 *Track your shipment live here:*\n${trackingUrl}\n\nThank you for shopping with Suit Aura Girls! ✨`;
 
     console.log('[WhatsApp API Webhook Triggered] Payload:', messagePayload);
     console.log('[WhatsApp API] Fallback Text Preview:\n' + fallbackTextMessage);

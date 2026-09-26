@@ -39,6 +39,7 @@ export interface Product {
   name: string;
   category: ProductCategory;
   subcategory?: string;
+  image?: string;
   price: number;
   originalPrice: number;
   discount: number; // percentage e.g. 38
@@ -153,6 +154,7 @@ export interface CategoryItem {
 export interface Coupon {
   id: string;
   code: string;
+  description?: string;
   discountType: 'percentage' | 'fixed';
   discountValue: number;
   minOrderValue: number;

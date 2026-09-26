@@ -104,12 +104,12 @@ export const VirtualizedCatalogGrid: React.FC<VirtualizedCatalogGridProps> = ({
     return (
       <div className="space-y-12 animate-in fade-in duration-500 w-full">
         {/* Zero Results Notice Box */}
-        <div className="p-8 sm:p-12 text-center bg-[#FAF5EB] rounded-2xl border border-[#B8935A]/35 shadow-sm space-y-5">
-          <div className="w-14 h-14 mx-auto rounded-full bg-[#3D0F1F] border border-[#B8935A]/30 flex items-center justify-center text-[#DFBE65] shadow-xs">
-            <Search className="w-6 h-6 text-[#DFBE65]" />
+        <div className="p-8 sm:p-12 text-center bg-[#F1E8DF] rounded-2xl border border-[#9A6A3A]/35 shadow-sm space-y-5">
+          <div className="w-14 h-14 mx-auto rounded-full bg-[#241D1B] border border-[#9A6A3A]/30 flex items-center justify-center text-[#211C1A] shadow-xs">
+            <Search className="w-6 h-6 text-black" />
           </div>
           <div className="space-y-2">
-            <h3 className="font-serif text-2xl font-bold text-[#3D0F1F]">
+            <h3 className="font-serif text-2xl font-bold text-[#211C1A]">
               No Masterpieces Found
             </h3>
             <p className="text-xs sm:text-sm text-gray-600 max-w-md mx-auto leading-relaxed">
@@ -121,7 +121,7 @@ export const VirtualizedCatalogGrid: React.FC<VirtualizedCatalogGridProps> = ({
               type="button"
               id="zero-results-reset-btn"
               onClick={onResetFilters}
-              className="px-6 py-3 bg-[#3D0F1F] hover:bg-[#2A0914] text-white rounded-xl text-xs font-black uppercase tracking-[0.15em] shadow-md transition-all duration-300 active:scale-95 cursor-pointer border border-[#B8935A]/40"
+              className="px-6 py-3 bg-[#241D1B] hover:bg-[#241D1B] text-[#211C1A] rounded-xl text-xs font-black uppercase tracking-[0.15em] shadow-md transition-all duration-300 active:scale-95 cursor-pointer border border-[#9A6A3A]/40"
             >
               Reset Filters & View All
             </button>
@@ -131,18 +131,18 @@ export const VirtualizedCatalogGrid: React.FC<VirtualizedCatalogGridProps> = ({
         {/* Top 4 Bestseller Ethnic Sets */}
         {top4Bestsellers.length > 0 && (
           <div id="zero-results-bestsellers-section" className="pt-2">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-[#B8935A]/20 pb-3.5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-[#9A6A3A]/20 pb-3.5">
               <div>
-                <span className="text-[10px] uppercase tracking-[0.18em] font-black text-[#B8935A] flex items-center gap-1.5 mb-1">
-                  <SparklesIcon className="w-3.5 h-3.5 text-[#DFBE65] fill-[#DFBE65]" />
-                  MOST LOVED BY JAIPUR PATRONS
+                <span className="text-[10px] uppercase tracking-[0.18em] font-black text-black flex items-center gap-1.5 mb-1">
+                  <SparklesIcon className="w-3.5 h-3.5 text-black fill-black" />
+                  MOST LOVED BY ARTISAN PATRONS
                 </span>
-                <h2 className="font-serif text-2xl font-bold text-[#3D0F1F]">
+                <h2 className="font-serif text-2xl font-bold text-[#211C1A]">
                   Bestselling Signature Outfits
                 </h2>
               </div>
-              <span className="text-xs font-bold text-[#3D0F1F] bg-[#B8935A]/15 border border-[#B8935A]/25 px-3 py-1 rounded-full self-start sm:self-auto flex items-center gap-1">
-                <Flame className="w-3.5 h-3.5 text-amber-600 fill-amber-600 animate-pulse" />
+              <span className="text-xs font-bold text-[#211C1A] bg-[#9A6A3A]/15 border border-[#9A6A3A]/25 px-3 py-1 rounded-full self-start sm:self-auto flex items-center gap-1">
+                <Flame className="w-3.5 h-3.5 text-black fill-black animate-pulse" />
                 Customer Favorites
               </span>
             </div>
@@ -164,12 +164,12 @@ export const VirtualizedCatalogGrid: React.FC<VirtualizedCatalogGridProps> = ({
   return (
     <div id="optimized-catalog-container" className="relative w-full">
       {/* Active Results Summary Badge */}
-      <div className="flex items-center justify-between pb-3 text-xs font-bold text-gray-500 border-b border-[#B8935A]/15 mb-6">
-        <div className="flex items-center gap-2 text-[#3D0F1F]">
-          <SparklesIcon className="w-3.5 h-3.5 text-[#B8935A]" />
-          <span>Viewing <strong className="text-[#3D0F1F] font-extrabold">{totalItems}</strong> authentic designs</span>
+      <div className="flex items-center justify-between pb-3 text-xs font-bold text-gray-500 border-b border-[#9A6A3A]/15 mb-6">
+        <div className="flex items-center gap-2 text-[#211C1A]">
+          <SparklesIcon className="w-3.5 h-3.5 text-black" />
+          <span>Viewing <strong className="text-[#211C1A] font-extrabold">{totalItems}</strong> authentic designs</span>
         </div>
-        <span className="text-[9px] uppercase tracking-[0.15em] bg-[#B8935A]/15 text-[#3D0F1F] px-3 py-1 rounded-full border border-[#B8935A]/20 font-black">
+        <span className="text-[9px] uppercase tracking-[0.15em] bg-[#9A6A3A]/15 text-[#211C1A] px-3 py-1 rounded-full border border-[#9A6A3A]/20 font-black">
           ⚡ Smooth Scroll
         </span>
       </div>
@@ -195,11 +195,11 @@ export const VirtualizedCatalogGrid: React.FC<VirtualizedCatalogGridProps> = ({
       {/* Elegant Infinite Loading Indicator */}
       {visibleCount < totalItems && (
         <div className="py-12 flex flex-col items-center justify-center text-center gap-3">
-          <div className="w-7 h-7 border-2 border-[#B8935A]/25 border-t-[#3D0F1F] rounded-full animate-spin"></div>
+          <div className="w-7 h-7 border-2 border-[#9A6A3A]/25 border-t-[#211C1A] rounded-full animate-spin"></div>
           <p className="text-xs text-gray-500 font-serif italic">Scrolling reveals more exquisite couture designs...</p>
           <button
             onClick={() => setVisibleCount(prev => Math.min(totalItems, prev + 12))}
-            className="mt-2 px-5 py-2.5 bg-[#FAF5EB] hover:bg-[#3D0F1F] text-[#3D0F1F] hover:text-[#FAF5EB] border border-[#B8935A]/50 hover:border-[#3D0F1F] rounded-full text-[10px] font-black uppercase tracking-[0.15em] transition-all duration-300 cursor-pointer shadow-3xs"
+            className="mt-2 px-5 py-2.5 bg-[#F1E8DF] hover:bg-[#241D1B] text-[#211C1A] hover:text-[#211C1A] border border-[#9A6A3A]/50 hover:border-[#241D1B] rounded-full text-[10px] font-black uppercase tracking-[0.15em] transition-all duration-300 cursor-pointer shadow-3xs"
           >
             Show All Outfits ({totalItems - visibleCount} Left)
           </button>
@@ -212,10 +212,10 @@ export const VirtualizedCatalogGrid: React.FC<VirtualizedCatalogGridProps> = ({
           type="button"
           id="optimized-scroll-top-btn"
           onClick={scrollToTop}
-          className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-[8000] p-2.5 sm:p-3 rounded-full bg-[#3D0F1F]/90 hover:bg-[#3D0F1F] backdrop-blur-md text-white shadow-md active:scale-95 transition-all duration-300 flex items-center gap-1.5 text-xs font-black border border-[#B8935A]/40 cursor-pointer"
+          className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-[8000] p-2.5 sm:p-3 rounded-full bg-[#241D1B]/90 hover:bg-[#241D1B] backdrop-blur-md text-[#211C1A] shadow-md active:scale-95 transition-all duration-300 flex items-center gap-1.5 text-xs font-black border border-[#9A6A3A]/40 cursor-pointer"
           title="Back to Top"
         >
-          <ArrowUpIcon className="w-4 h-4 text-[#DFBE65]" />
+          <ArrowUpIcon className="w-4 h-4 text-black" />
           <span className="hidden sm:inline text-[10px] tracking-widest uppercase text-white">Top</span>
         </button>
       )}

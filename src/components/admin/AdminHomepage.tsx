@@ -40,16 +40,16 @@ export const AdminHomepage: React.FC = () => {
   const getSectionIcon = (key: string) => {
     switch (key) {
       case 'hero':
-        return <Sparkles className="w-4 h-4 text-[#DFBE65]" />;
+        return <Sparkles className="w-4 h-4 text-black" />;
       case 'comboOffers':
       case 'dealOfTheDay':
-        return <Gift className="w-4 h-4 text-[#DFBE65]" />;
+        return <Gift className="w-4 h-4 text-black" />;
       case 'categoryGrid':
         return <LayoutGrid className="w-4 h-4 text-purple-500" />;
       case 'newArrivals':
         return <Sparkles className="w-4 h-4 text-\[#B76E79\]" />;
       case 'bestSellers':
-        return <Award className="w-4 h-4 text-amber-600" />;
+        return <Award className="w-4 h-4 text-black" />;
       case 'trending':
         return <TrendingUp className="w-4 h-4 text-cyan-600" />;
       case 'festive':
@@ -57,7 +57,7 @@ export const AdminHomepage: React.FC = () => {
       case 'whyShop':
         return <ShieldCheck className="w-4 h-4 text-indigo-500" />;
       case 'reviews':
-        return <Star className="w-4 h-4 text-amber-400 fill-amber-400" />;
+        return <Star className="w-4 h-4 text-black fill-black" />;
       default:
         return <Layers className="w-4 h-4 text-gray-500" />;
     }
@@ -154,17 +154,17 @@ export const AdminHomepage: React.FC = () => {
     <div id="admin-homepage-page" className="space-y-6 pb-12">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-\[#FAF7F5\] p-5 rounded-2xl border border-rose-100 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-\[#FAF7F2\] p-5 rounded-2xl border border-rose-100 shadow-xs">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-widest text-[#8B2635]">
             Storefront Layout Customization
           </span>
           <h2 className="font-serif text-2xl font-bold text-gray-900 flex items-center gap-2 mt-0.5">
-            <Layers className="w-6 h-6 text-[#DFBE65]" />
+            <Layers className="w-6 h-6 text-black" />
             Homepage Layout & Section Order Manager
           </h2>
           <p className="text-xs text-gray-500 mt-1">
-            यहाँ से आप होमपेज के सभी 12 सेक्शन्स का क्रम (Order) ऊपर/नीचे बदल सकते हैं और जिन्हें छुपाना हो उन्हें 1-क्लिक में Hide/Show कर सकते हैं।
+            à¤¯à¤¹à¤¾à¤ à¤¸à¥‡ à¤†à¤ª à¤¹à¥‹à¤®à¤ªà¥‡à¤œ à¤•à¥‡ à¤¸à¤­à¥€ 12 à¤¸à¥‡à¤•à¥à¤¶à¤¨à¥à¤¸ à¤•à¤¾ à¤•à¥à¤°à¤® (Order) à¤Šà¤ªà¤°/à¤¨à¥€à¤šà¥‡ à¤¬à¤¦à¤² à¤¸à¤•à¤¤à¥‡ à¤¹à¥ˆà¤‚ à¤”à¤° à¤œà¤¿à¤¨à¥à¤¹à¥‡à¤‚ à¤›à¥à¤ªà¤¾à¤¨à¤¾ à¤¹à¥‹ à¤‰à¤¨à¥à¤¹à¥‡à¤‚ 1-à¤•à¥à¤²à¤¿à¤• à¤®à¥‡à¤‚ Hide/Show à¤•à¤° à¤¸à¤•à¤¤à¥‡ à¤¹à¥ˆà¤‚à¥¤
           </p>
         </div>
 
@@ -183,7 +183,7 @@ export const AdminHomepage: React.FC = () => {
           <button
             type="button"
             onClick={() => setActivePage('home')}
-            className="px-4 py-2 bg-gradient-to-r from-[#58152D] to-[#7E1D3B] hover:brightness-110 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer"
+            className="px-4 py-2 bg-gradient-to-r from-[#241D1B] to-[#241D1B] hover:brightness-110 text-[#211C1A] rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer"
           >
             <ExternalLink className="w-3.5 h-3.5" />
             <span>Preview Live Store</span>
@@ -193,17 +193,17 @@ export const AdminHomepage: React.FC = () => {
 
       {/* Stats Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="bg-[#FAF7F5] p-4 rounded-2xl border border-rose-100 shadow-xs flex items-center justify-between">
+        <div className="bg-[#FAF7F2] p-4 rounded-2xl border border-rose-100 shadow-xs flex items-center justify-between">
           <div>
             <span className="text-[11px] text-gray-500 font-medium">Total Sections</span>
             <div className="text-xl font-bold text-gray-900">{homepageSections.length}</div>
           </div>
-          <div className="w-9 h-9 rounded-xl bg-[#E0BFB8]/20 text-[#58152D] flex items-center justify-center font-bold">
+          <div className="w-9 h-9 rounded-xl bg-[#D8C8B8]/20 text-[#211C1A] flex items-center justify-center font-bold">
             <Layers className="w-4 h-4" />
           </div>
         </div>
 
-        <div className="bg-[#FAF7F5] p-4 rounded-2xl border border-emerald-100 shadow-xs flex items-center justify-between">
+        <div className="bg-[#FAF7F2] p-4 rounded-2xl border border-emerald-100 shadow-xs flex items-center justify-between">
           <div>
             <span className="text-[11px] text-gray-500 font-medium">Active (Visible on Home)</span>
             <div className="text-xl font-bold text-emerald-600">{homepageSections.filter(s => s.enabled !== false).length}</div>
@@ -213,7 +213,7 @@ export const AdminHomepage: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-[#FAF7F5] p-4 rounded-2xl border border-gray-100 shadow-xs flex items-center justify-between">
+        <div className="bg-[#FAF7F2] p-4 rounded-2xl border border-gray-100 shadow-xs flex items-center justify-between">
           <div>
             <span className="text-[11px] text-gray-500 font-medium">Hidden Sections</span>
             <div className="text-xl font-bold text-gray-400">{homepageSections.filter(s => s.enabled === false).length}</div>
@@ -225,11 +225,11 @@ export const AdminHomepage: React.FC = () => {
       </div>
 
       {/* Main Section Order Cards */}
-      <div className="bg-\[#FAF7F5\] p-5 sm:p-6 rounded-2xl border border-rose-100 shadow-xs space-y-4">
+      <div className="bg-\[#FAF7F2\] p-5 sm:p-6 rounded-2xl border border-rose-100 shadow-xs space-y-4">
         <div className="flex items-center justify-between border-b border-gray-100 pb-3">
           <div>
             <h3 className="font-serif text-base font-bold text-gray-900 flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-[#58152D]" />
+              <Sliders className="w-4 h-4 text-[#211C1A]" />
               Storefront Sections Hierarchy
             </h3>
             <p className="text-xs text-gray-500 mt-0.5">
@@ -266,12 +266,12 @@ export const AdminHomepage: React.FC = () => {
         </div>
 
         {/* Live sync helper box */}
-        <div className="p-4 bg-gradient-to-r from-[#E0BFB8]/60 via-amber-50/40 to-\[#E0BFB8\]\/60 rounded-2xl border border-rose-100 text-xs text-gray-700 flex items-start gap-3 mt-4">
-          <Sparkles className="w-4 h-4 text-[#DFBE65] shrink-0 mt-0.5" />
+        <div className="p-4 bg-gradient-to-r from-[#D8C8B8]/60 via-amber-50/40 to-\[#D8C8B8\]\/60 rounded-2xl border border-rose-100 text-xs text-gray-700 flex items-start gap-3 mt-4">
+          <Sparkles className="w-4 h-4 text-black shrink-0 mt-0.5" />
           <div className="space-y-0.5">
-            <span className="font-bold text-[#58152D]">Real-Time Storefront Synchronization Active:</span>
+            <span className="font-bold text-[#211C1A]">Real-Time Storefront Synchronization Active:</span>
             <p className="text-gray-600 text-[11px]">
-              यहाँ किया गया कोई भी बदलाव (सेक्शन को ऊपर/नीचे करना या हाइड करना) तुरंत आपके लाइव कस्टमर स्टोर पर लागू हो जाता है और Supabase डेटाबेस में सुरक्षित सेव होता है।
+              à¤¯à¤¹à¤¾à¤ à¤•à¤¿à¤¯à¤¾ à¤—à¤¯à¤¾ à¤•à¥‹à¤ˆ à¤­à¥€ à¤¬à¤¦à¤²à¤¾à¤µ (à¤¸à¥‡à¤•à¥à¤¶à¤¨ à¤•à¥‹ à¤Šà¤ªà¤°/à¤¨à¥€à¤šà¥‡ à¤•à¤°à¤¨à¤¾ à¤¯à¤¾ à¤¹à¤¾à¤‡à¤¡ à¤•à¤°à¤¨à¤¾) à¤¤à¥à¤°à¤‚à¤¤ à¤†à¤ªà¤•à¥‡ à¤²à¤¾à¤‡à¤µ à¤•à¤¸à¥à¤Ÿà¤®à¤° à¤¸à¥à¤Ÿà¥‹à¤° à¤ªà¤° à¤²à¤¾à¤—à¥‚ à¤¹à¥‹ à¤œà¤¾à¤¤à¤¾ à¤¹à¥ˆ à¤”à¤° Supabase à¤¡à¥‡à¤Ÿà¤¾à¤¬à¥‡à¤¸ à¤®à¥‡à¤‚ à¤¸à¥à¤°à¤•à¥à¤·à¤¿à¤¤ à¤¸à¥‡à¤µ à¤¹à¥‹à¤¤à¤¾ à¤¹à¥ˆà¥¤
             </p>
           </div>
         </div>

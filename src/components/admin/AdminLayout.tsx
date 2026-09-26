@@ -58,12 +58,12 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     { id: 'products', label: 'Products', route: '/admin/products', icon: Package, badge: products.length },
     { id: 'add-product', label: 'Add Product', route: '/admin/products/new', icon: PlusCircle },
     { id: 'categories', label: 'Categories', route: '/admin/categories', icon: Layers, badge: categories.length },
-    { id: 'orders', label: 'Orders', route: '/admin/orders', icon: ShoppingBag, badge: pendingOrdersCount, badgeColor: 'bg-amber-100 text-amber-800' },
+    { id: 'orders', label: 'Orders', route: '/admin/orders', icon: ShoppingBag, badge: pendingOrdersCount, badgeColor: 'bg-amber-100 text-black' },
     { id: 'customers', label: 'Customers', route: '/admin/customers', icon: Users },
     { id: 'leads', label: 'Captured Leads', route: '/admin/leads', icon: MessageSquare },
     { id: 'coupons', label: 'Coupons', route: '/admin/coupons', icon: Tag, badge: coupons.length },
-    { id: 'dealOfTheDay', label: 'Deal of the Day', route: '/admin/deal-of-the-day', icon: Flame, badgeColor: 'bg-amber-100 text-amber-800' },
-    { id: 'comboOffers', label: 'Combo & Story Reels', route: '/admin/combo-offers', icon: Flame, badgeColor: 'bg-[#E0BFB8]/40 text-rose-800' },
+    { id: 'dealOfTheDay', label: 'Deal of the Day', route: '/admin/deal-of-the-day', icon: Flame, badgeColor: 'bg-amber-100 text-black' },
+    { id: 'comboOffers', label: 'Combo & Story Reels', route: '/admin/combo-offers', icon: Flame, badgeColor: 'bg-[#D8C8B8]/40 text-rose-800' },
     { id: 'homepage', label: 'Homepage', route: '/admin/homepage', icon: LayoutTemplate },
     { id: 'hero', label: 'Hero Slides', route: '/admin/hero', icon: Sparkles },
     { id: 'banners', label: 'Banners', route: '/admin/banners', icon: ImageIcon },
@@ -83,7 +83,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
   const handleLogout = () => {
     logoutAdmin();
-    showToast('Signed out securely from Suit Bliss Aura Vault.', 'info');
+    showToast('Signed out securely from Suit Aura Girls Vault.', 'info');
     setActivePage('home');
     navigate('/');
   };
@@ -94,17 +94,17 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   };
 
   return (
-    <div id="admin-layout" className="min-h-screen bg-[#FAF5EB] flex flex-col font-sans text-gray-900">
+    <div id="admin-layout" className="min-h-screen bg-[#F1E8DF] flex flex-col font-sans text-gray-900">
       
       {/* Top Admin Header Bar */}
-      <header className="bg-[#FDFBF7] border-b border-[#B8935A]/20 sticky top-0 z-30 shadow-xs">
+      <header className="bg-[#FDFBF7] border-b border-[#9A6A3A]/20 sticky top-0 z-30 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
           
           {/* Mobile menu trigger + Logo */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-              className="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-[#B8935A]/10 hover:text-[#3D0F1F] transition cursor-pointer"
+              className="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-[#9A6A3A]/10 hover:text-[#211C1A] transition cursor-pointer"
               aria-label="Toggle mobile admin sidebar"
             >
               {mobileSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -114,14 +114,14 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               className="flex items-center gap-2 cursor-pointer" 
               onClick={() => openAdminTab('dashboard')}
             >
-              <div className="w-9 h-9 rounded-xl bg-[#3D0F1F] text-[#DFBE65] flex items-center justify-center border border-[#B8935A]/35 shadow-sm">
+              <div className="w-9 h-9 rounded-xl bg-[#241D1B] text-[#211C1A] flex items-center justify-center border border-[#9A6A3A]/35 shadow-sm">
                 <Sparkles className="w-4 h-4" />
               </div>
               <div className="hidden sm:block">
-                <h1 className="font-serif font-bold text-base text-[#3D0F1F] tracking-tight leading-none">
-                  SUIT BLISS AURA
+                <h1 className="font-serif font-bold text-base text-[#211C1A] tracking-tight leading-none">
+                  SUIT AURA GIRLS
                 </h1>
-                <span className="text-[10px] uppercase font-bold tracking-widest text-[#B8935A]">
+                <span className="text-[10px] uppercase font-bold tracking-widest text-black">
                   Admin Dashboard
                 </span>
               </div>
@@ -130,7 +130,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             {/* Desktop toggle collapse sidebar button */}
             <button
               onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              className="hidden lg:flex p-1.5 rounded-lg text-gray-400 hover:text-[#3D0F1F] hover:bg-[#B8935A]/10 transition ml-2 cursor-pointer"
+              className="hidden lg:flex p-1.5 rounded-lg text-gray-400 hover:text-[#211C1A] hover:bg-[#9A6A3A]/10 transition ml-2 cursor-pointer"
               title={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
               {isSidebarCollapsed ? <PanelLeft className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
@@ -144,7 +144,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             <button
               id="admin-view-storefront-btn"
               onClick={handleViewStorefront}
-              className="px-3 sm:px-3.5 py-1.5 bg-[#B8935A]/10 hover:bg-[#3D0F1F] hover:text-[#FAF5EB] text-[#3D0F1F] border border-[#B8935A]/25 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+              className="px-3 sm:px-3.5 py-1.5 bg-[#9A6A3A]/10 hover:bg-[#241D1B] hover:text-[#211C1A] text-[#211C1A] border border-[#9A6A3A]/25 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
               title="Return to customer-facing shop"
             >
               <Store className="w-3.5 h-3.5" />
@@ -156,19 +156,19 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             <div className="relative">
               <button
                 onClick={() => showToast(`Store Operational: ${pendingOrdersCount} pending orders, ${lowStockCount} low stock alerts.`, 'info')}
-                className="p-2 rounded-lg text-gray-600 hover:bg-[#B8935A]/10 hover:text-[#3D0F1F] transition relative cursor-pointer"
+                className="p-2 rounded-lg text-gray-600 hover:bg-[#9A6A3A]/10 hover:text-[#211C1A] transition relative cursor-pointer"
                 title="Notifications"
               >
                 <Bell className="w-4 h-4" />
                 {pendingOrdersCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#3D0F1F] ring-2 ring-white" />
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#241D1B] ring-2 ring-white" />
                 )}
               </button>
             </div>
 
             {/* Admin Profile Pill */}
-            <div className="flex items-center gap-2 pl-2 border-l border-[#B8935A]/20">
-              <div className="w-8 h-8 rounded-full bg-[#3D0F1F] text-[#FAF5EB] border border-[#B8935A]/35 flex items-center justify-center text-xs font-bold font-serif shadow-xs">
+            <div className="flex items-center gap-2 pl-2 border-l border-[#9A6A3A]/20">
+              <div className="w-8 h-8 rounded-full bg-[#241D1B] text-[#211C1A] border border-[#9A6A3A]/35 flex items-center justify-center text-xs font-bold font-serif shadow-xs">
                 {adminEmail ? adminEmail[0].toUpperCase() : 'A'}
               </div>
               <div className="hidden md:block text-left">
@@ -176,7 +176,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                   Admin User
                 </p>
                 <p className="text-[10px] text-gray-500 font-mono leading-tight">
-                  {adminEmail || 'admin@suitblissaura.com'}
+                  {adminEmail || 'admin@suitauragirls.com'}
                 </p>
               </div>
             </div>
@@ -191,7 +191,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         
         {/* Desktop Sticky Sidebar */}
         <aside className={`hidden lg:block shrink-0 transition-all duration-300 ${isSidebarCollapsed ? 'w-16' : 'w-64'}`}>
-          <div className="bg-[#FDFBF7] rounded-2xl border border-[#B8935A]/25 p-3 sm:p-4 shadow-xs sticky top-22 space-y-6">
+          <div className="bg-[#FDFBF7] rounded-2xl border border-[#9A6A3A]/25 p-3 sm:p-4 shadow-xs sticky top-22 space-y-6">
             
             <div className="space-y-1">
               {!isSidebarCollapsed && (
@@ -211,21 +211,21 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                     onClick={() => handleNavClick(item.id)}
                     className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center p-2.5' : 'justify-between px-3 py-2.5'} rounded-xl text-xs font-semibold transition group cursor-pointer ${
                       isActive
-                        ? 'bg-[#3D0F1F] text-[#FAF5EB] shadow-sm'
-                        : 'text-gray-600 hover:bg-[#B8935A]/10 hover:text-[#3D0F1F]'
+                        ? 'bg-[#241D1B] text-[#211C1A] shadow-sm'
+                        : 'text-gray-600 hover:bg-[#9A6A3A]/10 hover:text-[#211C1A]'
                     }`}
                     title={isSidebarCollapsed ? item.label : undefined}
                   >
                     <div className="flex items-center gap-2.5">
-                      <Icon className={`w-4 h-4 ${isActive ? 'text-[#DFBE65]' : 'text-gray-500 group-hover:text-[#3D0F1F]'}`} />
+                      <Icon className={`w-4 h-4 ${isActive ? 'text-black' : 'text-gray-500 group-hover:text-[#211C1A]'}`} />
                       {!isSidebarCollapsed && <span>{item.label}</span>}
                     </div>
 
                     {!isSidebarCollapsed && item.badge !== undefined && (
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                         isActive 
-                          ? 'bg-[#FAF5EB]/20 text-white' 
-                          : item.badgeColor || 'bg-[#B8935A]/15 text-[#3D0F1F]'
+                          ? 'bg-[#F1E8DF]/20 text-white' 
+                          : item.badgeColor || 'bg-[#9A6A3A]/15 text-[#211C1A]'
                       }`}>
                         {item.badge}
                       </span>
@@ -236,10 +236,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             </div>
 
             {/* System Status Summary & Logout */}
-            <div className="pt-4 border-t border-[#B8935A]/20 space-y-3">
+            <div className="pt-4 border-t border-[#9A6A3A]/20 space-y-3">
               {!isSidebarCollapsed && (
-                <div className="p-3 bg-[#FAF5EB]/50 rounded-xl border border-[#B8935A]/20">
-                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#3D0F1F]">
+                <div className="p-3 bg-[#F1E8DF]/50 rounded-xl border border-[#9A6A3A]/20">
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#211C1A]">
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                     <span>Store Operational</span>
                   </div>
@@ -267,21 +267,21 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         {/* Mobile Slide-over Sidebar Drawer */}
         {mobileSidebarOpen && (
           <div className="fixed inset-0 z-50 lg:hidden bg-black/40 backdrop-blur-xs flex animate-in fade-in">
-            <div className="w-72 bg-[#FAF5EB] h-full shadow-2xl p-5 flex flex-col justify-between overflow-y-auto border-r border-[#B8935A]/25">
+            <div className="w-72 bg-[#F1E8DF] h-full shadow-2xl p-5 flex flex-col justify-between overflow-y-auto border-r border-[#9A6A3A]/25">
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#B8935A]/20">
+                <div className="flex items-center justify-between pb-3 border-b border-[#9A6A3A]/20">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-[#3D0F1F] text-[#DFBE65] flex items-center justify-center border border-[#B8935A]/35">
+                    <div className="w-8 h-8 rounded-lg bg-[#241D1B] text-[#211C1A] flex items-center justify-center border border-[#9A6A3A]/35">
                       <Sparkles className="w-4 h-4" />
                     </div>
                     <div>
-                      <h3 className="font-serif font-bold text-sm text-[#3D0F1F]">Suit Bliss Aura</h3>
-                      <p className="text-[9px] uppercase tracking-widest text-[#B8935A]">Admin Navigation</p>
+                      <h3 className="font-serif font-bold text-sm text-[#211C1A]">Suit Aura Girls</h3>
+                      <p className="text-[9px] uppercase tracking-widest text-black">Admin Navigation</p>
                     </div>
                   </div>
                   <button 
                     onClick={() => setMobileSidebarOpen(false)} 
-                    className="p-1.5 rounded-lg text-gray-500 hover:bg-[#B8935A]/10 hover:text-[#3D0F1F] transition cursor-pointer"
+                    className="p-1.5 rounded-lg text-gray-500 hover:bg-[#9A6A3A]/10 hover:text-[#211C1A] transition cursor-pointer"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -297,8 +297,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                         onClick={() => handleNavClick(item.id)}
                         className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
                           isActive
-                            ? 'bg-[#3D0F1F] text-[#FAF5EB]'
-                            : 'text-gray-600 hover:bg-[#B8935A]/10 hover:text-[#3D0F1F]'
+                            ? 'bg-[#241D1B] text-[#211C1A]'
+                            : 'text-gray-600 hover:bg-[#9A6A3A]/10 hover:text-[#211C1A]'
                         }`}
                       >
                         <div className="flex items-center gap-2.5">
@@ -307,7 +307,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                         </div>
                         {item.badge !== undefined && (
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                            isActive ? 'bg-[#FAF5EB]/20 text-white' : item.badgeColor || 'bg-[#B8935A]/15 text-[#3D0F1F]'
+                            isActive ? 'bg-[#F1E8DF]/20 text-white' : item.badgeColor || 'bg-[#9A6A3A]/15 text-[#211C1A]'
                           }`}>
                             {item.badge}
                           </span>
@@ -318,10 +318,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[#B8935A]/20 space-y-2">
+              <div className="pt-4 border-t border-[#9A6A3A]/20 space-y-2">
                 <button
                   onClick={handleViewStorefront}
-                  className="w-full py-2.5 px-3 bg-[#B8935A]/10 text-[#3D0F1F] border border-[#B8935A]/25 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="w-full py-2.5 px-3 bg-[#9A6A3A]/10 text-[#211C1A] border border-[#9A6A3A]/25 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <Store className="w-4 h-4" /> View Storefront
                 </button>

@@ -20,10 +20,10 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Suit Bliss Aura ErrorBoundary caught an error:', error, errorInfo);
+    console.error('Suit Aura Girls ErrorBoundary caught an error:', error, errorInfo);
     try {
-      safeLocalStorage.removeItem('sba_cart_v1');
-      safeLocalStorage.removeItem('sba_cart_backup');
+      safeLocalStorage.removeItem('sag_cart_v1');
+      safeLocalStorage.removeItem('sag_cart_backup');
     } catch {}
   }
 
@@ -46,25 +46,25 @@ export class ErrorBoundary extends Component<Props, State> {
   public override render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-[#FAF5EB] flex flex-col items-center justify-center p-6 text-center text-[#3D0F1F]">
-          <div className="max-w-md w-full bg-white p-6 sm:p-8 rounded-3xl border border-[#B8935A]/30 shadow-xl space-y-4">
-            <div className="w-16 h-16 mx-auto bg-[#3D0F1F] text-[#DFBE65] rounded-full flex items-center justify-center text-2xl font-black shadow-md">
+        <div className="min-h-screen bg-[#F1E8DF] flex flex-col items-center justify-center p-6 text-center text-[#211C1A]">
+          <div className="max-w-md w-full bg-white p-6 sm:p-8 rounded-3xl border border-[#9A6A3A]/30 shadow-xl space-y-4">
+            <div className="w-16 h-16 mx-auto bg-[#241D1B] text-[#211C1A] rounded-full flex items-center justify-center text-2xl font-black shadow-md">
               👑
             </div>
-            <h1 className="font-serif text-2xl font-bold text-[#3D0F1F]">Suit Bliss Aura</h1>
+            <h1 className="font-serif text-2xl font-bold text-[#211C1A]">Suit Aura Girls</h1>
             <p className="text-xs text-gray-600 leading-relaxed">
-              Updating store view for your browser. Click below to continue shopping our latest Jaipuri ethnic collection!
+              Updating store view for your browser. Click below to continue shopping our latest Heritage ethnic collection!
             </p>
             <div className="space-y-2.5 pt-2">
               <button
                 onClick={this.handleAutoRecover}
-                className="w-full py-3.5 bg-[#3D0F1F] hover:bg-[#58152D] active:scale-95 text-[#FAF5EB] font-bold text-xs uppercase tracking-widest rounded-xl shadow-md transition duration-200 cursor-pointer border border-[#B8935A]/30"
+                className="w-full py-3.5 bg-[#241D1B] hover:bg-[#241D1B] active:scale-95 text-[#211C1A] font-bold text-xs uppercase tracking-widest rounded-xl shadow-md transition duration-200 cursor-pointer border border-[#9A6A3A]/30"
               >
                 OPEN STORE NOW 🌸
               </button>
               <button
                 onClick={this.handleReload}
-                className="w-full py-2.5 bg-transparent text-[#3D0F1F] font-semibold text-[11px] uppercase tracking-wider rounded-lg hover:bg-[#B8935A]/10 cursor-pointer"
+                className="w-full py-2.5 bg-transparent text-[#211C1A] font-semibold text-[11px] uppercase tracking-wider rounded-lg hover:bg-[#9A6A3A]/10 cursor-pointer"
               >
                 Reset Store Cache
               </button>

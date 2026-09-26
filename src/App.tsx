@@ -110,7 +110,7 @@ const MainContent: React.FC = () => {
 
   // Customer-facing Storefront
   return (
-    <main id="app-main-content" className="min-h-screen flex flex-col bg-[#FFFDFC] w-full max-w-full overflow-x-hidden">
+    <main id="app-main-content" className="min-h-screen flex flex-col bg-[#FDFBF7] w-full max-w-full overflow-x-hidden">
       <Header />
       <MobileMenuDrawer />
 

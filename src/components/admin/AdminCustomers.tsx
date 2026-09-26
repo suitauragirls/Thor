@@ -57,7 +57,7 @@ export const AdminCustomers: React.FC = () => {
   const [combinedCustomers, setCombinedCustomers] = useState<DetailedRealCustomer[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Load and combine all real registered accounts from LocalStorage + Supabase Customers + Supabase Profiles
+  // Load and combine registered accounts from Firestore, local storage, and Supabase Profiles.
   const refreshCustomerDirectory = async () => {
     setLoading(true);
     try {
@@ -128,7 +128,7 @@ export const AdminCustomers: React.FC = () => {
 
       // 2. Load LocalStorage Registered Accounts
       try {
-        const stored = localStorage.getItem('sba_registered_accounts');
+        const stored = localStorage.getItem('sag_registered_accounts');
         if (stored) {
           const parsed = JSON.parse(stored);
           if (Array.isArray(parsed)) {
@@ -145,7 +145,7 @@ export const AdminCustomers: React.FC = () => {
                   phone: usr.phone || ''
                 };
                 try {
-                  const pStr = localStorage.getItem(`sba_user_profile_${normEmail}`);
+                  const pStr = localStorage.getItem(`sag_user_profile_${normEmail}`);
                   if (pStr) {
                     const pParsed = JSON.parse(pStr);
                     profileData = {
@@ -219,45 +219,6 @@ export const AdminCustomers: React.FC = () => {
         }
       } catch (pErr) {
         console.warn('Supabase profiles fetch warning:', pErr);
-      }
-
-      // 3. Fetch Supabase Customers
-      try {
-        const { data: supaCusts } = await supabase.from('customers').select('*');
-        if (supaCusts && Array.isArray(supaCusts)) {
-          supaCusts.forEach((sc: any) => {
-            if (sc.email) {
-              const normEmail = sc.email.toLowerCase().trim();
-              const existing = customerMap.get(normEmail);
-              if (existing) {
-                existing.name = existing.name || sc.name || '';
-                existing.phone = existing.phone || sc.phone || '';
-                existing.status = sc.status || existing.status;
-              } else {
-                customerMap.set(normEmail, {
-                  id: String(sc.id || `sc_${normEmail}`),
-                  name: sc.name || normEmail.split('@')[0],
-                  email: normEmail,
-                  phone: sc.phone || '',
-                  status: sc.status || 'active',
-                  joinedDate: sc.created_at ? new Date(sc.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-                  pincode: '',
-                  city: '',
-                  state: '',
-                  streetAddress: '',
-                  hasPassword: false,
-                  authMethod: 'Brevo OTP Verified',
-                  totalOrders: 0,
-                  totalSpent: 0,
-                  lastOrderDate: '',
-                  orders: []
-                });
-              }
-            }
-          });
-        }
-      } catch (cErr) {
-        console.warn('Supabase customers fetch warning:', cErr);
       }
 
       // 4. Enrich with orders placed across the store
@@ -360,12 +321,12 @@ export const AdminCustomers: React.FC = () => {
       refreshCustomerDirectory();
     };
 
-    window.addEventListener('sba-auth-state-change', handleAuthChange);
+    window.addEventListener('sag-auth-state-change', handleAuthChange);
     window.addEventListener('focus', handleAuthChange);
     const interval = setInterval(refreshCustomerDirectory, 10000); // Poll every 10 seconds for real-time customer updates
 
     return () => {
-      window.removeEventListener('sba-auth-state-change', handleAuthChange);
+      window.removeEventListener('sag-auth-state-change', handleAuthChange);
       window.removeEventListener('focus', handleAuthChange);
       clearInterval(interval);
     };
@@ -395,14 +356,14 @@ export const AdminCustomers: React.FC = () => {
     <div id="admin-customers-directory" className="space-y-6 text-left font-sans">
       
       {/* Directory Banner Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#FDFBF7] p-6 rounded-2xl border-2 border-[#B8935A]/35 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#FDFBF7] p-6 rounded-2xl border-2 border-[#9A6A3A]/35 shadow-sm">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#DFBE65] bg-[#3D0F1F] px-2.5 py-0.5 rounded-full border border-[#B8935A]/40">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#211C1A] bg-[#241D1B] px-2.5 py-0.5 rounded-full border border-[#9A6A3A]/40">
               REAL USER ACCOUNTS &amp; CLIENTELE
             </span>
           </div>
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#3D0F1F]">
+          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#211C1A]">
             Customer Directory
           </h2>
           <p className="text-xs text-gray-600 mt-1">
@@ -411,36 +372,36 @@ export const AdminCustomers: React.FC = () => {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <div className="bg-[#FAF5EB] px-4 py-2 rounded-xl border border-[#B8935A]/30 text-right">
+          <div className="bg-[#F1E8DF] px-4 py-2 rounded-xl border border-[#9A6A3A]/30 text-right">
             <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 block">
               TOTAL REGISTERED MEMBERS
             </span>
-            <span className="font-serif text-lg font-bold text-[#3D0F1F]">
+            <span className="font-serif text-lg font-bold text-[#211C1A]">
               {totalVerifiedUsers} Accounts
             </span>
           </div>
 
-          <div className="bg-[#3D0F1F] text-[#FAF5EB] px-4 py-2 rounded-xl border border-[#B8935A]/40 text-right">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#DFBE65] block">
+          <div className="bg-[#241D1B] text-[#211C1A] px-4 py-2 rounded-xl border border-[#9A6A3A]/40 text-right">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-black block">
               TOTAL CUSTOMER LTV
             </span>
-            <span className="font-serif text-lg font-bold text-[#FAF5EB]">
+            <span className="font-serif text-lg font-bold text-[#F1E8DF]">
               ₹{totalLifetimeValue.toLocaleString('en-IN')}
             </span>
           </div>
 
           <button
             onClick={refreshCustomerDirectory}
-            className="p-3 bg-[#FAF5EB] hover:bg-[#3D0F1F] text-[#3D0F1F] hover:text-[#FAF5EB] border border-[#B8935A]/30 rounded-xl transition cursor-pointer"
+            className="p-3 bg-[#F1E8DF] hover:bg-[#241D1B] text-[#211C1A] hover:text-[#211C1A] border border-[#9A6A3A]/30 rounded-xl transition cursor-pointer"
             title="Refresh Directory Data"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#B8935A]' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-black' : ''}`} />
           </button>
         </div>
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="bg-[#FDFBF7] p-4 rounded-2xl border border-[#B8935A]/25 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-[#FDFBF7] p-4 rounded-2xl border border-[#9A6A3A]/25 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
         
         {/* Search Input */}
         <div className="relative w-full sm:w-96">
@@ -449,23 +410,23 @@ export const AdminCustomers: React.FC = () => {
             placeholder="Search by name, email, phone, city, state, or pincode..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-300 focus:border-[#3D0F1F] rounded-xl text-xs font-medium text-gray-900 focus:outline-none shadow-2xs"
+            className="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-300 focus:border-[#241D1B] rounded-xl text-xs font-medium text-gray-900 focus:outline-none shadow-2xs"
           />
-          <Search className="w-4 h-4 text-[#B8935A] absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-black absolute left-3 top-1/2 -translate-y-1/2" />
         </div>
 
         {/* Filter Pills */}
         <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
-          <span className="text-xs font-bold text-[#3D0F1F] flex items-center gap-1 shrink-0">
-            <Filter className="w-3.5 h-3.5 text-[#B8935A]" />
+          <span className="text-xs font-bold text-[#211C1A] flex items-center gap-1 shrink-0">
+            <Filter className="w-3.5 h-3.5 text-black" />
             <span>Show:</span>
           </span>
           <button
             onClick={() => setFilterType('all')}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shrink-0 ${
               filterType === 'all'
-                ? 'bg-[#3D0F1F] text-[#DFBE65]'
-                : 'bg-[#FAF5EB] text-gray-700 hover:text-[#3D0F1F]'
+                ? 'bg-[#241D1B] text-[#211C1A]'
+                : 'bg-[#F1E8DF] text-gray-700 hover:text-[#211C1A]'
             }`}
           >
             All Members ({combinedCustomers.length})
@@ -474,8 +435,8 @@ export const AdminCustomers: React.FC = () => {
             onClick={() => setFilterType('registered')}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shrink-0 ${
               filterType === 'registered'
-                ? 'bg-[#3D0F1F] text-[#DFBE65]'
-                : 'bg-[#FAF5EB] text-gray-700 hover:text-[#3D0F1F]'
+                ? 'bg-[#241D1B] text-[#211C1A]'
+                : 'bg-[#F1E8DF] text-gray-700 hover:text-[#211C1A]'
             }`}
           >
             Registered Users ({totalVerifiedUsers})
@@ -484,8 +445,8 @@ export const AdminCustomers: React.FC = () => {
             onClick={() => setFilterType('buyers')}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shrink-0 ${
               filterType === 'buyers'
-                ? 'bg-[#3D0F1F] text-[#DFBE65]'
-                : 'bg-[#FAF5EB] text-gray-700 hover:text-[#3D0F1F]'
+                ? 'bg-[#241D1B] text-[#211C1A]'
+                : 'bg-[#F1E8DF] text-gray-700 hover:text-[#211C1A]'
             }`}
           >
             Verified Buyers ({combinedCustomers.filter(c => c.totalOrders > 0).length})
@@ -495,11 +456,11 @@ export const AdminCustomers: React.FC = () => {
       </div>
 
       {/* Customer Directory Table */}
-      <div className="bg-[#FDFBF7] rounded-2xl border border-[#B8935A]/25 shadow-xs overflow-hidden">
+      <div className="bg-[#FDFBF7] rounded-2xl border border-[#9A6A3A]/25 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-[#3D0F1F] text-[#DFBE65] font-serif font-bold uppercase tracking-wider text-[11px]">
+              <tr className="bg-[#241D1B] text-[#211C1A] font-serif font-bold uppercase tracking-wider text-[11px]">
                 <th className="py-4 px-4">Member Name</th>
                 <th className="py-4 px-4">Contact Details</th>
                 <th className="py-4 px-4">Auth Type</th>
@@ -518,16 +479,16 @@ export const AdminCustomers: React.FC = () => {
                 </tr>
               ) : (
                 filteredCustomers.map((cust) => (
-                  <tr key={cust.id} className="hover:bg-[#FAF5EB]/80 transition">
+                  <tr key={cust.id} className="hover:bg-[#F1E8DF]/80 transition">
                     
                     {/* Name & Joined */}
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-[#3D0F1F] text-[#DFBE65] font-serif font-bold flex items-center justify-center shrink-0 border border-[#B8935A]/40 shadow-2xs">
+                        <div className="w-9 h-9 rounded-full bg-[#241D1B] text-[#211C1A] font-serif font-bold flex items-center justify-center shrink-0 border border-[#9A6A3A]/40 shadow-2xs">
                           {cust.name ? cust.name[0].toUpperCase() : 'U'}
                         </div>
                         <div>
-                          <p className="font-bold text-[#3D0F1F] text-sm">{cust.name || 'Unnamed Member'}</p>
+                          <p className="font-bold text-[#211C1A] text-sm">{cust.name || 'Unnamed Member'}</p>
                           <p className="text-[10px] text-gray-500 font-mono">
                             Joined {cust.joinedDate || 'Recently'}
                           </p>
@@ -538,7 +499,7 @@ export const AdminCustomers: React.FC = () => {
                     {/* Email & Phone */}
                     <td className="py-3.5 px-4 space-y-0.5">
                       <p className="text-gray-900 font-semibold flex items-center gap-1.5">
-                        <Mail className="w-3.5 h-3.5 text-[#B8935A]" />
+                        <Mail className="w-3.5 h-3.5 text-black" />
                         <span>{cust.email}</span>
                       </p>
                       <p className="text-gray-600 flex items-center gap-1.5 text-[11px] font-mono">
@@ -554,9 +515,9 @@ export const AdminCustomers: React.FC = () => {
                           ? 'bg-purple-50 text-purple-900 border-purple-200'
                           : cust.authMethod === 'Brevo OTP Verified'
                           ? 'bg-emerald-50 text-emerald-900 border-emerald-200'
-                          : 'bg-amber-50 text-amber-900 border-amber-200'
+                          : 'bg-amber-50 text-black border-amber-200'
                       }`}>
-                        <ShieldCheck className="w-3 h-3 text-[#B8935A]" />
+                        <ShieldCheck className="w-3 h-3 text-black" />
                         <span>{cust.authMethod}</span>
                       </span>
                     </td>
@@ -577,7 +538,7 @@ export const AdminCustomers: React.FC = () => {
                     <td className="py-3.5 px-4 text-center">
                       <span className={`px-3 py-1 rounded-full font-bold text-xs ${
                         cust.totalOrders > 0
-                          ? 'bg-[#3D0F1F] text-[#DFBE65]'
+                          ? 'bg-[#241D1B] text-[#211C1A]'
                           : 'bg-gray-100 text-gray-600'
                       }`}>
                         {cust.totalOrders} {cust.totalOrders === 1 ? 'Order' : 'Orders'}
@@ -585,7 +546,7 @@ export const AdminCustomers: React.FC = () => {
                     </td>
 
                     {/* Total Spent */}
-                    <td className="py-3.5 px-4 font-bold text-[#3D0F1F] text-sm">
+                    <td className="py-3.5 px-4 font-bold text-[#211C1A] text-sm">
                       ₹{cust.totalSpent.toLocaleString('en-IN')}
                     </td>
 
@@ -593,9 +554,9 @@ export const AdminCustomers: React.FC = () => {
                     <td className="py-3.5 px-4 text-right">
                       <button
                         onClick={() => setSelectedCustomer(cust)}
-                        className="px-3.5 py-1.5 bg-[#3D0F1F] hover:bg-[#20050E] text-[#FAF5EB] rounded-xl font-bold text-xs inline-flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
+                        className="px-3.5 py-1.5 bg-[#241D1B] hover:bg-[#20050E] text-[#211C1A] rounded-xl font-bold text-xs inline-flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
                       >
-                        <Eye className="w-3.5 h-3.5 text-[#DFBE65]" />
+                        <Eye className="w-3.5 h-3.5 text-black" />
                         <span>View Profile</span>
                       </button>
                     </td>
@@ -611,16 +572,16 @@ export const AdminCustomers: React.FC = () => {
       {/* Customer Profile Drawer Modal */}
       {selectedCustomer && (
         <div className="fixed inset-0 z-50 bg-black/65 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#FDFBF7] rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border-2 border-[#B8935A]/40 my-8 space-y-6 text-left">
+          <div className="bg-[#FDFBF7] rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border-2 border-[#9A6A3A]/40 my-8 space-y-6 text-left">
             
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-[#B8935A]/25 pb-4">
+            <div className="flex items-center justify-between border-b border-[#9A6A3A]/25 pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-[#3D0F1F] text-[#DFBE65] font-serif font-bold text-xl flex items-center justify-center border border-[#B8935A]/40 shadow-sm">
+                <div className="w-12 h-12 rounded-2xl bg-[#241D1B] text-[#211C1A] font-serif font-bold text-xl flex items-center justify-center border border-[#9A6A3A]/40 shadow-sm">
                   {selectedCustomer.name ? selectedCustomer.name[0].toUpperCase() : 'U'}
                 </div>
                 <div>
-                  <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#3D0F1F]">
+                  <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#211C1A]">
                     {selectedCustomer.name || 'Unnamed Customer'}
                   </h3>
                   <p className="text-xs text-gray-500 font-mono">
@@ -631,7 +592,7 @@ export const AdminCustomers: React.FC = () => {
 
               <button
                 onClick={() => setSelectedCustomer(null)}
-                className="p-2 text-gray-400 hover:text-[#3D0F1F] rounded-xl hover:bg-[#FAF5EB] transition cursor-pointer"
+                className="p-2 text-gray-400 hover:text-[#211C1A] rounded-xl hover:bg-[#F1E8DF] transition cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -639,23 +600,23 @@ export const AdminCustomers: React.FC = () => {
 
             {/* Quick Metrics */}
             <div className="grid grid-cols-3 gap-3 text-center">
-              <div className="p-4 bg-[#FAF5EB] rounded-2xl border border-[#B8935A]/30">
+              <div className="p-4 bg-[#F1E8DF] rounded-2xl border border-[#9A6A3A]/30">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 block">Total Orders</span>
-                <span className="font-serif text-xl font-bold text-[#3D0F1F]">{selectedCustomer.totalOrders}</span>
+                <span className="font-serif text-xl font-bold text-[#211C1A]">{selectedCustomer.totalOrders}</span>
               </div>
-              <div className="p-4 bg-[#FAF5EB] rounded-2xl border border-[#B8935A]/30">
+              <div className="p-4 bg-[#F1E8DF] rounded-2xl border border-[#9A6A3A]/30">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 block">Total LTV Spent</span>
-                <span className="font-serif text-xl font-bold text-[#3D0F1F]">₹{selectedCustomer.totalSpent.toLocaleString('en-IN')}</span>
+                <span className="font-serif text-xl font-bold text-[#211C1A]">₹{selectedCustomer.totalSpent.toLocaleString('en-IN')}</span>
               </div>
-              <div className="p-4 bg-[#FAF5EB] rounded-2xl border border-[#B8935A]/30">
+              <div className="p-4 bg-[#F1E8DF] rounded-2xl border border-[#9A6A3A]/30">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 block">Auth Status</span>
                 <span className="font-serif text-xs font-bold text-emerald-800 uppercase mt-1 block">{selectedCustomer.authMethod}</span>
               </div>
             </div>
 
             {/* Detailed Account Information */}
-            <div className="p-5 bg-white rounded-2xl border border-[#B8935A]/25 space-y-3">
-              <h4 className="font-serif font-bold text-[#3D0F1F] uppercase tracking-wider text-xs border-b border-gray-100 pb-2">
+            <div className="p-5 bg-white rounded-2xl border border-[#9A6A3A]/25 space-y-3">
+              <h4 className="font-serif font-bold text-[#211C1A] uppercase tracking-wider text-xs border-b border-gray-100 pb-2">
                 Verified Account Details
               </h4>
               
@@ -697,7 +658,7 @@ export const AdminCustomers: React.FC = () => {
 
             {/* Real Order History */}
             <div className="space-y-3">
-              <h4 className="font-serif font-bold text-[#3D0F1F] uppercase tracking-wider text-xs">
+              <h4 className="font-serif font-bold text-[#211C1A] uppercase tracking-wider text-xs">
                 Order History Records ({selectedCustomer.orders.length})
               </h4>
 
@@ -706,18 +667,18 @@ export const AdminCustomers: React.FC = () => {
                   No orders logged for this customer email address yet.
                 </div>
               ) : (
-                <div className="divide-y divide-gray-100 border border-[#B8935A]/25 rounded-2xl overflow-hidden bg-white max-h-60 overflow-y-auto">
+                <div className="divide-y divide-gray-100 border border-[#9A6A3A]/25 rounded-2xl overflow-hidden bg-white max-h-60 overflow-y-auto">
                   {selectedCustomer.orders.map((ord) => (
-                    <div key={ord.orderNumber} className="p-3.5 hover:bg-[#FAF5EB]/60 flex items-center justify-between gap-3 text-xs transition">
+                    <div key={ord.orderNumber} className="p-3.5 hover:bg-[#F1E8DF]/60 flex items-center justify-between gap-3 text-xs transition">
                       <div>
-                        <span className="font-mono font-bold text-[#3D0F1F]">{ord.orderNumber}</span>
+                        <span className="font-mono font-bold text-[#211C1A]">{ord.orderNumber}</span>
                         <p className="text-[11px] text-gray-500 mt-0.5">
                           {ord.date} • {ord.items.length} item(s)
                         </p>
                       </div>
 
                       <div className="text-right">
-                        <span className="font-bold text-[#3D0F1F] block text-sm">
+                        <span className="font-bold text-[#211C1A] block text-sm">
                           ₹{(Number(ord.finalTotal) || Number((ord as any).subtotal) || 0).toLocaleString('en-IN')}
                         </span>
                         <span className="text-[10px] text-emerald-800 font-bold uppercase tracking-wider bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 inline-block mt-0.5">
@@ -731,11 +692,11 @@ export const AdminCustomers: React.FC = () => {
             </div>
 
             {/* Modal Actions */}
-            <div className="flex justify-end pt-2 border-t border-[#B8935A]/25">
+            <div className="flex justify-end pt-2 border-t border-[#9A6A3A]/25">
               <button
                 type="button"
                 onClick={() => setSelectedCustomer(null)}
-                className="px-6 py-2.5 bg-[#3D0F1F] hover:bg-[#20050E] text-[#FAF5EB] rounded-xl text-xs font-serif font-bold uppercase tracking-wider cursor-pointer shadow-md"
+                className="px-6 py-2.5 bg-[#241D1B] hover:bg-[#20050E] text-[#211C1A] rounded-xl text-xs font-serif font-bold uppercase tracking-wider cursor-pointer shadow-md"
               >
                 Close Profile
               </button>

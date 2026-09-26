@@ -11,8 +11,8 @@ export interface UtmParams {
   captured_at?: string;
 }
 
-const STORAGE_KEY_SESSION = 'sba_utm_params_v1';
-const STORAGE_KEY_LOCAL = 'sba_utm_params_backup_v1';
+const STORAGE_KEY_SESSION = 'sag_utm_params_v1';
+const STORAGE_KEY_LOCAL = 'sag_utm_params_backup_v1';
 
 export const isInstagramWebview = (): boolean => {
   if (typeof navigator === 'undefined') return false;

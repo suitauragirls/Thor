@@ -34,7 +34,7 @@ export const SortableHomepageSection: React.FC<SortableSectionProps> = ({
       style={style}
       className={`p-3.5 sm:p-4 rounded-2xl border transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
         isEnabled 
-          ? 'bg-[#FAF7F5] border-rose-100/90 shadow-xs hover:border-[#DFBE65]/70' 
+          ? 'bg-[#FAF7F2] border-rose-100/90 shadow-xs hover:border-[#C7A77A]/70' 
           : 'bg-gray-50/80 border-gray-200 opacity-60'
       }`}
     >
@@ -45,13 +45,13 @@ export const SortableHomepageSection: React.FC<SortableSectionProps> = ({
         
         <div className="flex items-start sm:items-center gap-3 min-w-0">
           <div className={`w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs ${
-            isEnabled ? 'bg-gradient-to-br from-[#58152D] to-[#7E1D3B] text-white' : 'bg-gray-200 text-gray-500'
+            isEnabled ? 'bg-gradient-to-br from-[#241D1B] to-[#241D1B] text-[#211C1A]' : 'bg-gray-200 text-gray-500'
           }`}>
             {index + 1}
           </div>
 
           <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border ${
-            isEnabled ? 'bg-[#E0BFB8]/70 border-rose-100' : 'bg-gray-100 border-gray-200'
+            isEnabled ? 'bg-[#D8C8B8]/70 border-rose-100' : 'bg-gray-100 border-gray-200'
           }`}>
             {getSectionIcon(sec.key)}
           </div>
@@ -83,7 +83,7 @@ export const SortableHomepageSection: React.FC<SortableSectionProps> = ({
           <button
             type="button"
             onClick={() => setAdminTab(shortcut.tab)}
-            className="px-2.5 py-1 bg-[#E0BFB8]/20 hover:bg-[#E0BFB8]/40 text-[#58152D] rounded-lg text-[11px] font-bold transition flex items-center gap-1 border border-rose-200 cursor-pointer mr-1"
+            className="px-2.5 py-1 bg-[#D8C8B8]/20 hover:bg-[#D8C8B8]/40 text-[#211C1A] rounded-lg text-[11px] font-bold transition flex items-center gap-1 border border-rose-200 cursor-pointer mr-1"
           >
             <span>{shortcut.label}</span>
             <ChevronRight className="w-3 h-3" />

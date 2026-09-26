@@ -1,14 +1,13 @@
 import React from 'react';
 import { useAdmin } from '../context/AdminContext';
 import { BrandMarqueeHeader } from './BrandMarqueeHeader';
-import { HeroSection } from './HeroSection';
 import { PrepaidTrustBanner } from './PrepaidTrustBanner';
+import { HeroSection } from './HeroSection';
 import { ArtisanalPromises } from './ArtisanalPromises';
-import { DealOfTheDaySection } from './DealOfTheDaySection';
-import { CategoryGrid } from './CategoryGrid';
+import { FestiveComboOffers } from './FestiveComboOffers';
 import { NewArrivalsSection } from './NewArrivalsSection';
+import { DealOfTheDaySection } from './DealOfTheDaySection';
 import { BestSellersSection, FestiveCollectionSection } from './BestSellersSection';
-import { TrendingNowSection } from './TrendingNowSection';
 import { WhyShopWithUs } from './WhyShopWithUs';
 import { CustomerReviews } from './CustomerReviews';
 
@@ -22,8 +21,6 @@ export const HomePage: React.FC = () => {
         return <NewArrivalsSection key="newArrivals" />;
       case 'bestSellers':
         return <BestSellersSection key="bestSellers" />;
-      case 'trending':
-        return <TrendingNowSection key="trending" />;
       case 'festive':
         return <FestiveCollectionSection key="festive" />;
       case 'whyShop':
@@ -38,35 +35,28 @@ export const HomePage: React.FC = () => {
   // Filter dynamic sections (excluding fixed top hero & deal sections)
   const dynamicSections = homepageSections.filter(s => 
     s.enabled !== false && 
-    !['hero', 'dealOfTheDay', 'categoryGrid', 'specialOffer', 'instagram', 'newsletter', 'comboOffers'].includes(s.key)
+    !['hero', 'dealOfTheDay', 'categoryGrid', 'trending', 'specialOffer', 'instagram', 'newsletter', 'comboOffers'].includes(s.key)
   );
+
+  const lowerSections = dynamicSections.length > 0
+    ? dynamicSections.map(sec => renderSectionComponent(sec.key))
+    : [
+        <BestSellersSection key="bestSellers" />,
+        <FestiveCollectionSection key="festive" />,
+        <WhyShopWithUs key="whyShop" />,
+        <CustomerReviews key="reviews" />,
+      ];
 
   return (
     <div id="dynamic-storefront-homepage" className="flex flex-col relative gap-0">
-
-      {/* TOP FIXED HERO & SLIDER GROUP */}
       <BrandMarqueeHeader />
       <PrepaidTrustBanner />
       <HeroSection />
       <ArtisanalPromises />
-
-      {/* DEAL OF THE DAY - EXACTLY BELOW HERO SLIDES */}
+      <FestiveComboOffers />
+      <NewArrivalsSection />
       <DealOfTheDaySection />
-
-      {/* DYNAMIC LOWER CATALOG SECTIONS */}
-      {dynamicSections.length > 0 ? (
-        dynamicSections.map(sec => renderSectionComponent(sec.key))
-      ) : (
-        <>
-          <NewArrivalsSection />
-          <BestSellersSection />
-          <TrendingNowSection />
-          <FestiveCollectionSection />
-          <WhyShopWithUs />
-          <CustomerReviews />
-        </>
-      )}
-
+      {lowerSections}
     </div>
   );
 };

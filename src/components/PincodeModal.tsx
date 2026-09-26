@@ -13,7 +13,7 @@ const POPULAR_METROS: PopularMetro[] = [
   { city: 'New Delhi', pincode: '110001', state: 'Delhi' },
   { city: 'Mumbai', pincode: '400001', state: 'Maharashtra' },
   { city: 'Bengaluru', pincode: '560001', state: 'Karnataka' },
-  { city: 'Jaipur', pincode: '302001', state: 'Rajasthan' },
+  { city: 'Artisan', pincode: '302001', state: 'Rajasthan' },
   { city: 'Kolkata', pincode: '700001', state: 'West Bengal' },
   { city: 'Chennai', pincode: '600001', state: 'Tamil Nadu' },
   { city: 'Hyderabad', pincode: '500001', state: 'Telangana' },
@@ -130,14 +130,14 @@ export const PincodeModal: React.FC = () => {
     >
       <div 
         id="pincode-modal-card"
-        className="relative w-full max-w-md bg-[#FAF7F5] rounded-2xl shadow-2xl border border-rose-100 overflow-hidden text-[#2C1820]"
+        className="relative w-full max-w-md bg-[#FAF7F2] rounded-2xl shadow-2xl border border-rose-100 overflow-hidden text-[#2C1820]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Header */}
-        <div className="bg-gradient-to-r from-[#58152D] via-[#6B0F2B] to-[#58152D] text-white px-5 py-4 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-[#241D1B] via-[#241D1B] to-[#241D1B] text-[#211C1A] px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-[#FAF7F5]/10 flex items-center justify-center border border-white/20">
-              <MapPin className="w-4 h-4 text-[#DFBE65]" />
+            <div className="w-8 h-8 rounded-full bg-[#FAF7F2]/10 flex items-center justify-center border border-white/20">
+              <MapPin className="w-4 h-4 text-black" />
             </div>
             <div>
               <h3 className="font-serif font-bold text-base tracking-wide text-white">Select Delivery Location</h3>
@@ -149,7 +149,7 @@ export const PincodeModal: React.FC = () => {
             id="pincode-modal-close-btn"
             onClick={() => setIsPincodeModalOpen(false)}
             aria-label="Close delivery location modal"
-            className="p-1.5 rounded-full hover:bg-\[#FAF7F5\]/10 text-white/80 hover:text-white transition cursor-pointer"
+            className="p-1.5 rounded-full hover:bg-\[#FAF7F2\]/10 text-white/80 hover:text-white transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -160,10 +160,10 @@ export const PincodeModal: React.FC = () => {
           {/* Current Saved Location Pill */}
           <div className="bg-[#FFF8F9] border border-[#F3C5D1] rounded-xl p-3 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <Navigation className="w-4 h-4 text-[#58152D] shrink-0" />
+              <Navigation className="w-4 h-4 text-[#211C1A] shrink-0" />
               <div>
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Current Location</span>
-                <p className="text-xs font-bold text-[#58152D]">
+                <p className="text-xs font-bold text-[#211C1A]">
                   {userDeliveryLocation.city} ({userDeliveryLocation.pincode}) - {userDeliveryLocation.state}
                 </p>
               </div>
@@ -193,7 +193,7 @@ export const PincodeModal: React.FC = () => {
                   placeholder="e.g. 110001, 400001"
                   value={inputPincode}
                   onChange={(e) => setInputPincode(e.target.value.replace(/\[#B76E79\]/g, '').slice(0, 6))}
-                  className="w-full pl-3.5 pr-8 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-semibold tracking-wider text-gray-900 focus:bg-\[#FAF7F5\] focus:border-[#58152D] focus:ring-1 focus:ring-[#58152D] outline-none transition"
+                  className="w-full pl-3.5 pr-8 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-semibold tracking-wider text-gray-900 focus:bg-\[#FAF7F2\] focus:border-[#241D1B] focus:ring-1 focus:ring-[#241D1B] outline-none transition"
                 />
                 {inputPincode.length === 6 && (
                   <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-600" />
@@ -203,7 +203,7 @@ export const PincodeModal: React.FC = () => {
                 type="submit"
                 id="pincode-modal-apply-btn"
                 disabled={loading || inputPincode.length !== 6}
-                className="px-4 py-2.5 bg-[#58152D] hover:bg-[#6B0F2B] text-white rounded-xl text-xs font-bold tracking-wide transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 cursor-pointer shrink-0"
+                className="px-4 py-2.5 bg-[#241D1B] hover:bg-[#241D1B] text-[#211C1A] rounded-xl text-xs font-bold tracking-wide transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 cursor-pointer shrink-0"
               >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Apply'}
               </button>
@@ -220,7 +220,7 @@ export const PincodeModal: React.FC = () => {
           {/* Quick Select Popular Indian Cities */}
           <div className="space-y-2.5">
             <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-[#DFBE65]" />
+              <Sparkles className="w-3 h-3 text-black" />
               Quick Select Popular Cities
             </span>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -234,8 +234,8 @@ export const PincodeModal: React.FC = () => {
                     onClick={() => handleSelectMetro(metro)}
                     className={`px-2.5 py-2 rounded-xl text-left border transition-all duration-200 cursor-pointer ${
                       isSelected
-                        ? 'bg-[#58152D] text-white border-[#58152D] shadow-xs'
-                        : 'bg-\[#FAF7F5\] hover:bg-[#E0BFB8]/50 text-gray-800 border-gray-200 hover:border-rose-300'
+                        ? 'bg-[#241D1B] text-[#211C1A] border-[#241D1B] shadow-xs'
+                        : 'bg-\[#FAF7F2\] hover:bg-[#D8C8B8]/50 text-gray-800 border-gray-200 hover:border-rose-300'
                     }`}
                   >
                     <p className={`text-xs font-bold truncate ${isSelected ? 'text-white' : 'text-gray-900'}`}>
@@ -252,8 +252,8 @@ export const PincodeModal: React.FC = () => {
 
           {/* Guarantee / Shipping Perk Banner */}
           <div className="bg-amber-50/60 border border-amber-200/80 rounded-xl p-3 flex items-center gap-3">
-            <Truck className="w-5 h-5 text-amber-700 shrink-0" />
-            <div className="text-[11px] text-amber-900">
+            <Truck className="w-5 h-5 text-black shrink-0" />
+            <div className="text-[11px] text-black">
               <span className="font-bold">Free Shipping & Express Prepaid Dispatch!</span> Dispatch within 24-48 hours across 27,000+ Indian pincodes.
             </div>
           </div>

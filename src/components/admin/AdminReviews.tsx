@@ -39,7 +39,7 @@ export const AdminReviews: React.FC = () => {
     rating: 5,
     comment: '',
     productName: '',
-    location: 'Jaipur, India',
+    location: 'Artisan, India',
     date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
     status: 'approved',
     verifiedPurchase: true,
@@ -79,7 +79,7 @@ export const AdminReviews: React.FC = () => {
       rating: review.rating,
       comment: review.comment,
       productName: review.productName || '',
-      location: review.location || 'Jaipur, India',
+      location: review.location || 'Artisan, India',
       date: review.date || '',
       status: review.status || 'approved',
       verifiedPurchase: review.verifiedPurchase ?? true,
@@ -102,7 +102,7 @@ export const AdminReviews: React.FC = () => {
       rating: 5,
       comment: '',
       productName: '',
-      location: 'Jaipur, India',
+      location: 'Artisan, India',
       date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
       status: 'approved',
       verifiedPurchase: true,
@@ -119,7 +119,7 @@ export const AdminReviews: React.FC = () => {
     <div id="admin-reviews-page" className="space-y-6">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#FAF7F5] p-5 rounded-2xl border border-rose-100 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#FAF7F2] p-5 rounded-2xl border border-rose-100 shadow-xs">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-widest text-[#8B2635]">
             Social Proof & Feedback
@@ -131,11 +131,11 @@ export const AdminReviews: React.FC = () => {
 
         <div className="flex items-center gap-3">
           {/* Filter Tabs */}
-          <div className="flex items-center gap-1.5 bg-[#E0BFB8]/40 p-1 rounded-xl border border-rose-100 text-[11px] font-bold">
+          <div className="flex items-center gap-1.5 bg-[#D8C8B8]/40 p-1 rounded-xl border border-rose-100 text-[11px] font-bold">
             <button
               onClick={() => setSelectedStatus('all')}
               className={`px-3 py-1.5 rounded-lg transition ${
-                selectedStatus === 'all' ? 'bg-[#58152D] text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'
+                selectedStatus === 'all' ? 'bg-[#241D1B] text-[#211C1A] shadow-xs' : 'text-gray-600 hover:text-gray-900'
               }`}
             >
               All
@@ -143,7 +143,7 @@ export const AdminReviews: React.FC = () => {
             <button
               onClick={() => setSelectedStatus('approved')}
               className={`px-3 py-1.5 rounded-lg transition ${
-                selectedStatus === 'approved' ? 'bg-[#58152D] text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'
+                selectedStatus === 'approved' ? 'bg-[#241D1B] text-[#211C1A] shadow-xs' : 'text-gray-600 hover:text-gray-900'
               }`}
             >
               Approved
@@ -151,7 +151,7 @@ export const AdminReviews: React.FC = () => {
             <button
               onClick={() => setSelectedStatus('pending')}
               className={`px-3 py-1.5 rounded-lg transition inline-flex items-center gap-1.5 ${
-                selectedStatus === 'pending' ? 'bg-[#58152D] text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'
+                selectedStatus === 'pending' ? 'bg-[#241D1B] text-[#211C1A] shadow-xs' : 'text-gray-600 hover:text-gray-900'
               }`}
             >
               <span>Pending</span>
@@ -168,7 +168,7 @@ export const AdminReviews: React.FC = () => {
               resetForm();
               setIsAddingNew(true);
             }}
-            className="px-4 py-2 bg-[#58152D] text-white rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-[#8B2635] shadow-xs transition"
+            className="px-4 py-2 bg-[#241D1B] text-[#211C1A] rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-[#8B2635] shadow-xs transition"
           >
             <Plus className="w-4 h-4" />
             <span>Insert Custom Review</span>
@@ -180,7 +180,7 @@ export const AdminReviews: React.FC = () => {
       {(isAddingNew || editingReviewId) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-white w-full max-w-2xl rounded-3xl overflow-hidden border border-rose-100 shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="bg-[#58152D] p-4 text-white flex items-center justify-between">
+            <div className="bg-[#241D1B] p-4 text-[#211C1A] flex items-center justify-between">
               <h3 className="font-bold uppercase tracking-wider text-sm flex items-center gap-2">
                 {isAddingNew ? <Plus className="w-4 h-4" /> : <Edit2 className="w-4 h-4" />}
                 {isAddingNew ? 'Insert Custom Review' : 'Edit Review'}
@@ -207,7 +207,7 @@ export const AdminReviews: React.FC = () => {
                     value={formData.userName}
                     onChange={(e) => setFormData({...formData, userName: e.target.value})}
                     placeholder="e.g. Radhika Sharma"
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-[#58152D] outline-none"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-[#241D1B] outline-none"
                   />
                 </div>
                 <div className="space-y-1">
@@ -304,13 +304,13 @@ export const AdminReviews: React.FC = () => {
                   value={formData.comment}
                   onChange={(e) => setFormData({...formData, comment: e.target.value})}
                   placeholder="Write the customer's feedback here..."
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-[#58152D] outline-none"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-[#241D1B] outline-none"
                 />
               </div>
 
               <button 
                 onClick={isAddingNew ? handleAddNew : handleUpdate}
-                className="w-full py-3 bg-[#58152D] text-white rounded-xl font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-[#8B2635] transition"
+                className="w-full py-3 bg-[#241D1B] text-[#211C1A] rounded-xl font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-[#8B2635] transition"
               >
                 {isAddingNew ? 'Publish Verified Review' : 'Update Review Changes'}
               </button>
@@ -322,7 +322,7 @@ export const AdminReviews: React.FC = () => {
       {/* Reviews List */}
       <div className="space-y-4">
         {filteredReviews.length === 0 ? (
-          <div className="bg-[#FAF7F5] p-12 rounded-2xl border border-rose-100 text-center text-gray-500">
+          <div className="bg-[#FAF7F2] p-12 rounded-2xl border border-rose-100 text-center text-gray-500">
             No reviews matching the selected filter.
           </div>
         ) : (
@@ -331,12 +331,12 @@ export const AdminReviews: React.FC = () => {
             return (
               <div
                 key={review.id}
-                className="bg-[#FAF7F5] rounded-2xl border border-rose-100 p-5 sm:p-6 shadow-xs space-y-4"
+                className="bg-[#FAF7F2] rounded-2xl border border-rose-100 p-5 sm:p-6 shadow-xs space-y-4"
               >
                 {/* Top meta row */}
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-gray-100 pb-3">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#E0BFB8]/20 text-[#58152D] font-bold flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-[#D8C8B8]/20 text-[#211C1A] font-bold flex items-center justify-center shrink-0">
                       {review.userName[0]}
                     </div>
                     <div>
@@ -350,14 +350,14 @@ export const AdminReviews: React.FC = () => {
                       </div>
                       <p className="text-[11px] text-gray-500">
                         {review.productName ? `Item: ${review.productName} • ` : ''}
-                        {review.location || 'Jaipur, India'} • {review.date}
+                        {review.location || 'Artisan, India'} • {review.date}
                       </p>
                       
-                      <div className="flex items-center text-amber-400 mt-1">
+                      <div className="flex items-center text-black mt-1">
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}
-                            className={`w-3.5 h-3.5 ${i < review.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-200'}`}
+                            className={`w-3.5 h-3.5 ${i < review.rating ? 'fill-black text-black' : 'text-gray-200'}`}
                           />
                         ))}
                       </div>
@@ -374,7 +374,7 @@ export const AdminReviews: React.FC = () => {
                       currentStatus === 'approved'
                         ? 'bg-emerald-100 text-emerald-800'
                         : currentStatus === 'pending'
-                        ? 'bg-amber-100 text-amber-800'
+                        ? 'bg-amber-100 text-black'
                         : 'bg-gray-100 text-gray-700'
                     }`}>
                       {currentStatus}
@@ -389,8 +389,8 @@ export const AdminReviews: React.FC = () => {
 
                 {/* Existing Admin Response */}
                 {review.adminReply && (
-                  <div className="p-3.5 bg-[#E0BFB8]/60 rounded-xl border border-rose-100 text-xs space-y-1">
-                    <span className="font-bold text-[#58152D] flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
+                  <div className="p-3.5 bg-[#D8C8B8]/60 rounded-xl border border-rose-100 text-xs space-y-1">
+                    <span className="font-bold text-[#211C1A] flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
                       <Reply className="w-3.5 h-3.5" /> Official Store Response:
                     </span>
                     <p className="text-gray-700">{review.adminReply}</p>
@@ -408,7 +408,7 @@ export const AdminReviews: React.FC = () => {
                       value={replyText}
                       onChange={(e) => setReplyText(e.target.value)}
                       placeholder="Thank the customer or address their query..."
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-[#FAF7F5]"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-[#FAF7F2]"
                     />
                     <div className="flex justify-end gap-2">
                       <button
@@ -419,7 +419,7 @@ export const AdminReviews: React.FC = () => {
                       </button>
                       <button
                         onClick={() => handleSaveReply(review.id)}
-                        className="px-4 py-1.5 bg-[#58152D] text-white rounded-lg font-bold flex items-center gap-1"
+                        className="px-4 py-1.5 bg-[#241D1B] text-[#211C1A] rounded-lg font-bold flex items-center gap-1"
                       >
                         <Save className="w-3.5 h-3.5" /> Publish Reply
                       </button>
@@ -432,7 +432,7 @@ export const AdminReviews: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleOpenReply(review)}
-                      className="px-3 py-1.5 bg-[#E0BFB8]/20 hover:bg-[#E0BFB8]/40 text-[#58152D] rounded-lg font-bold inline-flex items-center gap-1.5 transition"
+                      className="px-3 py-1.5 bg-[#D8C8B8]/20 hover:bg-[#D8C8B8]/40 text-[#211C1A] rounded-lg font-bold inline-flex items-center gap-1.5 transition"
                     >
                       <Reply className="w-3.5 h-3.5" />
                       <span>{review.adminReply ? 'Edit Response' : 'Reply'}</span>
@@ -480,7 +480,7 @@ export const AdminReviews: React.FC = () => {
                           showToast('Review removed.', 'info');
                         }
                       }}
-                      className="p-1.5 hover:bg-[#E0BFB8]/20 text-gray-400 hover:text-[#8B2635] rounded-lg transition"
+                      className="p-1.5 hover:bg-[#D8C8B8]/20 text-gray-400 hover:text-[#8B2635] rounded-lg transition"
                       title="Delete Review"
                     >
                       <Trash2 className="w-4 h-4" />

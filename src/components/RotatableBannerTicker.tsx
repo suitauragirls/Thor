@@ -13,27 +13,27 @@ interface TickerItem {
 const TICKER_ITEMS: TickerItem[] = [
   {
     id: 'upi-shipping',
-    icon: <Zap className="w-3.5 h-3.5 text-[#B8935A] fill-[#B8935A]" />,
+    icon: <Zap className="w-3.5 h-3.5 text-black fill-black" />,
     text: 'Extra ₹100 Flat OFF on UPI | Free Express Shipping Nationwide',
     badge: 'EXCLUSIVE',
   },
   {
     id: 'prepaid-discount',
-    icon: <Tag className="w-3.5 h-3.5 text-[#B8935A]" />,
+    icon: <Tag className="w-3.5 h-3.5 text-black" />,
     text: 'Use Code: BLISS10 | Extra 10% OFF on Prepaid Orders',
     badge: 'LIMITED TIME',
   },
   {
     id: 'express-dispatch',
-    icon: <Truck className="w-3.5 h-3.5 text-[#B8935A]" />,
+    icon: <Truck className="w-3.5 h-3.5 text-black" />,
     text: '24-48 Hour Dispatch Across India | Easy 7-Day Returns',
     badge: 'FAST SHIP',
   },
   {
     id: 'artisan-heritage',
-    icon: <Sparkles className="w-3.5 h-3.5 text-[#B8935A]" />,
-    text: 'Handcrafted in Jaipur • 100% Authentic Premium Ethnic Wear',
-    badge: 'JAIPUR ATELIER',
+    icon: <Sparkles className="w-3.5 h-3.5 text-black" />,
+    text: 'Handcrafted in Artisan • 100% Authentic Premium Ethnic Wear',
+    badge: 'ARTISAN ATELIER',
   },
 ];
 
@@ -69,7 +69,7 @@ export const RotatableBannerTicker: React.FC = () => {
       id="rotatable-banner-ticker"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative w-full bg-[#3D0F1F] text-[#F7F2EA] py-1.5 px-3 sm:px-6 border-b border-[#B8935A]/30 shadow-2xs select-none z-50 overflow-hidden"
+      className="relative w-full bg-[#241D1B] text-[#211C1A] py-1.5 px-3 sm:px-6 border-b border-[#9A6A3A]/30 shadow-2xs select-none z-50 overflow-hidden"
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 text-[11px] sm:text-xs font-semibold">
         {/* Left Control Chevron */}
@@ -80,7 +80,7 @@ export const RotatableBannerTicker: React.FC = () => {
           aria-label="Previous announcement"
           className="p-1 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition cursor-pointer shrink-0"
         >
-          <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#B8935A]" />
+          <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black" />
         </button>
 
         {/* Center Rotatable Content */}
@@ -94,12 +94,12 @@ export const RotatableBannerTicker: React.FC = () => {
             className="flex items-center justify-center gap-1.5 sm:gap-2 truncate cursor-pointer hover:opacity-95 transition"
           >
             {currentItem.badge && (
-              <span className="hidden xs:inline-block text-[9px] font-bold uppercase tracking-wider bg-[#2A0914] text-[#B8935A] border border-[#B8935A]/40 px-1.5 py-0.2 rounded shrink-0">
+              <span className="hidden xs:inline-block text-[9px] font-bold uppercase tracking-wider bg-[#241D1B] text-[#211C1A] border border-[#9A6A3A]/40 px-1.5 py-0.2 rounded shrink-0">
                 {currentItem.badge}
               </span>
             )}
             <span className="shrink-0">{currentItem.icon}</span>
-            <span className="truncate tracking-wide font-medium text-[#F7F2EA] sm:font-semibold">
+            <span className="truncate tracking-wide font-medium text-[#FAF7F2] sm:font-semibold">
               {currentItem.text}
             </span>
           </motion.div>
@@ -114,7 +114,7 @@ export const RotatableBannerTicker: React.FC = () => {
             aria-label="Next announcement"
             className="p-1 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition cursor-pointer"
           >
-            <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#B8935A]" />
+            <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black" />
           </button>
           <button
             type="button"
@@ -123,7 +123,7 @@ export const RotatableBannerTicker: React.FC = () => {
             aria-label="Close announcement bar"
             className="p-1 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition cursor-pointer ml-1 hidden sm:block"
           >
-            <X className="w-3.5 h-3.5 text-[#D8B9AE]" />
+            <X className="w-3.5 h-3.5 text-[#D8C8B8]" />
           </button>
         </div>
       </div>

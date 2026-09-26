@@ -243,11 +243,11 @@ export const AdminDashboardOverview: React.FC = () => {
       case 'Packed':
         return 'bg-purple-50 text-purple-800 border-purple-200';
       case 'Processing':
-        return 'bg-amber-50 text-amber-800 border-amber-200';
+        return 'bg-amber-50 text-black border-amber-200';
       case 'Paid':
         return 'bg-emerald-50 text-emerald-700 border-emerald-300';
       case 'Pending':
-        return 'bg-amber-50 text-amber-700 border-amber-300';
+        return 'bg-amber-50 text-black border-amber-300';
       case 'Cancelled':
       case 'Refunded':
         return 'bg-rose-50 text-rose-800 border-rose-200';
@@ -260,19 +260,19 @@ export const AdminDashboardOverview: React.FC = () => {
     <div id="admin-dashboard-overview" className="space-y-6">
       
       {/* Welcome Banner */}
-      <div className="bg-[#3D0F1F] rounded-2xl p-6 sm:p-8 text-white border border-[#B8935A]/35 shadow-lg relative overflow-hidden">
-        <div className="absolute right-0 top-0 -mt-10 -mr-10 w-64 h-64 bg-[#B8935A]/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="bg-[#241D1B] rounded-2xl p-6 sm:p-8 text-[#211C1A] border border-[#9A6A3A]/35 shadow-lg relative overflow-hidden">
+        <div className="absolute right-0 top-0 -mt-10 -mr-10 w-64 h-64 bg-[#9A6A3A]/15 rounded-full blur-3xl pointer-events-none" />
         
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-[#DFBE65] text-xs font-bold uppercase tracking-wider border border-[#B8935A]/25">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-black text-xs font-bold uppercase tracking-wider border border-[#9A6A3A]/25">
               <Sparkles className="w-3.5 h-3.5" />
               Executive Store Overview
             </div>
             <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight">
-              Suit Bliss Aura Admin
+              Suit Aura Girls Admin
             </h2>
-            <p className="text-xs sm:text-sm text-amber-100/90 max-w-xl">
+            <p className="text-xs sm:text-sm text-black/90 max-w-xl">
               Live metrics across product inventory, prepaid order fulfillment, customers, and revenues.
             </p>
           </div>
@@ -280,13 +280,13 @@ export const AdminDashboardOverview: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={openAdminProductNew}
-              className="px-4 py-2.5 bg-[#B8935A] hover:bg-[#DFBE65] text-[#3D0F1F] rounded-xl text-xs font-bold tracking-wider uppercase transition shadow-sm flex items-center gap-1.5 cursor-pointer"
+              className="px-4 py-2.5 bg-[#9A6A3A] hover:bg-[#C7A77A] text-[#211C1A] rounded-xl text-xs font-bold tracking-wider uppercase transition shadow-sm flex items-center gap-1.5 cursor-pointer"
             >
               <Plus className="w-4 h-4" /> Add Product
             </button>
             <button
               onClick={() => openAdminTab('orders')}
-              className="px-4 py-2.5 bg-[#3D0F1F] hover:bg-[#3D0F1F]/95 border border-[#B8935A]/45 text-[#FAF5EB] rounded-xl text-xs font-bold tracking-wider uppercase transition cursor-pointer"
+              className="px-4 py-2.5 bg-[#241D1B] hover:bg-[#241D1B]/95 border border-[#9A6A3A]/45 text-[#211C1A] rounded-xl text-xs font-bold tracking-wider uppercase transition cursor-pointer"
             >
               View Orders
             </button>
@@ -298,31 +298,31 @@ export const AdminDashboardOverview: React.FC = () => {
       <MetricsDashboard visitorStats={visitorStats} />
 
       {/* Sales Overview Section */}
-      <div className="bg-[#FDFBF7] p-5 sm:p-6 rounded-2xl border border-[#B8935A]/25 shadow-sm space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[#B8935A]/15">
+      <div className="bg-[#FDFBF7] p-5 sm:p-6 rounded-2xl border border-[#9A6A3A]/25 shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[#9A6A3A]/15">
           <div>
-            <h3 className="font-serif text-lg font-bold text-[#3D0F1F] flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-[#B8935A]" />
+            <h3 className="font-serif text-lg font-bold text-[#211C1A] flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-black" />
               Sales &amp; Financial Overview
             </h3>
             <p className="text-xs text-gray-500">Pan-India prepaid conversions, average basket size, and channel distributions</p>
           </div>
-          <span className="px-3 py-1 bg-[#3D0F1F] text-[#FAF5EB] border border-[#B8935A]/45 text-xs font-bold rounded-xl flex items-center gap-1.5 self-start sm:self-auto">
-            <TrendingUp className="w-3.5 h-3.5 text-[#DFBE65]" />
+          <span className="px-3 py-1 bg-[#241D1B] text-[#211C1A] border border-[#9A6A3A]/45 text-xs font-bold rounded-xl flex items-center gap-1.5 self-start sm:self-auto">
+            <TrendingUp className="w-3.5 h-3.5 text-black" />
             Fully Synced Live Data
           </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-4 rounded-xl bg-[#FAF5EB]/50 border border-[#B8935A]/25">
+          <div className="p-4 rounded-xl bg-[#F1E8DF]/50 border border-[#9A6A3A]/25">
             <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">Average Order Value (AOV)</p>
-            <p className="text-xl font-serif font-black text-[#3D0F1F] mt-1.5">
+            <p className="text-xl font-serif font-black text-[#211C1A] mt-1.5">
               ₹{totalOrders > 0 ? Math.round(totalRevenue / totalOrders).toLocaleString('en-IN') : 0}
             </p>
             <p className="text-[10px] text-gray-400 mt-1 font-medium">Computed from real order values</p>
           </div>
 
-          <div className="p-4 rounded-xl bg-[#FAF5EB]/50 border border-[#B8935A]/25">
+          <div className="p-4 rounded-xl bg-[#F1E8DF]/50 border border-[#9A6A3A]/25">
             <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">Prepaid Payment Rate</p>
             <p className="text-xl font-serif font-black text-emerald-700 mt-1.5">100%</p>
             <p className="text-[10px] text-gray-400 mt-1 font-medium">0% COD return rate risk</p>
@@ -341,13 +341,13 @@ export const AdminDashboardOverview: React.FC = () => {
 
             return (
               <>
-                <div className="p-4 rounded-xl bg-[#FAF5EB]/50 border border-[#B8935A]/25">
+                <div className="p-4 rounded-xl bg-[#F1E8DF]/50 border border-[#9A6A3A]/25">
                   <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">UPI / Instant Gateway</p>
                   <p className="text-xl font-serif font-black text-gray-900 mt-1.5">{upiPerc}%</p>
                   <p className="text-[10px] text-gray-400 mt-1 font-medium">GPay, PhonePe, Paytm, BHIM</p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-[#FAF5EB]/50 border border-[#B8935A]/25">
+                <div className="p-4 rounded-xl bg-[#F1E8DF]/50 border border-[#9A6A3A]/25">
                   <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">Cards &amp; Net Banking</p>
                   <p className="text-xl font-serif font-black text-gray-900 mt-1.5">{cardPerc}%</p>
                   <p className="text-[10px] text-gray-400 mt-1 font-medium">Visa, Mastercard, RuPay, NetBank</p>
@@ -362,27 +362,27 @@ export const AdminDashboardOverview: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Recent Orders Table (7 cols) */}
-        <div className="lg:col-span-7 bg-[#FDFBF7] p-5 sm:p-6 rounded-2xl border border-[#B8935A]/25 shadow-xs space-y-4">
+        <div className="lg:col-span-7 bg-[#FDFBF7] p-5 sm:p-6 rounded-2xl border border-[#9A6A3A]/25 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-serif text-lg font-bold text-[#3D0F1F]">
+              <h3 className="font-serif text-lg font-bold text-[#211C1A]">
                 Recent Orders
               </h3>
               <p className="text-xs text-gray-500">Live order stream with real-time status management</p>
             </div>
             <button
               onClick={() => openAdminTab('orders')}
-              className="text-xs font-bold text-[#3D0F1F] hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-xs font-bold text-[#211C1A] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>View All</span>
-              <ChevronRight className="w-3.5 h-3.5 text-[#B8935A]" />
+              <ChevronRight className="w-3.5 h-3.5 text-black" />
             </button>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-[#B8935A]/15 text-gray-500 font-bold uppercase tracking-wider">
+                <tr className="border-b border-[#9A6A3A]/15 text-gray-500 font-bold uppercase tracking-wider">
                   <th className="py-2.5 px-3">Order #</th>
                   <th className="py-2.5 px-3">Customer</th>
                   <th className="py-2.5 px-3">Amount</th>
@@ -392,8 +392,8 @@ export const AdminDashboardOverview: React.FC = () => {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {orders.slice(0, 5).map((order) => (
-                  <tr key={order.orderNumber} className="hover:bg-[#FAF5EB]/50 transition">
-                    <td className="py-3 px-3 font-mono font-bold text-[#3D0F1F]">
+                  <tr key={order.orderNumber} className="hover:bg-[#F1E8DF]/50 transition">
+                    <td className="py-3 px-3 font-mono font-bold text-[#211C1A]">
                       <button
                         onClick={() => openAdminOrderDetails(order.orderNumber)}
                         className="hover:underline cursor-pointer text-left"
@@ -416,7 +416,7 @@ export const AdminDashboardOverview: React.FC = () => {
                     <td className="py-3 px-3 text-right">
                       <button
                         onClick={() => openAdminOrderDetails(order.orderNumber)}
-                        className="px-2.5 py-1 bg-[#B8935A]/10 hover:bg-[#3D0F1F] hover:text-[#FAF5EB] text-[#3D0F1F] border border-[#B8935A]/25 rounded-lg text-xs font-semibold inline-flex items-center gap-1 cursor-pointer transition"
+                        className="px-2.5 py-1 bg-[#9A6A3A]/10 hover:bg-[#241D1B] hover:text-[#211C1A] text-[#211C1A] border border-[#9A6A3A]/25 rounded-lg text-xs font-semibold inline-flex items-center gap-1 cursor-pointer transition"
                       >
                         <Eye className="w-3 h-3" />
                         <span>View</span>
@@ -430,24 +430,24 @@ export const AdminDashboardOverview: React.FC = () => {
         </div>
 
         {/* Top Products (5 cols) */}
-        <div className="lg:col-span-5 bg-[#FDFBF7] p-5 sm:p-6 rounded-2xl border border-[#B8935A]/25 shadow-xs space-y-4">
+        <div className="lg:col-span-5 bg-[#FDFBF7] p-5 sm:p-6 rounded-2xl border border-[#9A6A3A]/25 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-serif text-lg font-bold text-[#3D0F1F]">
+              <h3 className="font-serif text-lg font-bold text-[#211C1A]">
                 Top Products
               </h3>
               <p className="text-xs text-gray-500">Highest rated & best performing styles</p>
             </div>
             <button
               onClick={() => openAdminTab('products')}
-              className="text-xs font-bold text-[#3D0F1F] hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-xs font-bold text-[#211C1A] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>Catalog</span>
-              <ChevronRight className="w-3.5 h-3.5 text-[#B8935A]" />
+              <ChevronRight className="w-3.5 h-3.5 text-black" />
             </button>
           </div>
 
-          <div className="divide-y divide-[#B8935A]/15">
+          <div className="divide-y divide-[#9A6A3A]/15">
             {topProducts.map((prod, idx) => (
               <div key={prod.id} className="py-2.5 flex items-center justify-between gap-3 group">
                 <div className="flex items-center gap-3 min-w-0">
@@ -458,7 +458,7 @@ export const AdminDashboardOverview: React.FC = () => {
                     <img
                       src={prod.images[0]}
                       alt={prod.name}
-                      className="w-10 h-12 object-cover rounded-lg border border-[#B8935A]/20 bg-gray-50"
+                      className="w-10 h-12 object-cover rounded-lg border border-[#9A6A3A]/20 bg-gray-50"
                     />
                   )}
                   <div className="min-w-0">
@@ -466,18 +466,18 @@ export const AdminDashboardOverview: React.FC = () => {
                       {prod.name}
                     </p>
                     <p className="text-[10px] text-gray-500">
-                      {prod.category} • <span className="text-[#3D0F1F] font-semibold">₹{prod.price.toLocaleString('en-IN')}</span>
+                      {prod.category} • <span className="text-[#211C1A] font-semibold">₹{prod.price.toLocaleString('en-IN')}</span>
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-[11px] font-bold text-[#3D0F1F]">
+                  <span className="text-[11px] font-bold text-[#211C1A]">
                     ★ {prod.rating} ({prod.reviewCount})
                   </span>
                   <button
                     onClick={() => openAdminProductEdit(prod.id)}
-                    className="p-1.5 hover:bg-[#B8935A]/15 text-gray-500 hover:text-[#3D0F1F] rounded-lg transition cursor-pointer"
+                    className="p-1.5 hover:bg-[#9A6A3A]/15 text-gray-500 hover:text-[#211C1A] rounded-lg transition cursor-pointer"
                     title="Edit Product"
                   >
                     <Edit3 className="w-3.5 h-3.5" />
@@ -491,8 +491,8 @@ export const AdminDashboardOverview: React.FC = () => {
       </div>
 
       {/* Low Stock Products Warning Section */}
-      <div className="bg-[#FDFBF7] p-5 sm:p-6 rounded-2xl border border-[#B8935A]/25 shadow-xs space-y-4">
-        <div className="flex items-center justify-between border-b border-[#B8935A]/15 pb-3">
+      <div className="bg-[#FDFBF7] p-5 sm:p-6 rounded-2xl border border-[#9A6A3A]/25 shadow-xs space-y-4">
+        <div className="flex items-center justify-between border-b border-[#9A6A3A]/15 pb-3">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-rose-50 text-rose-700 flex items-center justify-center border border-rose-200">
               <AlertTriangle className="w-4 h-4" />
@@ -506,10 +506,10 @@ export const AdminDashboardOverview: React.FC = () => {
           </div>
           <button
             onClick={() => openAdminTab('products')}
-            className="text-xs font-bold text-[#3D0F1F] hover:underline flex items-center gap-1 cursor-pointer"
+            className="text-xs font-bold text-[#211C1A] hover:underline flex items-center gap-1 cursor-pointer"
           >
             <span>Manage Inventory</span>
-            <ChevronRight className="w-3.5 h-3.5 text-[#B8935A]" />
+            <ChevronRight className="w-3.5 h-3.5 text-black" />
           </button>
         </div>
 
@@ -521,13 +521,13 @@ export const AdminDashboardOverview: React.FC = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {lowStockProducts.map((prod) => (
-              <div key={prod.id} className="p-3 bg-[#FAF5EB] rounded-xl border border-[#B8935A]/20 flex items-center justify-between gap-3">
+              <div key={prod.id} className="p-3 bg-[#F1E8DF] rounded-xl border border-[#9A6A3A]/20 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5 min-w-0">
                   {prod.images[0] && prod.images[0].trim() !== "" && (
                     <img
                       src={prod.images[0]}
                       alt={prod.name}
-                      className="w-10 h-12 object-cover rounded-lg border border-[#B8935A]/25"
+                      className="w-10 h-12 object-cover rounded-lg border border-[#9A6A3A]/25"
                     />
                   )}
                   <div className="min-w-0">
@@ -542,7 +542,7 @@ export const AdminDashboardOverview: React.FC = () => {
                   </span>
                   <button
                     onClick={() => openAdminProductEdit(prod.id)}
-                    className="block text-[10px] text-[#3D0F1F] font-bold mt-1 hover:underline cursor-pointer"
+                    className="block text-[10px] text-[#211C1A] font-bold mt-1 hover:underline cursor-pointer"
                   >
                     Restock
                   </button>

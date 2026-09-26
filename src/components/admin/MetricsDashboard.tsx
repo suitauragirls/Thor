@@ -35,29 +35,29 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ visitorStats
       title: 'Conversion %',
       value: `${conversionRate}%`,
       icon: Percent,
-      color: 'text-amber-600',
+      color: 'text-black',
       bgColor: 'bg-amber-50'
     },
     {
       title: 'Revenue',
       value: `₹${totalRevenue.toLocaleString('en-IN')}`,
       icon: IndianRupee,
-      color: 'text-[#3D0F1F]',
-      bgColor: 'bg-[#3D0F1F]/10'
+      color: 'text-[#211C1A]',
+      bgColor: 'bg-[#241D1B]/10'
     },
     {
       title: 'Avg Order Value',
       value: `₹${aov.toLocaleString('en-IN')}`,
       icon: ShoppingCart,
-      color: 'text-[#B8935A]',
-      bgColor: 'bg-[#B8935A]/10'
+      color: 'text-black',
+      bgColor: 'bg-[#9A6A3A]/10'
     }
   ];
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {metrics.map((metric) => (
-        <div key={metric.title} className="bg-[#FDFBF7] p-5 rounded-2xl border border-[#B8935A]/25 shadow-sm">
+        <div key={metric.title} className="bg-[#FDFBF7] p-5 rounded-2xl border border-[#9A6A3A]/25 shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[11px] font-bold uppercase tracking-wider text-gray-500">{metric.title}</span>
             <div className={`p-2 rounded-lg ${metric.bgColor} ${metric.color}`}>

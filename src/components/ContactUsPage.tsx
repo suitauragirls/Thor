@@ -46,21 +46,21 @@ export const ContactUsPage: React.FC = () => {
   };
 
   return (
-    <div id="contact-us-page" className="py-12 sm:py-16 bg-[#FFFDFC]">
+    <div id="contact-us-page" className="py-12 sm:py-16 bg-[#FDFBF7]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-xs text-gray-500">
-          <button onClick={() => setActivePage('home')} className="hover:text-[#58152D]">Home</button>
+        <nav className="flex items-center gap-2 text-xs text-[#3D0F1F]/55">
+          <button onClick={() => setActivePage('home')} className="hover:text-[#3D0F1F]">Home</button>
           <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
-          <span className="text-[#58152D] font-bold">Contact Concierge</span>
+          <span className="text-[#3D0F1F] font-semibold">Contact Concierge</span>
         </nav>
 
         <div className="text-center max-w-2xl mx-auto space-y-3">
-          <span className="text-xs uppercase tracking-[0.25em] font-semibold text-[#B88E28]">
+          <span className="text-xs uppercase tracking-[0.25em] font-semibold text-[#B8935A]">
             Customer Support & Inquiries
           </span>
-          <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2C1820]">
+          <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#3D0F1F]">
             We Are Here To Assist You
           </h1>
           <p className="text-xs sm:text-sm text-gray-600">
@@ -71,25 +71,25 @@ export const ContactUsPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Contact Details Card */}
-          <div className="lg:col-span-5 bg-[#E0BFB8]/50 border border-rose-100 rounded-2xl p-6 sm:p-8 space-y-6">
-            <h3 className="font-serif text-xl font-bold text-[#2C1820] border-b border-rose-100 pb-3">
-              Suit Bliss Aura Concierge
+          <div className="lg:col-span-5 bg-[#FAF5EB] border-t border-[#B8935A]/35 py-6 sm:py-8 space-y-6">
+            <h3 className="font-serif text-xl font-semibold text-[#3D0F1F] border-b border-[#B8935A]/25 pb-3">
+              Suit Aura Girls Concierge
             </h3>
 
             <div className="space-y-4 text-xs sm:text-sm text-gray-700">
               <div className="flex items-start gap-3">
-                <Mail className="w-5 h-5 text-[#58152D] shrink-0 mt-0.5" />
+                <Mail className="w-5 h-5 text-[#211C1A] shrink-0 mt-0.5" />
                 <div>
                   <strong className="block text-gray-900">Email Support</strong>
-                  <a href="mailto:suitblissaura@gmail.com" className="text-[#58152D] hover:underline font-semibold">
-                    suitblissaura@gmail.com
+                  <a href="mailto:suitauragirls@gmail.com" className="text-[#211C1A] hover:underline font-semibold">
+                    suitauragirls@gmail.com
                   </a>
                   <p className="text-[11px] text-gray-400">Average response time: 2-4 hours</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
-                <Phone className="w-5 h-5 text-[#58152D] shrink-0 mt-0.5" />
+                <Phone className="w-5 h-5 text-[#211C1A] shrink-0 mt-0.5" />
                 <div>
                   <strong className="block text-gray-900">WhatsApp &amp; Call Support</strong>
                   <span className="text-gray-900 font-bold">+91 82384 51017</span>
@@ -108,18 +108,18 @@ export const ContactUsPage: React.FC = () => {
               </div>
 
               <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-[#58152D] shrink-0 mt-0.5" />
+                <MapPin className="w-5 h-5 text-[#211C1A] shrink-0 mt-0.5" />
                 <div>
                   <strong className="block text-gray-900">Design Studio & Headquarters</strong>
                   <p className="text-gray-600">
-                    Suit Bliss Aura Fashions Pvt. Ltd.<br />
-                    Plot 48, Apparel & Handloom Park, Sitapura Industrial Area, Jaipur, Rajasthan 302022, India
+                    Suit Aura Girls Fashions Pvt. Ltd.<br />
+                    Plot 48, Apparel & Handloom Park, Sitapura Industrial Area, Artisan, Rajasthan 302022, India
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
-                <Clock className="w-5 h-5 text-[#58152D] shrink-0 mt-0.5" />
+                <Clock className="w-5 h-5 text-[#211C1A] shrink-0 mt-0.5" />
                 <div>
                   <strong className="block text-gray-900">Order Dispatch Hours</strong>
                   <p className="text-gray-600">Orders placed before 2 PM IST are dispatched the same day.</p>
@@ -127,14 +127,14 @@ export const ContactUsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-4 bg-\[#FAF7F5\] rounded-xl border border-rose-100 text-xs text-gray-600">
-              <span className="font-bold text-[#58152D] block mb-1">Prepaid Store Advantage:</span>
+            <div className="p-4 bg-\[#FAF7F2\] rounded-xl border border-rose-100 text-xs text-gray-600">
+              <span className="font-bold text-[#211C1A] block mb-1">Prepaid Store Advantage:</span>
               Prepaid orders are given priority packing with complimentary express shipping insurance.
             </div>
           </div>
 
           {/* Contact Form */}
-          <div className="lg:col-span-7 bg-\[#FAF7F5\] border border-rose-100 rounded-2xl p-6 sm:p-8 shadow-xs">
+          <div className="lg:col-span-7 bg-\[#FAF7F2\] border border-rose-100 rounded-2xl p-6 sm:p-8 shadow-xs">
             {submitted ? (
               <div className="py-12 text-center space-y-4">
                 <div className="w-14 h-14 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
@@ -151,7 +151,7 @@ export const ContactUsPage: React.FC = () => {
                     setEmail('');
                     setMessage('');
                   }}
-                  className="text-xs font-semibold text-[#58152D] hover:underline"
+                  className="text-xs font-semibold text-[#211C1A] hover:underline"
                 >
                   Send another inquiry
                 </button>
@@ -174,7 +174,7 @@ export const ContactUsPage: React.FC = () => {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. Priya Patel"
-                      className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-[#58152D]"
+                      className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-[#241D1B]"
                     />
                   </div>
 
@@ -189,7 +189,7 @@ export const ContactUsPage: React.FC = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="priya@example.com"
-                      className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-[#58152D]"
+                      className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-[#241D1B]"
                     />
                   </div>
                 </div>
@@ -204,7 +204,7 @@ export const ContactUsPage: React.FC = () => {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                     placeholder="e.g. 8238451017"
-                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-[#58152D]"
+                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-[#241D1B]"
                   />
                 </div>
 
@@ -217,8 +217,8 @@ export const ContactUsPage: React.FC = () => {
                     type="text"
                     value={orderNumber}
                     onChange={(e) => setOrderNumber(e.target.value)}
-                    placeholder="e.g. SBA-2026-123456"
-                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-[#58152D]"
+                    placeholder="e.g. SAG-2026-123456"
+                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-[#241D1B]"
                   />
                 </div>
 
@@ -232,15 +232,15 @@ export const ContactUsPage: React.FC = () => {
                     required
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="How may we assist you with your Suit Bliss Aura order or style query?"
-                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-[#58152D]"
+                    placeholder="How may we assist you with your Suit Aura Girls order or style query?"
+                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-[#241D1B]"
                   />
                 </div>
 
                 <button
                   id="contact-submit-btn"
                   type="submit"
-                  className="w-full py-3.5 bg-[#58152D] hover:bg-[#7E1D3B] text-white rounded-lg text-xs sm:text-sm font-semibold tracking-widest uppercase transition flex items-center justify-center gap-2 shadow-sm"
+                  className="w-full py-3.5 bg-[#241D1B] hover:bg-[#241D1B] text-[#211C1A] rounded-lg text-xs sm:text-sm font-semibold tracking-widest uppercase transition flex items-center justify-center gap-2 shadow-sm"
                 >
                   <Send className="w-4 h-4" />
                   <span>Submit Inquiry</span>

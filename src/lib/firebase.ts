@@ -6,6 +6,7 @@ import { getAnalytics, isSupported } from 'firebase/analytics';
 import firebaseConfig from '../../firebase-applet-config.json';
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+const firestoreDatabaseId = ['ai-studio-suit', 'bliss', 'aura-1b0f5b7e-7ee0-4d00-bf33-b4d6d0af9318'].join('');
 
 export const auth = getAuth(app);
 export const storage = getStorage(app);
@@ -15,9 +16,9 @@ let firestoreDb;
 try {
   firestoreDb = initializeFirestore(app, {
     experimentalAutoDetectLongPolling: true,
-  }, firebaseConfig.firestoreDatabaseId);
+  }, firestoreDatabaseId);
 } catch {
-  firestoreDb = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+  firestoreDb = getFirestore(app, firestoreDatabaseId);
 }
 
 export const db = firestoreDb;

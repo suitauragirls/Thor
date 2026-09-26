@@ -61,15 +61,15 @@ export const AdminOrderDetails: React.FC<AdminOrderDetailsProps> = ({ orderId })
 
   if (!order) {
     return (
-      <div className="bg-[#FDFBF7] p-12 rounded-2xl border border-[#B8935A]/25 text-center space-y-4">
-        <AlertCircle className="w-12 h-12 text-[#B8935A] mx-auto" />
+      <div className="bg-[#FDFBF7] p-12 rounded-2xl border border-[#9A6A3A]/25 text-center space-y-4">
+        <AlertCircle className="w-12 h-12 text-black mx-auto" />
         <h3 className="font-serif text-xl font-bold text-gray-900">Order #{orderId} Not Found</h3>
         <p className="text-xs text-gray-500 max-w-md mx-auto">
           The requested customer order does not exist or may have been deleted.
         </p>
         <button
           onClick={() => navigate('/admin/orders')}
-          className="px-4 py-2 bg-[#3D0F1F] text-white text-xs font-bold rounded-xl"
+          className="px-4 py-2 bg-[#241D1B] text-[#211C1A] text-xs font-bold rounded-xl"
         >
           Return to Orders List
         </button>
@@ -91,23 +91,23 @@ export const AdminOrderDetails: React.FC<AdminOrderDetailsProps> = ({ orderId })
     <div id="admin-order-details-page" className="space-y-6 pb-12">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#FDFBF7] p-5 rounded-2xl border border-[#B8935A]/25 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#FDFBF7] p-5 rounded-2xl border border-[#9A6A3A]/25 shadow-xs">
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => navigate('/admin/orders')}
-            className="p-2 bg-[#FAF5EB] hover:bg-[#B8935A]/15 text-[#3D0F1F] rounded-xl transition cursor-pointer border border-[#B8935A]/20"
+            className="p-2 bg-[#F1E8DF] hover:bg-[#9A6A3A]/15 text-[#211C1A] rounded-xl transition cursor-pointer border border-[#9A6A3A]/20"
             title="Back to Orders"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#B8935A]">
+            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-black">
               <span>Orders</span>
               <span>/</span>
               <span>{order.orderNumber}</span>
             </div>
-            <h2 className="font-serif text-2xl font-bold text-[#3D0F1F]">
+            <h2 className="font-serif text-2xl font-bold text-[#211C1A]">
               Order #{order.orderNumber}
             </h2>
           </div>
@@ -117,15 +117,15 @@ export const AdminOrderDetails: React.FC<AdminOrderDetailsProps> = ({ orderId })
           <button
             type="button"
             onClick={handlePrint}
-            className="px-3.5 py-2 border border-[#B8935A]/25 hover:bg-gray-50 text-gray-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+            className="px-3.5 py-2 border border-[#9A6A3A]/25 hover:bg-gray-50 text-gray-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
           >
-            <Printer className="w-4 h-4 text-[#B8935A]" />
+            <Printer className="w-4 h-4 text-black" />
             <span>Print Invoice</span>
           </button>
           <button
             type="button"
             onClick={() => navigate('/admin/orders')}
-            className="px-4 py-2 bg-[#FAF5EB] hover:bg-[#B8935A]/10 text-[#3D0F1F] border border-[#B8935A]/25 rounded-xl text-xs font-bold transition cursor-pointer"
+            className="px-4 py-2 bg-[#F1E8DF] hover:bg-[#9A6A3A]/10 text-[#211C1A] border border-[#9A6A3A]/25 rounded-xl text-xs font-bold transition cursor-pointer"
           >
             Back to Orders
           </button>
@@ -138,18 +138,18 @@ export const AdminOrderDetails: React.FC<AdminOrderDetailsProps> = ({ orderId })
         <div className="lg:col-span-2 space-y-6">
           
           {/* Items Table Card */}
-          <div className="bg-[#FDFBF7] p-6 rounded-2xl border border-[#B8935A]/25 shadow-xs space-y-4">
-            <h3 className="font-serif text-base font-bold text-gray-900 flex items-center justify-between pb-3 border-b border-[#B8935A]/15">
-              <span className="flex items-center gap-2 text-[#3D0F1F]">
-                <ShoppingBag className="w-4 h-4 text-[#B8935A]" />
+          <div className="bg-[#FDFBF7] p-6 rounded-2xl border border-[#9A6A3A]/25 shadow-xs space-y-4">
+            <h3 className="font-serif text-base font-bold text-gray-900 flex items-center justify-between pb-3 border-b border-[#9A6A3A]/15">
+              <span className="flex items-center gap-2 text-[#211C1A]">
+                <ShoppingBag className="w-4 h-4 text-black" />
                 Purchased Items ({(order.items || []).length})
               </span>
-              <span className="text-xs font-bold text-[#3D0F1F] font-mono">
+              <span className="text-xs font-bold text-[#211C1A] font-mono">
                 Placement: {order.date}
               </span>
             </h3>
 
-            <div className="divide-y divide-[#B8935A]/10">
+            <div className="divide-y divide-[#9A6A3A]/10">
               {(order.items || []).map((item, idx) => {
                 const selectedColorName = item.selectedColor?.name;
                 const selectedColorHex = item.selectedColor?.hex;
@@ -165,7 +165,7 @@ export const AdminOrderDetails: React.FC<AdminOrderDetailsProps> = ({ orderId })
                     <img
                       src={itemImg}
                       alt={item.product?.name || 'Item'}
-                      className="w-16 h-20 object-cover rounded-lg border border-[#B8935A]/20 bg-gray-50"
+                      className="w-16 h-20 object-cover rounded-lg border border-[#9A6A3A]/20 bg-gray-50"
                     />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-gray-900 truncate">
@@ -175,7 +175,7 @@ export const AdminOrderDetails: React.FC<AdminOrderDetailsProps> = ({ orderId })
                       Category: {item.product.category} • SKU: {item.product.sku || item.product.id}
                     </p>
                     <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-700">
-                      <span className="bg-[#FAF5EB] border border-[#B8935A]/20 px-2 py-0.5 rounded font-semibold text-[#3D0F1F]">
+                      <span className="bg-[#F1E8DF] border border-[#9A6A3A]/20 px-2 py-0.5 rounded font-semibold text-[#211C1A]">
                         Size: {item.selectedSize}
                       </span>
                       <span className="flex items-center gap-1">
@@ -191,7 +191,7 @@ export const AdminOrderDetails: React.FC<AdminOrderDetailsProps> = ({ orderId })
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-[#3D0F1F]">
+                    <p className="text-sm font-bold text-[#211C1A]">
                       ₹{(item.product.price * item.quantity).toLocaleString('en-IN')}
                     </p>
                     <p className="text-[11px] text-gray-400">
@@ -204,7 +204,7 @@ export const AdminOrderDetails: React.FC<AdminOrderDetailsProps> = ({ orderId })
             </div>
 
             {/* Financial Summary */}
-            <div className="pt-4 border-t border-[#B8935A]/15 space-y-2 text-xs text-gray-600 font-medium">
+            <div className="pt-4 border-t border-[#9A6A3A]/15 space-y-2 text-xs text-gray-600 font-medium">
               <div className="flex justify-between">
                 <span>Subtotal Items:</span>
                 <span className="font-semibold text-gray-900">₹{order.subtotal.toLocaleString('en-IN')}</span>
@@ -221,24 +221,24 @@ export const AdminOrderDetails: React.FC<AdminOrderDetailsProps> = ({ orderId })
                   {order.shippingCharge === 0 ? 'FREE (Prepaid Special)' : `₹${order.shippingCharge}`}
                 </span>
               </div>
-              <div className="flex justify-between pt-2 border-t border-[#B8935A]/15 text-sm font-bold text-gray-900">
+              <div className="flex justify-between pt-2 border-t border-[#9A6A3A]/15 text-sm font-bold text-gray-900">
                 <span>Final Captured Total:</span>
-                <span className="text-base text-[#3D0F1F]">₹{order.finalTotal.toLocaleString('en-IN')}</span>
+                <span className="text-base text-[#211C1A]">₹{order.finalTotal.toLocaleString('en-IN')}</span>
               </div>
             </div>
           </div>
 
           {/* Customer & Shipping Address Card */}
-          <div className="bg-[#FDFBF7] p-6 rounded-2xl border border-[#B8935A]/25 shadow-xs space-y-4">
-            <h3 className="font-serif text-base font-bold text-gray-900 flex items-center gap-2 pb-3 border-b border-[#B8935A]/15">
-              <MapPin className="w-4 h-4 text-[#B8935A]" />
+          <div className="bg-[#FDFBF7] p-6 rounded-2xl border border-[#9A6A3A]/25 shadow-xs space-y-4">
+            <h3 className="font-serif text-base font-bold text-gray-900 flex items-center gap-2 pb-3 border-b border-[#9A6A3A]/15">
+              <MapPin className="w-4 h-4 text-black" />
               Shipping Destination & Customer Contact
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-gray-700">
-              <div className="space-y-1.5 p-3.5 bg-[#FAF5EB] rounded-xl border border-[#B8935A]/20">
+              <div className="space-y-1.5 p-3.5 bg-[#F1E8DF] rounded-xl border border-[#9A6A3A]/20">
                 <p className="font-bold text-gray-900 text-sm flex items-center gap-1.5">
-                  <User className="w-4 h-4 text-[#B8935A]" />
+                  <User className="w-4 h-4 text-black" />
                   {order.customerName}
                 </p>
                 <p className="flex items-center gap-2 text-gray-600">
@@ -274,9 +274,9 @@ export const AdminOrderDetails: React.FC<AdminOrderDetailsProps> = ({ orderId })
         <div className="space-y-6">
           
           {/* Fulfillment Status Card */}
-          <form onSubmit={handleSave} className="bg-[#FDFBF7] p-6 rounded-2xl border border-[#B8935A]/25 shadow-xs space-y-4">
-            <h3 className="font-serif text-base font-bold text-gray-900 flex items-center gap-2 pb-3 border-b border-[#B8935A]/15">
-              <Truck className="w-4 h-4 text-[#B8935A]" />
+          <form onSubmit={handleSave} className="bg-[#FDFBF7] p-6 rounded-2xl border border-[#9A6A3A]/25 shadow-xs space-y-4">
+            <h3 className="font-serif text-base font-bold text-gray-900 flex items-center gap-2 pb-3 border-b border-[#9A6A3A]/15">
+              <Truck className="w-4 h-4 text-black" />
               Fulfillment Workflow
             </h3>
 
@@ -287,7 +287,7 @@ export const AdminOrderDetails: React.FC<AdminOrderDetailsProps> = ({ orderId })
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as AdminOrderStatus)}
-                className="w-full px-3 py-2.5 border border-[#B8935A]/25 rounded-xl text-xs font-bold bg-[#FAF5EB] text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#3D0F1F]"
+                className="w-full px-3 py-2.5 border border-[#9A6A3A]/25 rounded-xl text-xs font-bold bg-[#F1E8DF] text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#241D1B]"
               >
                 {ORDER_STATUSES.map((st) => (
                   <option key={st} value={st}>{st}</option>
@@ -304,7 +304,7 @@ export const AdminOrderDetails: React.FC<AdminOrderDetailsProps> = ({ orderId })
                 value={courierPartner}
                 onChange={(e) => setCourierPartner(e.target.value)}
                 placeholder="e.g. BlueDart, Delhivery, DTDC"
-                className="w-full px-3 py-2 border border-[#B8935A]/25 bg-[#FDFBF7] rounded-xl text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#3D0F1F]"
+                className="w-full px-3 py-2 border border-[#9A6A3A]/25 bg-[#FDFBF7] rounded-xl text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#241D1B]"
               />
             </div>
 
@@ -317,7 +317,7 @@ export const AdminOrderDetails: React.FC<AdminOrderDetailsProps> = ({ orderId })
                 value={trackingNumber}
                 onChange={(e) => setTrackingNumber(e.target.value)}
                 placeholder="e.g. BLUEDART-882910"
-                className="w-full px-3 py-2 border border-[#B8935A]/25 bg-[#FDFBF7] rounded-xl text-xs font-mono text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#3D0F1F]"
+                className="w-full px-3 py-2 border border-[#9A6A3A]/25 bg-[#FDFBF7] rounded-xl text-xs font-mono text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#241D1B]"
               />
             </div>
 
@@ -330,23 +330,23 @@ export const AdminOrderDetails: React.FC<AdminOrderDetailsProps> = ({ orderId })
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Dispatched via express air lane..."
-                className="w-full px-3 py-2 border border-[#B8935A]/25 bg-[#FDFBF7] rounded-xl text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#3D0F1F]"
+                className="w-full px-3 py-2 border border-[#9A6A3A]/25 bg-[#FDFBF7] rounded-xl text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#241D1B]"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-2.5 bg-[#3D0F1F] hover:bg-[#3D0F1F]/90 text-white text-xs font-bold rounded-xl transition shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-2.5 bg-[#241D1B] hover:bg-[#241D1B]/90 text-[#211C1A] text-xs font-bold rounded-xl transition shadow-xs flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Save className="w-4 h-4 text-[#DFBE65]" />
+              <Save className="w-4 h-4 text-black" />
               <span>Update Fulfillment State</span>
             </button>
           </form>
 
           {/* Payment Card */}
-          <div className="bg-[#FDFBF7] p-6 rounded-2xl border border-[#B8935A]/25 shadow-xs space-y-3">
-            <h3 className="font-serif text-base font-bold text-gray-900 flex items-center gap-2 pb-3 border-b border-[#B8935A]/15">
-              <CreditCard className="w-4 h-4 text-[#B8935A]" />
+          <div className="bg-[#FDFBF7] p-6 rounded-2xl border border-[#9A6A3A]/25 shadow-xs space-y-3">
+            <h3 className="font-serif text-base font-bold text-gray-900 flex items-center gap-2 pb-3 border-b border-[#9A6A3A]/15">
+              <CreditCard className="w-4 h-4 text-black" />
               Prepaid Payment Capture
             </h3>
 

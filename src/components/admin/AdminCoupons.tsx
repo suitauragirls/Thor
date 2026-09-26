@@ -123,12 +123,12 @@ export const AdminCoupons: React.FC = () => {
     <div id="admin-coupons-page" className="space-y-6">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#FDFBF7] p-5 rounded-2xl border border-[#B8935A]/25 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#FDFBF7] p-5 rounded-2xl border border-[#9A6A3A]/25 shadow-xs">
         <div>
-          <span className="text-[10px] font-bold uppercase tracking-widest text-[#B8935A]">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-black">
             Marketing & Offers
           </span>
-          <h2 className="font-serif text-2xl font-bold text-[#3D0F1F]">
+          <h2 className="font-serif text-2xl font-bold text-[#211C1A]">
             Coupons & Promo Codes
           </h2>
           <p className="text-xs text-gray-500">Configure client checkout discounts, validity dates, and usage caps</p>
@@ -136,15 +136,15 @@ export const AdminCoupons: React.FC = () => {
 
         <button
           onClick={handleOpenAdd}
-          className="px-4 py-2.5 bg-[#3D0F1F] hover:bg-[#3D0F1F]/90 text-white rounded-xl text-xs font-bold tracking-wider uppercase transition shadow-sm flex items-center gap-1.5 cursor-pointer border border-[#B8935A]/30"
+          className="px-4 py-2.5 bg-[#241D1B] hover:bg-[#241D1B]/90 text-[#211C1A] rounded-xl text-xs font-bold tracking-wider uppercase transition shadow-sm flex items-center gap-1.5 cursor-pointer border border-[#9A6A3A]/30"
         >
-          <Plus className="w-4 h-4 text-[#DFBE65]" />
+          <Plus className="w-4 h-4 text-black" />
           <span>Create Coupon</span>
         </button>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex flex-wrap gap-2 border-b border-[#B8935A]/15 pb-2">
+      <div className="flex flex-wrap gap-2 border-b border-[#9A6A3A]/15 pb-2">
         {(['all', 'active', 'expired', 'disabled'] as const).map((tab) => {
           const count = coupons.filter(c => {
             const exp = checkIfExpired(c);
@@ -160,13 +160,13 @@ export const AdminCoupons: React.FC = () => {
               onClick={() => setFilterTab(tab)}
               className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                 filterTab === tab
-                  ? 'bg-[#3D0F1F] text-[#FAF5EB] shadow-xs'
-                  : 'text-gray-500 hover:bg-[#B8935A]/10 hover:text-[#3D0F1F]'
+                  ? 'bg-[#241D1B] text-[#211C1A] shadow-xs'
+                  : 'text-gray-500 hover:bg-[#9A6A3A]/10 hover:text-[#211C1A]'
               }`}
             >
               <span className="capitalize">{tab}</span> Coupons
               <span className={`ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
-                filterTab === tab ? 'bg-white/20 text-white' : 'bg-[#B8935A]/15 text-[#3D0F1F]'
+                filterTab === tab ? 'bg-white/20 text-white' : 'bg-[#9A6A3A]/15 text-[#211C1A]'
               }`}>
                 {count}
               </span>
@@ -177,7 +177,7 @@ export const AdminCoupons: React.FC = () => {
 
       {/* Coupons Grid */}
       {filteredCoupons.length === 0 ? (
-        <div className="p-8 text-center bg-[#FDFBF7] rounded-2xl border border-[#B8935A]/25 space-y-2">
+        <div className="p-8 text-center bg-[#FDFBF7] rounded-2xl border border-[#9A6A3A]/25 space-y-2">
           <Tag className="w-8 h-8 text-gray-300 mx-auto" />
           <p className="text-sm font-semibold text-gray-700">No coupons found</p>
           <p className="text-xs text-gray-500">There are no coupons matching the "{filterTab}" category at this moment.</p>
@@ -193,7 +193,7 @@ export const AdminCoupons: React.FC = () => {
                   isExpired 
                     ? 'border-red-200/50 opacity-80' 
                     : coupon.isActive 
-                      ? 'border-[#B8935A]/25 hover:border-[#B8935A]/45' 
+                      ? 'border-[#9A6A3A]/25 hover:border-[#9A6A3A]/45' 
                       : 'border-gray-200 opacity-75'
                 }`}
               >
@@ -203,7 +203,7 @@ export const AdminCoupons: React.FC = () => {
                     <span className={`font-mono text-lg font-bold tracking-wider px-2.5 py-1 border rounded-lg inline-block ${
                       isExpired
                         ? 'text-gray-400 bg-gray-50 border-gray-200 line-through'
-                        : 'text-[#3D0F1F] bg-[#FAF5EB] border-[#B8935A]/30'
+                        : 'text-[#211C1A] bg-[#F1E8DF] border-[#9A6A3A]/30'
                     }`}>
                       {coupon.code}
                     </span>
@@ -239,7 +239,7 @@ export const AdminCoupons: React.FC = () => {
                 <div className={`p-3 rounded-xl border text-xs space-y-1.5 ${
                   isExpired
                     ? 'bg-red-50/20 border-red-100 text-gray-500'
-                    : 'bg-[#FAF5EB]/50 border-[#B8935A]/15 text-gray-600'
+                    : 'bg-[#F1E8DF]/50 border-[#9A6A3A]/15 text-gray-600'
                 }`}>
                   <div className="flex justify-between">
                     <span>Min Order Value:</span>
@@ -247,7 +247,7 @@ export const AdminCoupons: React.FC = () => {
                   </div>
                   <div className="flex justify-between items-center gap-1">
                     <span className="flex items-center gap-1">
-                      <CalendarDays className="w-3.5 h-3.5 text-[#B8935A]" />
+                      <CalendarDays className="w-3.5 h-3.5 text-black" />
                       Validity Window:
                     </span>
                     <span className={isExpired ? 'text-red-600 font-semibold' : ''}>
@@ -256,7 +256,7 @@ export const AdminCoupons: React.FC = () => {
                   </div>
                   <div className="flex justify-between">
                     <span>Redemptions:</span>
-                    <strong className="text-[#3D0F1F]">
+                    <strong className="text-[#211C1A]">
                       {coupon.usageCount} / {coupon.usageLimit}
                     </strong>
                   </div>
@@ -266,7 +266,7 @@ export const AdminCoupons: React.FC = () => {
                 <div className="space-y-1">
                   <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
                     <div
-                      className={`h-full rounded-full ${isExpired ? 'bg-gray-400' : 'bg-[#3D0F1F]'}`}
+                      className={`h-full rounded-full ${isExpired ? 'bg-gray-400' : 'bg-[#241D1B]'}`}
                       style={{ width: `${Math.min(100, (coupon.usageCount / coupon.usageLimit) * 100)}%` }}
                     />
                   </div>
@@ -279,7 +279,7 @@ export const AdminCoupons: React.FC = () => {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => handleOpenEdit(coupon)}
-                      className="p-1.5 hover:bg-[#B8935A]/15 rounded-lg text-gray-600 hover:text-[#3D0F1F] cursor-pointer"
+                      className="p-1.5 hover:bg-[#9A6A3A]/15 rounded-lg text-gray-600 hover:text-[#211C1A] cursor-pointer"
                       title="Edit Coupon"
                     >
                       <Edit3 className="w-4 h-4" />
@@ -303,13 +303,13 @@ export const AdminCoupons: React.FC = () => {
       {/* Add / Edit Coupon Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-[#FAF5EB] rounded-2xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-[#B8935A]/25 space-y-4 animate-in zoom-in-95 duration-150">
+          <div className="bg-[#F1E8DF] rounded-2xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-[#9A6A3A]/25 space-y-4 animate-in zoom-in-95 duration-150">
             
-            <div className="flex items-center justify-between border-b border-[#B8935A]/15 pb-3">
-              <h3 className="font-serif text-xl font-bold text-[#3D0F1F]">
+            <div className="flex items-center justify-between border-b border-[#9A6A3A]/15 pb-3">
+              <h3 className="font-serif text-xl font-bold text-[#211C1A]">
                 {editingCouponId ? 'Edit Coupon' : 'Create New Coupon'}
               </h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-[#3D0F1F] cursor-pointer">
+              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-[#211C1A] cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -324,7 +324,7 @@ export const AdminCoupons: React.FC = () => {
                   value={formData.code}
                   onChange={(e) => setFormData({ ...formData, code: e.target.value })}
                   placeholder="e.g. FIRST15 or AURA20"
-                  className="w-full px-3 py-2 border border-[#B8935A]/25 bg-[#FDFBF7] rounded-lg font-mono uppercase font-bold text-[#3D0F1F]"
+                  className="w-full px-3 py-2 border border-[#9A6A3A]/25 bg-[#FDFBF7] rounded-lg font-mono uppercase font-bold text-[#211C1A]"
                 />
               </div>
 
@@ -334,7 +334,7 @@ export const AdminCoupons: React.FC = () => {
                   <select
                     value={formData.discountType}
                     onChange={(e) => setFormData({ ...formData, discountType: e.target.value as any })}
-                    className="w-full px-3 py-2 border border-[#B8935A]/25 bg-[#FDFBF7] text-[#3D0F1F] rounded-lg focus:ring-1 focus:ring-[#3D0F1F]"
+                    className="w-full px-3 py-2 border border-[#9A6A3A]/25 bg-[#FDFBF7] text-[#211C1A] rounded-lg focus:ring-1 focus:ring-[#241D1B]"
                   >
                     <option value="percentage">Percentage (%)</option>
                     <option value="fixed">Flat Amount (₹)</option>
@@ -351,7 +351,7 @@ export const AdminCoupons: React.FC = () => {
                     min={1}
                     value={formData.discountValue}
                     onChange={(e) => setFormData({ ...formData, discountValue: Number(e.target.value) })}
-                    className="w-full px-3 py-2 border border-[#B8935A]/25 bg-[#FDFBF7] rounded-lg font-bold"
+                    className="w-full px-3 py-2 border border-[#9A6A3A]/25 bg-[#FDFBF7] rounded-lg font-bold"
                   />
                 </div>
               </div>
@@ -364,7 +364,7 @@ export const AdminCoupons: React.FC = () => {
                     min={0}
                     value={formData.minOrderValue}
                     onChange={(e) => setFormData({ ...formData, minOrderValue: Number(e.target.value) })}
-                    className="w-full px-3 py-2 border border-[#B8935A]/25 bg-[#FDFBF7] rounded-lg"
+                    className="w-full px-3 py-2 border border-[#9A6A3A]/25 bg-[#FDFBF7] rounded-lg"
                   />
                 </div>
 
@@ -376,7 +376,7 @@ export const AdminCoupons: React.FC = () => {
                     value={formData.maxDiscount || ''}
                     onChange={(e) => setFormData({ ...formData, maxDiscount: Number(e.target.value) || undefined })}
                     placeholder="Optional"
-                    className="w-full px-3 py-2 border border-[#B8935A]/25 bg-[#FDFBF7] rounded-lg"
+                    className="w-full px-3 py-2 border border-[#9A6A3A]/25 bg-[#FDFBF7] rounded-lg"
                   />
                 </div>
               </div>
@@ -389,7 +389,7 @@ export const AdminCoupons: React.FC = () => {
                     required
                     value={formData.startDate}
                     onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                    className="w-full px-3 py-2 border border-[#B8935A]/25 bg-[#FDFBF7] rounded-lg"
+                    className="w-full px-3 py-2 border border-[#9A6A3A]/25 bg-[#FDFBF7] rounded-lg"
                   />
                 </div>
 
@@ -400,7 +400,7 @@ export const AdminCoupons: React.FC = () => {
                     required
                     value={formData.expiryDate}
                     onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
-                    className="w-full px-3 py-2 border border-[#B8935A]/25 bg-[#FDFBF7] rounded-lg"
+                    className="w-full px-3 py-2 border border-[#9A6A3A]/25 bg-[#FDFBF7] rounded-lg"
                   />
                 </div>
               </div>
@@ -412,7 +412,7 @@ export const AdminCoupons: React.FC = () => {
                   min={1}
                   value={formData.usageLimit}
                   onChange={(e) => setFormData({ ...formData, usageLimit: Number(e.target.value) })}
-                  className="w-full px-3 py-2 border border-[#B8935A]/25 bg-[#FDFBF7] rounded-lg"
+                  className="w-full px-3 py-2 border border-[#9A6A3A]/25 bg-[#FDFBF7] rounded-lg"
                 />
               </div>
 
@@ -422,13 +422,13 @@ export const AdminCoupons: React.FC = () => {
                     type="checkbox"
                     checked={formData.isActive}
                     onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                    className="rounded border-[#B8935A]/25 text-[#3D0F1F] focus:ring-[#3D0F1F]"
+                    className="rounded border-[#9A6A3A]/25 text-[#211C1A] focus:ring-[#241D1B]"
                   />
                   <span>Enable and activate this coupon immediately</span>
                 </label>
               </div>
 
-              <div className="flex justify-end gap-2 pt-4 border-t border-[#B8935A]/15">
+              <div className="flex justify-end gap-2 pt-4 border-t border-[#9A6A3A]/15">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
@@ -438,9 +438,9 @@ export const AdminCoupons: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-[#3D0F1F] hover:bg-[#3D0F1F]/90 text-white rounded-lg font-bold flex items-center gap-1.5 cursor-pointer"
+                  className="px-5 py-2 bg-[#241D1B] hover:bg-[#241D1B]/90 text-[#211C1A] rounded-lg font-bold flex items-center gap-1.5 cursor-pointer"
                 >
-                  <Save className="w-4 h-4 text-[#DFBE65]" /> Save Coupon
+                  <Save className="w-4 h-4 text-black" /> Save Coupon
                 </button>
               </div>
 

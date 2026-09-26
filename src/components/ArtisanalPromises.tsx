@@ -32,26 +32,26 @@ export const ArtisanalPromises: React.FC = () => {
   return (
     <section 
       id="artisanal-promises-strip" 
-      className="w-full bg-[#3D0F1F] text-[#FAF5EB] py-2 sm:py-2.5 px-2 sm:px-4 border-y border-[#B8935A]/40 shadow-xs relative overflow-hidden z-10"
+      className="w-full bg-[#3D0F1F] py-4 sm:py-5 px-2 sm:px-4 border-y border-[#B8935A]/35 relative overflow-hidden z-10"
     >
       <div className="max-w-7xl mx-auto">
         {/* DESKTOP VIEW: 4 Columns with vertical gold dividers, ultra slim height */}
-        <div className="hidden md:grid md:grid-cols-4 divide-x divide-[#B8935A]/30 items-center">
+        <div className="hidden md:grid md:grid-cols-4 divide-x divide-[#B8935A]/35 items-center">
           {promises.map((prom) => {
             const IconComp = prom.icon;
             return (
               <div 
                 key={prom.id}
-                className="flex items-center justify-center gap-2.5 px-3 py-1 group cursor-default"
+                className="flex items-center justify-center gap-3 px-4 py-2 group cursor-default"
               >
-                <div className="w-7 h-7 rounded-full bg-[#FAF5EB]/10 text-[#DFBE65] flex items-center justify-center border border-[#B8935A]/40 shrink-0 group-hover:bg-[#DFBE65] group-hover:text-[#3D0F1F] transition-all duration-300">
-                  <IconComp className="w-3.5 h-3.5 stroke-[2]" />
+                <div className="shrink-0 text-[#DFBE65]">
+                  <IconComp className="w-5 h-5 stroke-[1.5]" />
                 </div>
                 <div className="text-left leading-tight min-w-0">
-                  <h4 className="font-serif text-[11px] sm:text-xs font-bold text-[#FAF5EB] tracking-wide uppercase truncate">
+                  <h4 className="font-serif text-xs font-semibold text-[#FAF5EB] tracking-wide uppercase truncate">
                     {prom.title}
                   </h4>
-                  <p className="text-[10px] text-[#DFBE65]/90 font-medium truncate">
+                  <p className="text-[10px] text-[#FAF5EB]/70 font-medium truncate">
                     {prom.desc}
                   </p>
                 </div>
@@ -68,16 +68,16 @@ export const ArtisanalPromises: React.FC = () => {
               const IconComp = prom.icon;
               return (
                 <div key={idx} className="inline-flex items-center gap-2 shrink-0">
-                  <div className="w-5.5 h-5.5 rounded-full bg-[#FAF5EB]/15 text-[#DFBE65] flex items-center justify-center border border-[#B8935A]/40 shrink-0">
+                  <div className="text-[#DFBE65] shrink-0">
                     <IconComp className="w-3 h-3 stroke-[2]" />
                   </div>
-                  <span className="font-serif font-bold text-[#FAF5EB] text-[11px] tracking-wide uppercase">
+                  <span className="font-serif font-semibold text-[#FAF5EB] text-[11px] tracking-wide uppercase">
                     {prom.title}
                   </span>
-                  <span className="text-[10px] text-[#DFBE65] font-semibold">
+                  <span className="text-[10px] text-[#FAF5EB]/70 font-semibold">
                     ({prom.desc})
                   </span>
-                  <span className="text-[#B8935A] ml-2 text-[8px]">◆</span>
+                  <span className="text-[#DFBE65] ml-2 text-[8px]">◆</span>
                 </div>
               );
             })}

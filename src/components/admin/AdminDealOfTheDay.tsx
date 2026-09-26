@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAdmin } from '../../context/AdminContext';
+import { useShop } from '../../context/ShopContext';
 import { 
   Flame, 
   Sparkles, 
@@ -16,10 +17,11 @@ import {
 import { getCleanImageUrl } from '../../utils/imageHelper';
 
 export const AdminDealOfTheDay: React.FC = () => {
-  const { products = [], dealOfTheDay, updateDealOfTheDay, showToast } = useAdmin();
+  const { products = [], dealOfTheDay, updateDealOfTheDay } = useAdmin();
+  const { showToast } = useShop();
 
   const [enabled, setEnabled] = useState<boolean>(dealOfTheDay?.enabled ?? true);
-  const [productId, setProductId] = useState<string>(dealOfTheDay?.productId || (products[0]?.id || 'sba-001'));
+  const [productId, setProductId] = useState<string>(dealOfTheDay?.productId || (products[0]?.id || ''));
   const [badgeText, setBadgeText] = useState<string>(dealOfTheDay?.badgeText || "DEAL OF THE DAY");
   const [dealPrice, setDealPrice] = useState<number>(dealOfTheDay?.dealPrice || (products[0]?.price ? Math.round(products[0].price * 0.85) : 899));
   const [durationHours, setDurationHours] = useState<number>(dealOfTheDay?.durationHours || 24);
@@ -107,14 +109,14 @@ export const AdminDealOfTheDay: React.FC = () => {
     <div className="space-y-8">
       
       {/* 1. Header Banner */}
-      <div className="bg-gradient-to-r from-[#3D0F1F] via-[#2A0814] to-[#14040A] text-[#FAF5EB] p-6 rounded-2xl border border-[#B8935A]/40 shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-[#241D1B] via-[#241D1B] to-[#241D1B] text-[#211C1A] p-6 rounded-2xl border border-[#9A6A3A]/40 shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#2A0814] border border-[#B8935A]/40 rounded-full text-xs font-bold text-[#DFBE65]">
-            <Flame className="w-4 h-4 text-[#DFBE65] animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#241D1B] border border-[#9A6A3A]/40 rounded-full text-xs font-bold text-[#211C1A]">
+            <Flame className="w-4 h-4 text-black animate-pulse" />
             <span>1-CLICK DEAL OF THE DAY SPOTLIGHT</span>
           </div>
           <h1 className="font-serif font-black text-2xl text-white">Deal of the Day Manager</h1>
-          <p className="text-xs text-[#FAF5EB]/80 font-sans">
+          <p className="text-xs text-[#F1E8DF]/80 font-sans">
             Sync any product from your catalog to the homepage with a single click. Connected to Supabase & live state.
           </p>
         </div>
@@ -122,17 +124,17 @@ export const AdminDealOfTheDay: React.FC = () => {
         <button
           type="button"
           onClick={handleResetTimer}
-          className="px-4 py-2.5 bg-[#FAF5EB] hover:bg-white text-[#3D0F1F] text-xs font-bold rounded-xl border border-[#B8935A] shadow-xs flex items-center gap-2 transition cursor-pointer shrink-0"
+          className="px-4 py-2.5 bg-[#F1E8DF] hover:bg-white text-[#211C1A] text-xs font-bold rounded-xl border border-[#9A6A3A] shadow-xs flex items-center gap-2 transition cursor-pointer shrink-0"
         >
-          <RefreshCw className="w-4 h-4 text-[#B8935A]" />
+          <RefreshCw className="w-4 h-4 text-black" />
           <span>RESET TIMER ({durationHours}H)</span>
         </button>
       </div>
 
       {/* 2. Enable/Disable Master Toggle */}
-      <div className="bg-white rounded-2xl p-5 border border-[#B8935A]/35 shadow-xs flex items-center justify-between gap-4">
+      <div className="bg-white rounded-2xl p-5 border border-[#9A6A3A]/35 shadow-xs flex items-center justify-between gap-4">
         <div className="space-y-0.5">
-          <span className="text-sm font-serif font-bold text-[#3D0F1F] flex items-center gap-2">
+          <span className="text-sm font-serif font-bold text-[#211C1A] flex items-center gap-2">
             <span>Show "Deal of the Day" Section on Homepage</span>
             {enabled && (
               <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-black rounded-full border border-emerald-300">
@@ -157,16 +159,16 @@ export const AdminDealOfTheDay: React.FC = () => {
             }}
             className="sr-only peer"
           />
-          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#3D0F1F]" />
+          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#241D1B]" />
         </label>
       </div>
 
       {/* 3. 1-CLICK CATALOG SYNC GRID */}
-      <div className="bg-white rounded-2xl p-6 border border-[#B8935A]/30 shadow-xs space-y-4">
+      <div className="bg-white rounded-2xl p-6 border border-[#9A6A3A]/30 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gray-100 pb-4">
           <div>
-            <h2 className="font-serif text-lg font-bold text-[#3D0F1F] flex items-center gap-2">
-              <Zap className="w-5 h-5 text-[#B8935A]" />
+            <h2 className="font-serif text-lg font-bold text-[#211C1A] flex items-center gap-2">
+              <Zap className="w-5 h-5 text-black" />
               <span>Select Product to Spotlight (1-Click Sync)</span>
             </h2>
             <p className="text-xs text-gray-500">
@@ -183,14 +185,14 @@ export const AdminDealOfTheDay: React.FC = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search products..."
-                className="w-full pl-8 pr-3 py-1.5 rounded-xl border border-gray-200 text-xs text-gray-800 outline-none focus:border-[#3D0F1F]"
+                className="w-full pl-8 pr-3 py-1.5 rounded-xl border border-gray-200 text-xs text-gray-800 outline-none focus:border-[#241D1B]"
               />
             </div>
 
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-3 py-1.5 rounded-xl border border-gray-200 text-xs text-gray-800 font-medium outline-none focus:border-[#3D0F1F] bg-white"
+              className="px-3 py-1.5 rounded-xl border border-gray-200 text-xs text-gray-800 font-medium outline-none focus:border-[#241D1B] bg-white"
             >
               {categories.map((c) => (
                 <option key={c} value={c}>{c}</option>
@@ -210,12 +212,12 @@ export const AdminDealOfTheDay: React.FC = () => {
                 key={prod.id}
                 className={`p-3 rounded-xl border transition-all flex flex-col justify-between relative ${
                   isActive 
-                    ? 'border-[#3D0F1F] bg-[#FAF5EB] ring-2 ring-[#B8935A] shadow-md' 
-                    : 'border-gray-200 bg-white hover:border-[#B8935A]/50'
+                    ? 'border-[#241D1B] bg-[#F1E8DF] ring-2 ring-[#9A6A3A] shadow-md' 
+                    : 'border-gray-200 bg-white hover:border-[#9A6A3A]/50'
                 }`}
               >
                 {isActive && (
-                  <span className="absolute top-2 right-2 px-2 py-0.5 bg-[#3D0F1F] text-[#DFBE65] text-[9px] font-black rounded-md shadow-xs">
+                  <span className="absolute top-2 right-2 px-2 py-0.5 bg-[#241D1B] text-[#211C1A] text-[9px] font-black rounded-md shadow-xs">
                     ACTIVE DEAL
                   </span>
                 )}
@@ -227,13 +229,13 @@ export const AdminDealOfTheDay: React.FC = () => {
                     className="w-14 h-18 object-cover object-top rounded-lg border border-gray-200 shrink-0 bg-gray-50"
                   />
                   <div className="min-w-0 space-y-1">
-                    <span className="text-[9px] font-bold text-[#B8935A] uppercase tracking-wider block truncate">
+                    <span className="text-[9px] font-bold text-black uppercase tracking-wider block truncate">
                       {prod.category}
                     </span>
-                    <h4 className="font-serif font-bold text-xs text-[#3D0F1F] line-clamp-2 leading-tight">
+                    <h4 className="font-serif font-bold text-xs text-[#211C1A] line-clamp-2 leading-tight">
                       {prod.name}
                     </h4>
-                    <div className="text-xs font-black text-[#3D0F1F]">
+                    <div className="text-xs font-black text-[#211C1A]">
                       Catalog: ₹{prod.price.toLocaleString('en-IN')}
                     </div>
                   </div>
@@ -245,10 +247,10 @@ export const AdminDealOfTheDay: React.FC = () => {
                   className={`mt-3 w-full py-2 px-3 text-[11px] font-serif font-black uppercase tracking-wider rounded-lg border flex items-center justify-center gap-1.5 transition cursor-pointer ${
                     isActive 
                       ? 'bg-emerald-600 text-white border-emerald-700' 
-                      : 'bg-[#3D0F1F] hover:bg-[#20050E] text-[#FAF5EB] border-[#B8935A]'
+                      : 'bg-[#241D1B] hover:bg-[#20050E] text-[#211C1A] border-[#9A6A3A]'
                   }`}
                 >
-                  <Zap className="w-3.5 h-3.5 text-[#DFBE65] fill-[#DFBE65]" />
+                  <Zap className="w-3.5 h-3.5 text-black fill-black" />
                   <span>{isActive ? 'CURRENTLY ACTIVE' : '⚡ 1-CLICK SET AS DEAL'}</span>
                 </button>
               </div>
@@ -258,11 +260,11 @@ export const AdminDealOfTheDay: React.FC = () => {
       </div>
 
       {/* 4. ACTIVE DEAL PARAMETERS FORM */}
-      <form onSubmit={handleSaveForm} className="bg-white rounded-2xl p-6 border border-[#B8935A]/30 shadow-xs space-y-6">
+      <form onSubmit={handleSaveForm} className="bg-white rounded-2xl p-6 border border-[#9A6A3A]/30 shadow-xs space-y-6">
         
         <div className="border-b border-gray-100 pb-3">
-          <h2 className="font-serif text-lg font-bold text-[#3D0F1F] flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-[#B8935A]" />
+          <h2 className="font-serif text-lg font-bold text-[#211C1A] flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-black" />
             <span>Customize Active Deal Parameters</span>
           </h2>
           <p className="text-xs text-gray-500">
@@ -272,23 +274,23 @@ export const AdminDealOfTheDay: React.FC = () => {
 
         {/* Selected Product Banner */}
         {activeProduct && (
-          <div className="p-4 bg-[#FAF5EB] rounded-2xl border border-[#B8935A]/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="p-4 bg-[#F1E8DF] rounded-2xl border border-[#9A6A3A]/30 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <img 
                 src={getCleanImageUrl(activeProduct.images?.[0] || activeProduct.image)} 
                 alt="" 
-                className="w-14 h-18 object-cover object-top rounded-xl border border-[#B8935A]/40 shrink-0"
+                className="w-14 h-18 object-cover object-top rounded-xl border border-[#9A6A3A]/40 shrink-0"
               />
               <div className="space-y-0.5">
-                <span className="text-[10px] font-bold text-[#B8935A] uppercase tracking-widest">{activeProduct.category}</span>
-                <h4 className="font-serif font-bold text-sm text-[#3D0F1F]">{activeProduct.name}</h4>
+                <span className="text-[10px] font-bold text-black uppercase tracking-widest">{activeProduct.category}</span>
+                <h4 className="font-serif font-bold text-sm text-[#211C1A]">{activeProduct.name}</h4>
                 <p className="text-xs text-gray-600">Standard Catalog Price: ₹{activeProduct.price.toLocaleString('en-IN')}</p>
               </div>
             </div>
 
             <div className="text-right">
               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">PROMOTIONAL DEAL PRICE</span>
-              <span className="font-serif text-2xl font-black text-[#3D0F1F]">₹{dealPrice.toLocaleString('en-IN')}</span>
+              <span className="font-serif text-2xl font-black text-[#211C1A]">₹{dealPrice.toLocaleString('en-IN')}</span>
             </div>
           </div>
         )}
@@ -305,7 +307,7 @@ export const AdminDealOfTheDay: React.FC = () => {
               min="1"
               value={dealPrice} 
               onChange={(e) => setDealPrice(Number(e.target.value))}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-bold text-[#3D0F1F] focus:ring-2 focus:ring-[#3D0F1F] outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-bold text-[#211C1A] focus:ring-2 focus:ring-[#241D1B] outline-none"
             />
           </div>
 
@@ -316,7 +318,7 @@ export const AdminDealOfTheDay: React.FC = () => {
             <select
               value={durationHours}
               onChange={(e) => setDurationHours(Number(e.target.value))}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-bold text-[#3D0F1F] focus:ring-2 focus:ring-[#3D0F1F] outline-none bg-white"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-bold text-[#211C1A] focus:ring-2 focus:ring-[#241D1B] outline-none bg-white"
             >
               <option value={6}>6 Hours</option>
               <option value={12}>12 Hours</option>
@@ -334,7 +336,7 @@ export const AdminDealOfTheDay: React.FC = () => {
               value={stockText} 
               onChange={(e) => setStockText(e.target.value)}
               placeholder="e.g. 🔥 Only 30 left at this price!"
-              className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-medium focus:ring-2 focus:ring-[#3D0F1F] outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-medium focus:ring-2 focus:ring-[#241D1B] outline-none"
             />
           </div>
 
@@ -349,7 +351,7 @@ export const AdminDealOfTheDay: React.FC = () => {
             value={badgeText} 
             onChange={(e) => setBadgeText(e.target.value)}
             placeholder="e.g. DEAL OF THE DAY - FULL COMBO SET"
-            className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-medium focus:ring-2 focus:ring-[#3D0F1F] outline-none"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-medium focus:ring-2 focus:ring-[#241D1B] outline-none"
           />
         </div>
 
@@ -358,9 +360,9 @@ export const AdminDealOfTheDay: React.FC = () => {
           <button
             type="submit"
             disabled={isSaving}
-            className="w-full md:w-auto py-3.5 px-8 bg-[#3D0F1F] hover:bg-[#20050E] text-[#FAF5EB] font-serif font-black text-xs uppercase tracking-wider rounded-xl transition shadow-md flex items-center justify-center gap-2 cursor-pointer border border-[#B8935A]"
+            className="w-full md:w-auto py-3.5 px-8 bg-[#241D1B] hover:bg-[#20050E] text-[#211C1A] font-serif font-black text-xs uppercase tracking-wider rounded-xl transition shadow-md flex items-center justify-center gap-2 cursor-pointer border border-[#9A6A3A]"
           >
-            <Save className="w-4 h-4 text-[#DFBE65]" />
+            <Save className="w-4 h-4 text-black" />
             <span>{isSaving ? 'SAVING...' : 'SAVE & SYNC TO HOMEPAGE'}</span>
           </button>
         </div>
@@ -369,18 +371,18 @@ export const AdminDealOfTheDay: React.FC = () => {
 
       {/* 5. LIVE PREVIEW CARD */}
       <div className="space-y-3">
-        <h3 className="font-serif font-bold text-base text-[#3D0F1F] flex items-center gap-2">
-          <Eye className="w-4 h-4 text-[#B8935A]" />
+        <h3 className="font-serif font-bold text-base text-[#211C1A] flex items-center gap-2">
+          <Eye className="w-4 h-4 text-black" />
           <span>Live Front-Store Preview</span>
         </h3>
 
         {activeProduct && (
-          <div className="max-w-xl mx-auto bg-white rounded-2xl border border-[#B8935A]/35 shadow-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-[#3D0F1F] via-[#2A0814] to-[#14040A] text-[#FAF5EB] px-4 py-2 flex items-center justify-between">
-              <span className="font-serif text-xs font-bold text-[#DFBE65] truncate uppercase">
+          <div className="max-w-xl mx-auto bg-white rounded-2xl border border-[#9A6A3A]/35 shadow-lg overflow-hidden">
+            <div className="bg-gradient-to-r from-[#241D1B] via-[#241D1B] to-[#241D1B] text-[#211C1A] px-4 py-2 flex items-center justify-between">
+              <span className="font-serif text-xs font-bold text-black truncate uppercase">
                 {badgeText || `DEAL OF THE DAY - ${activeProduct.name}`}
               </span>
-              <span className="text-[9px] font-black uppercase text-[#DFBE65] bg-[#FAF5EB]/10 px-2 py-0.5 rounded-full border border-[#DFBE65]/30">
+              <span className="text-[9px] font-black uppercase text-black bg-[#F1E8DF]/10 px-2 py-0.5 rounded-full border border-[#C7A77A]/30">
                 EXCLUSIVE OFFER
               </span>
             </div>
@@ -392,13 +394,13 @@ export const AdminDealOfTheDay: React.FC = () => {
                 className="col-span-4 aspect-[4/5] object-cover object-top rounded-xl border border-gray-200"
               />
               <div className="col-span-8 space-y-1.5">
-                <span className="text-[9px] font-bold text-[#B8935A] uppercase">{activeProduct.category}</span>
-                <h4 className="font-serif font-bold text-sm text-[#3D0F1F] leading-tight">{activeProduct.name}</h4>
+                <span className="text-[9px] font-bold text-black uppercase">{activeProduct.category}</span>
+                <h4 className="font-serif font-bold text-sm text-[#211C1A] leading-tight">{activeProduct.name}</h4>
                 <div className="flex items-baseline gap-2">
-                  <span className="font-serif font-black text-lg text-[#3D0F1F]">₹{dealPrice.toLocaleString('en-IN')}</span>
+                  <span className="font-serif font-black text-lg text-[#211C1A]">₹{dealPrice.toLocaleString('en-IN')}</span>
                   <span className="text-xs text-gray-400 line-through">₹{activeProduct.price.toLocaleString('en-IN')}</span>
                 </div>
-                <div className="text-[10px] font-bold text-amber-800">{stockText}</div>
+                <div className="text-[10px] font-bold text-black">{stockText}</div>
               </div>
             </div>
           </div>

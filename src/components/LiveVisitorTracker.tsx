@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import { useShop } from '../context/ShopContext';
 import { supabase } from '../lib/supabase';
-import { recordHeartbeat } from '../utils/visitorTracker';
+import { isLocalPreviewEnvironment, recordHeartbeat } from '../utils/visitorTracker';
 import { captureUtmParams, getStoredUtmParams } from '../utils/utmTracker';
 
 const getSessionId = (): string => {
   try {
-    let sid = sessionStorage.getItem('sba_live_session_id');
+    let sid = sessionStorage.getItem('sag_live_session_id');
     if (!sid) {
       sid = 'vis_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 9);
-      sessionStorage.setItem('sba_live_session_id', sid);
+      sessionStorage.setItem('sag_live_session_id', sid);
     }
     return sid;
   } catch {
@@ -37,6 +37,8 @@ export const LiveVisitorTracker: React.FC = () => {
 
     // Record visitor session once on page transition (debounced to 1 write per day in visitorTracker)
     recordHeartbeat(currentPage);
+
+    if (isLocalPreviewEnvironment()) return;
 
     const pingLiveVisitor = async () => {
       try {

@@ -92,7 +92,7 @@ export const AdminCategories: React.FC = () => {
     <div id="admin-categories-page" className="space-y-6">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-\[#FAF7F5\] p-5 rounded-2xl border border-rose-100 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-\[#FAF7F2\] p-5 rounded-2xl border border-rose-100 shadow-xs">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-widest text-[#8B2635]">
             Taxonomy & Navigation
@@ -104,7 +104,7 @@ export const AdminCategories: React.FC = () => {
 
         <button
           onClick={handleOpenAdd}
-          className="px-4 py-2.5 bg-[#58152D] hover:bg-[#7E1D3B] text-white rounded-xl text-xs font-semibold tracking-wider uppercase transition shadow-sm flex items-center gap-1.5"
+          className="px-4 py-2.5 bg-[#241D1B] hover:bg-[#241D1B] text-[#211C1A] rounded-xl text-xs font-semibold tracking-wider uppercase transition shadow-sm flex items-center gap-1.5"
         >
           <Plus className="w-4 h-4" />
           <span>Add Category</span>
@@ -118,10 +118,10 @@ export const AdminCategories: React.FC = () => {
           return (
             <div
               key={cat.id}
-              className="bg-\[#FAF7F5\] rounded-2xl border border-rose-100 overflow-hidden shadow-xs hover:shadow-md transition flex flex-col group"
+              className="bg-\[#FAF7F2\] rounded-2xl border border-rose-100 overflow-hidden shadow-xs hover:shadow-md transition flex flex-col group"
             >
               {/* Category Image Banner */}
-              <div className="relative h-44 overflow-hidden bg-[#E0BFB8]/20">
+              <div className="relative h-44 overflow-hidden bg-[#D8C8B8]/20">
                 <img
                   src={cat.image}
                   alt={cat.title}
@@ -149,7 +149,7 @@ export const AdminCategories: React.FC = () => {
               <div className="p-4 flex-1 flex flex-col justify-between space-y-3 text-xs">
                 <div className="flex items-center justify-between text-gray-600">
                   <span>Assigned Catalog:</span>
-                  <span className="font-bold text-[#58152D]">
+                  <span className="font-bold text-[#211C1A]">
                     {liveCount} Products live
                   </span>
                 </div>
@@ -161,7 +161,7 @@ export const AdminCategories: React.FC = () => {
                       showToast(`Category "${cat.title}" ${!cat.isActive ? 'enabled' : 'hidden'}.`, 'info');
                     }}
                     className={`text-[11px] font-bold px-2 py-1 rounded-md transition ${
-                      cat.isActive ? 'text-amber-700 hover:bg-amber-50' : 'text-emerald-700 hover:bg-emerald-50'
+                      cat.isActive ? 'text-black hover:bg-amber-50' : 'text-emerald-700 hover:bg-emerald-50'
                     }`}
                   >
                     {cat.isActive ? 'Disable' : 'Enable'}
@@ -170,14 +170,14 @@ export const AdminCategories: React.FC = () => {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => handleOpenEdit(cat)}
-                      className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-600 hover:text-[#58152D]"
+                      className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-600 hover:text-[#211C1A]"
                       title="Edit Category"
                     >
                       <Edit3 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(cat)}
-                      className="p-1.5 hover:bg-[#E0BFB8]/20 rounded-lg text-gray-400 hover:text-\[#800020\]"
+                      className="p-1.5 hover:bg-[#D8C8B8]/20 rounded-lg text-gray-400 hover:text-\[#800020\]"
                       title="Delete Category"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -193,7 +193,7 @@ export const AdminCategories: React.FC = () => {
       {/* Add / Edit Category Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-\[#FAF7F5\] rounded-2xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-gray-200 space-y-4">
+          <div className="bg-\[#FAF7F2\] rounded-2xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-gray-200 space-y-4">
             
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
               <h3 className="font-serif text-xl font-bold text-gray-900">
@@ -222,7 +222,7 @@ export const AdminCategories: React.FC = () => {
                 <select
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value as ProductCategory })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-\[#FAF7F5\]"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-\[#FAF7F2\]"
                 >
                   <option value="Suits">Suits</option>
                   <option value="Kurtis">Kurtis</option>
@@ -263,7 +263,7 @@ export const AdminCategories: React.FC = () => {
                     type="checkbox"
                     checked={formData.isActive}
                     onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                    className="rounded text-[#58152D] focus:ring-[#58152D]"
+                    className="rounded text-[#211C1A] focus:ring-[#241D1B]"
                   />
                   <span>Category Visible in Store Navigation</span>
                 </label>
@@ -279,7 +279,7 @@ export const AdminCategories: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-[#58152D] hover:bg-[#7E1D3B] text-white rounded-lg font-bold flex items-center gap-1.5"
+                  className="px-5 py-2 bg-[#241D1B] hover:bg-[#241D1B] text-[#211C1A] rounded-lg font-bold flex items-center gap-1.5"
                 >
                   <Save className="w-4 h-4" /> Save Category
                 </button>

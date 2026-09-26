@@ -33,7 +33,7 @@ export const QuickViewModal: React.FC = () => {
 
   const productColors = Array.isArray(quickViewProduct?.colors) && quickViewProduct.colors.length > 0
     ? quickViewProduct.colors
-    : [{ name: 'Standard', hex: '#58152D' }];
+    : [{ name: 'Standard', hex: '#241D1B' }];
 
   const availableSizes: ProductSize[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
 
@@ -58,7 +58,7 @@ export const QuickViewModal: React.FC = () => {
       setSelectedSize('M');
       const initialColors = (Array.isArray(quickViewProduct.colors) && quickViewProduct.colors.length > 0)
         ? quickViewProduct.colors
-        : [{ name: 'Standard', hex: '#58152D' }];
+        : [{ name: 'Standard', hex: '#241D1B' }];
       setSelectedColor(initialColors[0]);
       setQuantity(1);
       setIsJustAdded(false);
@@ -136,7 +136,7 @@ export const QuickViewModal: React.FC = () => {
 
     const shareData = {
       title: quickViewProduct.name,
-      text: `Check out ${quickViewProduct.name} at Suit Bliss Aura!`,
+      text: `Check out ${quickViewProduct.name} at Suit Aura Girls!`,
       url: shareUrl
     };
 
@@ -161,13 +161,13 @@ export const QuickViewModal: React.FC = () => {
       <div 
         id="quick-view-modal"
         onClick={(event) => event.stopPropagation()}
-        className="bg-[#FAF7F5] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative border border-rose-100 p-6 sm:p-8 animate-in zoom-in-95 duration-200"
+        className="bg-[#FAF7F2] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative border border-rose-100 p-6 sm:p-8 animate-in zoom-in-95 duration-200"
       >
         {/* Close Button */}
         <button
           id="close-quick-view-btn"
           onClick={() => setQuickViewProduct(null)}
-          className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-[#E0BFB8]/20 transition z-10"
+          className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-[#D8C8B8]/20 transition z-10"
           aria-label="Close Quick View"
         >
           <X className="w-5 h-5" />
@@ -178,7 +178,7 @@ export const QuickViewModal: React.FC = () => {
           {/* Images Section */}
           <div className="md:col-span-6 space-y-3">
             <motion.div 
-              className="relative aspect-[3/4] rounded-xl overflow-hidden bg-[#E0BFB8]/20 border border-rose-100"
+              className="relative aspect-[3/4] rounded-xl overflow-hidden bg-[#D8C8B8]/20 border border-rose-100"
               drag="x"
               dragConstraints={{ left: 0, right: 0 }}
               onDragEnd={(_, info) => {
@@ -198,7 +198,7 @@ export const QuickViewModal: React.FC = () => {
               ) : (
                 <div className="w-full h-full bg-black flex items-center justify-center text-gray-400 text-xs">No image</div>
               )}
-              <span className="absolute top-3 left-3 bg-[#58152D] text-white text-[11px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">
+              <span className="absolute top-3 left-3 bg-[#241D1B] text-[#211C1A] text-[11px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">
                 {quickViewProduct.discount}% OFF
               </span>
             </motion.div>
@@ -212,7 +212,7 @@ export const QuickViewModal: React.FC = () => {
                     type="button"
                     onClick={() => handleSelectThumbnail(idx)}
                     className={`w-16 h-20 rounded-lg overflow-hidden border-2 shrink-0 transition cursor-pointer ${
-                      selectedImageIdx === idx ? 'border-[#58152D] scale-105 shadow-sm' : 'border-transparent opacity-70 hover:opacity-100'
+                      selectedImageIdx === idx ? 'border-[#241D1B] scale-105 shadow-sm' : 'border-transparent opacity-70 hover:opacity-100'
                     }`}
                   >
                     {img && <img src={getCleanImageUrl(img)} alt="Thumbnail" className="w-full h-full object-cover" />}
@@ -237,9 +237,9 @@ export const QuickViewModal: React.FC = () => {
 
               {/* Rating and Reviews */}
               <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1 bg-[#58152D] text-[#FFF7F9] px-2 py-0.5 rounded text-xs font-semibold">
+                <div className="flex items-center gap-1 bg-[#241D1B] text-[#FFF7F9] px-2 py-0.5 rounded text-xs font-semibold">
                   <span>{quickViewProduct.rating}</span>
-                  <Star className="w-3 h-3 fill-[#DFBE65] text-[#DFBE65]" />
+                  <Star className="w-3 h-3 fill-black text-black" />
                 </div>
                 <span className="text-xs text-gray-500">
                   ({getProductReviewCount(quickViewProduct.id)} verified reviews)
@@ -248,7 +248,7 @@ export const QuickViewModal: React.FC = () => {
 
               {/* Price Row */}
               <div className="flex items-baseline gap-3">
-                <span className="font-serif text-2xl sm:text-3xl font-bold text-[#58152D]">
+                <span className="font-serif text-2xl sm:text-3xl font-bold text-[#211C1A]">
                   ₹{quickViewProduct.price.toLocaleString('en-IN')}
                 </span>
                 <span className="text-sm line-through text-gray-400 font-medium">
@@ -266,7 +266,7 @@ export const QuickViewModal: React.FC = () => {
               {/* Color Selector */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-gray-700 block">
-                  Color: <span className="text-[#58152D] font-extrabold normal-case">{selectedColor.name}</span>
+                  Color: <span className="text-[#211C1A] font-extrabold normal-case">{selectedColor.name}</span>
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {productColors.map((c, idx) => {
@@ -279,7 +279,7 @@ export const QuickViewModal: React.FC = () => {
                         onClick={() => handleSelectColor(c)}
                         className={`w-7 h-7 rounded-full border-2 p-0.5 transition cursor-pointer ${
                           isSelected 
-                            ? 'border-[#58152D] scale-110 shadow-sm ring-2 ring-[#58152D]/20' 
+                            ? 'border-[#241D1B] scale-110 shadow-sm ring-2 ring-[#241D1B]/20' 
                             : 'border-gray-200 opacity-80 hover:opacity-100'
                         }`}
                         title={`${c.name} (${c.hex})`}
@@ -301,7 +301,7 @@ export const QuickViewModal: React.FC = () => {
                     id="qv-size-guide-btn"
                     type="button"
                     onClick={() => setIsSizeGuideOpen(true)}
-                    className="text-xs text-[#58152D] hover:text-[#C84B70] font-medium flex items-center gap-1 underline underline-offset-2 cursor-pointer"
+                    className="text-xs text-[#211C1A] hover:text-[#C84B70] font-medium flex items-center gap-1 underline underline-offset-2 cursor-pointer"
                   >
                     <Ruler className="w-3.5 h-3.5" />
                     Size Guide
@@ -316,8 +316,8 @@ export const QuickViewModal: React.FC = () => {
                       onClick={() => setSelectedSize(sz)}
                       className={`py-2 text-xs font-bold rounded-lg border transition cursor-pointer ${
                         selectedSize === sz
-                          ? 'bg-[#58152D] text-white border-[#58152D] shadow-xs'
-                          : 'bg-\[#FAF7F5\] text-gray-800 border-gray-200 hover:border-[#58152D] hover:bg-[#E0BFB8]/50'
+                          ? 'bg-[#241D1B] text-[#211C1A] border-[#241D1B] shadow-xs'
+                          : 'bg-\[#FAF7F2\] text-gray-800 border-gray-200 hover:border-[#241D1B] hover:bg-[#D8C8B8]/50'
                       }`}
                     >
                       {sz}
@@ -342,7 +342,7 @@ export const QuickViewModal: React.FC = () => {
                   className={`py-3.5 px-2 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${
                     isJustAdded
                       ? 'bg-emerald-600 text-white border-2 border-emerald-600 shadow-md'
-                      : 'bg-\[#FAF7F5\] hover:bg-[#E0BFB8]/20 border-2 border-[#58152D] text-[#58152D] shadow-2xs'
+                      : 'bg-\[#FAF7F2\] hover:bg-[#D8C8B8]/20 border-2 border-[#241D1B] text-[#211C1A] shadow-2xs'
                   }`}
                 >
                   {isJustAdded ? (
@@ -352,7 +352,7 @@ export const QuickViewModal: React.FC = () => {
                     </>
                   ) : (
                     <>
-                      <ShoppingBag className="w-4 h-4 text-[#58152D]" />
+                      <ShoppingBag className="w-4 h-4 text-[#211C1A]" />
                       <span>ADD TO BAG</span>
                     </>
                   )}
@@ -363,7 +363,7 @@ export const QuickViewModal: React.FC = () => {
                   onClick={handleBuyNow}
                   className="py-3.5 px-2 bg-luxury-gradient hover:brightness-110 active:scale-95 text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
+                  <Zap className="w-4 h-4 text-black fill-black" />
                   <span>BUY NOW</span>
                 </button>
               </div>
@@ -374,7 +374,7 @@ export const QuickViewModal: React.FC = () => {
                   onClick={() => toggleWishlist(quickViewProduct)}
                   className={`flex-1 py-2.5 rounded-lg border transition flex items-center justify-center gap-1.5 text-xs font-bold ${
                     isFav
-                      ? 'bg-[#E0BFB8]/20 border-[#C84B70] text-[#C84B70]'
+                      ? 'bg-[#D8C8B8]/20 border-[#C84B70] text-[#C84B70]'
                       : 'border-gray-200 text-gray-600 hover:text-[#C84B70] hover:border-[#C84B70]'
                   }`}
                   aria-label="Wishlist"
@@ -400,7 +400,7 @@ export const QuickViewModal: React.FC = () => {
                   navigateToProduct(quickViewProduct.id);
                   setQuickViewProduct(null);
                 }}
-                className="w-full text-center text-xs font-semibold text-[#58152D] hover:text-[#C84B70] py-2 flex items-center justify-center gap-1 group"
+                className="w-full text-center text-xs font-semibold text-[#211C1A] hover:text-[#C84B70] py-2 flex items-center justify-center gap-1 group"
               >
                 <span>View Full Product Details & Reviews</span>
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />

@@ -29,10 +29,10 @@ export const AdminDashboardPage: React.FC = () => {
   const [enteredPin, setEnteredPin] = useState('');
   const [pinError, setPinError] = useState('');
 
-  const secretSlug = (securityConfig?.secretPathSlug || 'sba-vault').toLowerCase();
+  const secretSlug = (securityConfig?.secretPathSlug || 'sag-vault').toLowerCase();
   const isSecretVaultPath = 
     currentPath === `/${secretSlug}` || 
-    currentPath === '/sba-vault' || 
+    currentPath === '/sag-vault' || 
     currentPath === '/admin-vault';
 
   // 1. If on secret vault route and not logged in, show the Admin Login Vault
@@ -59,16 +59,16 @@ export const AdminDashboardPage: React.FC = () => {
 
     return (
       <div id="admin-404-guard" className="min-h-screen bg-[#FFFDFC] flex flex-col items-center justify-center p-6 text-center relative">
-        <div className="max-w-md w-full bg-\[#FAF7F5\] border border-[#F3C5D1] rounded-3xl p-8 sm:p-10 shadow-pink-glow">
-          <span className="text-6xl font-serif font-black text-[#58152D] block mb-2">404</span>
+        <div className="max-w-md w-full bg-\[#FAF7F2\] border border-[#F3C5D1] rounded-3xl p-8 sm:p-10 shadow-pink-glow">
+          <span className="text-6xl font-serif font-black text-[#211C1A] block mb-2">404</span>
           <h1 className="text-xl font-bold text-gray-900 mb-2">Page Not Found</h1>
           <p className="text-xs text-gray-600 mb-6 leading-relaxed">
-            The page you are looking for does not exist on Suit Bliss Aura or has been moved.
+            The page you are looking for does not exist on Suit Aura Girls or has been moved.
           </p>
 
           <button
             onClick={() => window.location.href = '/'}
-            className="w-full py-3 bg-[#58152D] hover:bg-[#6B0F2B] text-white text-xs font-black uppercase tracking-widest rounded-xl transition cursor-pointer shadow-pink-glow mb-4"
+            className="w-full py-3 bg-[#241D1B] hover:bg-[#241D1B] text-[#211C1A] text-xs font-black uppercase tracking-widest rounded-xl transition cursor-pointer shadow-pink-glow mb-4"
           >
             Return to Store
           </button>
@@ -77,7 +77,7 @@ export const AdminDashboardPage: React.FC = () => {
           <div className="pt-2 border-t border-rose-50 text-center">
             <button
               onClick={() => setStaffModalOpen(true)}
-              className="text-[11px] text-gray-400 hover:text-[#58152D] font-medium transition cursor-pointer inline-flex items-center gap-1"
+              className="text-[11px] text-gray-400 hover:text-[#211C1A] font-medium transition cursor-pointer inline-flex items-center gap-1"
             >
               <Lock className="w-3 h-3" />
               <span>Authorized Personnel Verification</span>
@@ -88,9 +88,9 @@ export const AdminDashboardPage: React.FC = () => {
         {/* Discrete PIN Modal */}
         {staffModalOpen && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-            <div className="bg-\[#FAF7F5\] rounded-2xl max-w-xs w-full p-6 border border-rose-100 shadow-2xl text-left">
+            <div className="bg-\[#FAF7F2\] rounded-2xl max-w-xs w-full p-6 border border-rose-100 shadow-2xl text-left">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 rounded-lg bg-[#E0BFB8]/40 text-[#58152D] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-[#D8C8B8]/40 text-[#211C1A] flex items-center justify-center">
                   <KeyRound className="w-4 h-4" />
                 </div>
                 <div>
@@ -100,7 +100,7 @@ export const AdminDashboardPage: React.FC = () => {
               </div>
 
               {pinError && (
-                <div className="p-2 mb-3 bg-[#E0BFB8]/20 text-rose-800 text-[11px] rounded-lg border border-rose-200">
+                <div className="p-2 mb-3 bg-[#D8C8B8]/20 text-rose-800 text-[11px] rounded-lg border border-rose-200">
                   {pinError}
                 </div>
               )}
@@ -126,7 +126,7 @@ export const AdminDashboardPage: React.FC = () => {
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-2 text-xs font-bold text-white bg-[#58152D] rounded-lg hover:bg-[#6B0F2B] transition"
+                    className="flex-1 py-2 text-xs font-bold text-[#211C1A] bg-[#241D1B] rounded-lg hover:bg-[#241D1B] transition"
                   >
                     Verify
                   </button>

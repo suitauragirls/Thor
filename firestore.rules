@@ -10,11 +10,9 @@ service cloud.firestore {
       allow read, update, delete: if true;
     }
 
-    // Orders collection: Public can create, anyone can track (read), Admin can manage
+    // Order records are sourced through the customer/order API, never exposed through client Firestore.
     match /orders/{orderNumber} {
-      allow create: if true;
-      allow read: if true;
-      allow update, delete: if true;
+      allow read, write: if false;
     }
 
     // Visitor Sessions collection: Anyone can log their visitor actions

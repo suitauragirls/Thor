@@ -11,11 +11,9 @@ import {
 } from '../types';
 import { useProducts } from './ProductContext';
 import { useRouter } from './RouterContext';
-import { PRODUCTS_DATA } from '../data/products';
 import { supabase } from '../lib/supabase';
 import { db } from '../lib/firebase';
-import { collection, getDocs } from 'firebase/firestore';
-import { mapOrderFromSupabase } from './AdminContext';
+import { mapCouponFromSupabase, mapOrderFromSupabase } from './AdminContext';
 import { recordHeartbeat, trackFunnelEvent } from '../utils/visitorTracker';
 import { categoryToSlug, slugToCategory } from '../utils/slugHelper';
 
@@ -84,7 +82,7 @@ export const DEFAULT_COUPONS: Coupon[] = [
   },
   {
     id: 'c6',
-    code: 'JAIPUR12',
+    code: 'ARTISAN12',
     discountType: 'percentage',
     discountValue: 12,
     minOrderValue: 899,
@@ -174,17 +172,17 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [cart, setCart] = useState<CartItem[]>(() => {
     if (typeof window === 'undefined') return [];
     try {
-      const primary = localStorage.getItem('sba_cart_v1');
+      const primary = localStorage.getItem('sag_cart_v1');
       if (primary) {
         const parsed = JSON.parse(primary);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
-      const backup = localStorage.getItem('sba_cart_backup');
+      const backup = localStorage.getItem('sag_cart_backup');
       if (backup) {
         const parsed = JSON.parse(backup);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
-      const session = sessionStorage.getItem('sba_cart_session');
+      const session = sessionStorage.getItem('sag_cart_session');
       if (session) {
         const parsed = JSON.parse(session);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -204,7 +202,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Load Wishlist from localStorage
   const [wishlist, setWishlist] = useState<Product[]>(() => {
     try {
-      const saved = localStorage.getItem('sba_wishlist_v1');
+      const saved = localStorage.getItem('sag_wishlist_v1');
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -220,7 +218,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Load Orders from localStorage
   const [recentOrders, setRecentOrders] = useState<Order[]>(() => {
     try {
-      const saved = localStorage.getItem('sba_orders_v1');
+      const saved = localStorage.getItem('sag_orders_v1');
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -290,23 +288,11 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { data, error } = await supabase
         .from('coupons')
         .select('*')
-        .eq('isActive', true)
+        .eq('is_active', true)
         .order('id', { ascending: false });
 
       if (!error && data && data.length > 0) {
-        const mappedCoupons: Coupon[] = data.map(c => ({
-          id: String(c.id),
-          code: c.code || '',
-          discountType: (c.discountType === 'fixed' ? 'fixed' : 'percentage'),
-          discountValue: Number(c.discountValue) || 0,
-          minOrderValue: Number(c.minOrderValue) || 0,
-          maxDiscount: c.maxDiscount ? Number(c.maxDiscount) : undefined,
-          startDate: c.startDate || '',
-          expiryDate: c.expiryDate || '',
-          usageLimit: Number(c.usageLimit) || 100,
-          usageCount: Number(c.usageCount) || 0,
-          isActive: c.isActive ?? true,
-        }));
+        const mappedCoupons: Coupon[] = data.map(mapCouponFromSupabase).filter(coupon => coupon.isActive);
         
         // Always preserve DEFAULT_COUPONS so users can access all 6 curated coupons!
         const existingCodes = new Set(mappedCoupons.map(c => c.code.toUpperCase()));
@@ -336,7 +322,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }>(() => {
     if (typeof window !== 'undefined') {
       try {
-        const saved = localStorage.getItem('sba_user_delivery_location_v1');
+        const saved = localStorage.getItem('sag_user_delivery_location_v1');
         if (saved) {
           const parsed = JSON.parse(saved);
           if (parsed && parsed.pincode) return parsed;
@@ -349,7 +335,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const setUserDeliveryLocation = (location: { pincode: string; city: string; state: string; area?: string }) => {
     setUserDeliveryLocationState(location);
     try {
-      localStorage.setItem('sba_user_delivery_location_v1', JSON.stringify(location));
+      localStorage.setItem('sag_user_delivery_location_v1', JSON.stringify(location));
     } catch {}
   };
 
@@ -365,7 +351,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (!email) {
-        const localUser = localStorage.getItem('sba_custom_user');
+        const localUser = localStorage.getItem('sag_custom_user');
         if (localUser) {
           try {
             const parsed = JSON.parse(localUser);
@@ -404,7 +390,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (!email) {
-        const localUser = localStorage.getItem('sba_custom_user');
+        const localUser = localStorage.getItem('sag_custom_user');
         if (localUser) {
           try {
             const parsed = JSON.parse(localUser);
@@ -420,7 +406,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Read guest cart snapshot prior to merge
       let guestItems: CartItem[] = [];
       try {
-        const savedGuestCart = localStorage.getItem('sba_cart_v1');
+        const savedGuestCart = localStorage.getItem('sag_cart_v1');
         if (savedGuestCart) {
           const parsed = JSON.parse(savedGuestCart);
           if (Array.isArray(parsed)) {
@@ -483,8 +469,8 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // 3. Update active cart state & local storage
         setCart(mergedCart);
         try {
-          localStorage.setItem('sba_cart_v1', JSON.stringify(mergedCart));
-          localStorage.setItem('sba_cart_backup', JSON.stringify(mergedCart));
+          localStorage.setItem('sag_cart_v1', JSON.stringify(mergedCart));
+          localStorage.setItem('sag_cart_backup', JSON.stringify(mergedCart));
         } catch {}
 
         // 4. Sync merged cart back to remote account profile
@@ -497,7 +483,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else if (remoteCart.length > 0) {
         setCart(remoteCart);
         try {
-          localStorage.setItem('sba_cart_v1', JSON.stringify(remoteCart));
+          localStorage.setItem('sag_cart_v1', JSON.stringify(remoteCart));
         } catch {}
       }
     } catch (e) {
@@ -520,7 +506,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (!email) {
-        const localUser = localStorage.getItem('sba_custom_user');
+        const localUser = localStorage.getItem('sag_custom_user');
         if (localUser) {
           try {
             const parsed = JSON.parse(localUser);
@@ -557,7 +543,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (!email) {
-        const localUser = localStorage.getItem('sba_custom_user');
+        const localUser = localStorage.getItem('sag_custom_user');
         if (localUser) {
           try {
             const parsed = JSON.parse(localUser);
@@ -591,7 +577,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 const mergedWishlist = Array.from(map.values());
                 
                 try {
-                  localStorage.setItem('sba_wishlist_v1', JSON.stringify(mergedWishlist));
+                  localStorage.setItem('sag_wishlist_v1', JSON.stringify(mergedWishlist));
                 } catch {}
                 
                 pushWishlistToSupabase(mergedWishlist);
@@ -617,9 +603,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     try {
       const serialized = JSON.stringify(cart);
-      localStorage.setItem('sba_cart_v1', serialized);
-      localStorage.setItem('sba_cart_backup', serialized);
-      sessionStorage.setItem('sba_cart_session', serialized);
+      localStorage.setItem('sag_cart_v1', serialized);
+      localStorage.setItem('sag_cart_backup', serialized);
+      sessionStorage.setItem('sag_cart_session', serialized);
     } catch (e) {
       console.error('Cart sync storage error:', e);
     }
@@ -627,8 +613,8 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Instant cross-tab broadcast via BroadcastChannel API
     if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
       try {
-        const channel = new BroadcastChannel('sba_cart_broadcast_channel');
-        channel.postMessage({ type: 'SBA_CART_UPDATED', cart, timestamp: Date.now() });
+        const channel = new BroadcastChannel('sag_cart_broadcast_channel');
+        channel.postMessage({ type: 'SAG_CART_UPDATED', cart, timestamp: Date.now() });
         channel.close();
       } catch (bcErr) {
         console.warn('BroadcastChannel post error:', bcErr);
@@ -651,9 +637,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     let bcChannel: BroadcastChannel | null = null;
     if ('BroadcastChannel' in window) {
       try {
-        bcChannel = new BroadcastChannel('sba_cart_broadcast_channel');
+        bcChannel = new BroadcastChannel('sag_cart_broadcast_channel');
         bcChannel.onmessage = (event) => {
-          if (event.data && event.data.type === 'SBA_CART_UPDATED' && Array.isArray(event.data.cart)) {
+          if (event.data && event.data.type === 'SAG_CART_UPDATED' && Array.isArray(event.data.cart)) {
             const currentStr = JSON.stringify(cartRef.current);
             const incomingStr = JSON.stringify(event.data.cart);
             if (currentStr !== incomingStr) {
@@ -668,7 +654,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Fallback Cross-tab storage event listener
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'sba_cart_v1' || e.key === 'sba_cart_backup') {
+      if (e.key === 'sag_cart_v1' || e.key === 'sag_cart_backup') {
         try {
           if (e.newValue) {
             const newCart = JSON.parse(e.newValue);
@@ -690,13 +676,13 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const handleSaveOnBackground = () => {
       try {
         const serialized = JSON.stringify(cartRef.current);
-        localStorage.setItem('sba_cart_v1', serialized);
-        localStorage.setItem('sba_cart_backup', serialized);
-        sessionStorage.setItem('sba_cart_session', serialized);
+        localStorage.setItem('sag_cart_v1', serialized);
+        localStorage.setItem('sag_cart_backup', serialized);
+        sessionStorage.setItem('sag_cart_session', serialized);
         pushCartToSupabase(cartRef.current);
 
         const serializedWishlist = JSON.stringify(wishlistRef.current);
-        localStorage.setItem('sba_wishlist_v1', serializedWishlist);
+        localStorage.setItem('sag_wishlist_v1', serializedWishlist);
         pushWishlistToSupabase(wishlistRef.current);
       } catch {}
     };
@@ -733,17 +719,17 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       pullCartFromSupabase();
       pullWishlistFromSupabase();
     };
-    window.addEventListener('sba-auth-state-change', handleAuthEvent);
+    window.addEventListener('sag-auth-state-change', handleAuthEvent);
 
     return () => {
       authListener?.subscription?.unsubscribe();
-      window.removeEventListener('sba-auth-state-change', handleAuthEvent);
+      window.removeEventListener('sag-auth-state-change', handleAuthEvent);
     };
   }, []);
 
   useEffect(() => {
     try {
-      localStorage.setItem('sba_wishlist_v1', JSON.stringify(wishlist));
+      localStorage.setItem('sag_wishlist_v1', JSON.stringify(wishlist));
     } catch (e) {
       console.error(e);
     }
@@ -757,7 +743,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     try {
-      localStorage.setItem('sba_orders_v1', JSON.stringify(recentOrders));
+      localStorage.setItem('sag_orders_v1', JSON.stringify(recentOrders));
     } catch (e) {
       console.error(e);
     }
@@ -782,16 +768,16 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setRecentOrders((prev) => {
       const updated = [order, ...prev.filter((o) => o.orderNumber !== order.orderNumber)];
       try {
-        localStorage.setItem('sba_orders_v1', JSON.stringify(updated));
+        localStorage.setItem('sag_orders_v1', JSON.stringify(updated));
       } catch {}
       return updated;
     });
     try {
-      const guestOrders = JSON.parse(localStorage.getItem('sba_guest_orders') || '[]');
+      const guestOrders = JSON.parse(localStorage.getItem('sag_guest_orders') || '[]');
       const updatedGuest = [order, ...guestOrders.filter((o: any) => o.orderNumber !== order.orderNumber)];
-      localStorage.setItem('sba_guest_orders', JSON.stringify(updatedGuest));
-      if (order.customerEmail) localStorage.setItem('sba_last_guest_email', order.customerEmail.toLowerCase().trim());
-      if (order.customerMobile) localStorage.setItem('sba_last_guest_phone', order.customerMobile.trim());
+      localStorage.setItem('sag_guest_orders', JSON.stringify(updatedGuest));
+      if (order.customerEmail) localStorage.setItem('sag_last_guest_email', order.customerEmail.toLowerCase().trim());
+      if (order.customerMobile) localStorage.setItem('sag_last_guest_phone', order.customerMobile.trim());
     } catch {}
   };
 
@@ -799,16 +785,15 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const purgeOldTestData = async () => {
       try {
-        const isPurged = localStorage.getItem('sba_v2_data_purged_final');
+        const isPurged = localStorage.getItem('sag_v2_data_purged_final');
         if (!isPurged) {
           console.log('Purging legacy test data across site and database...');
           localStorage.clear();
           sessionStorage.clear();
-          localStorage.setItem('sba_v2_data_purged_final', 'true');
+          localStorage.setItem('sag_v2_data_purged_final', 'true');
 
           // Delete all old test records from Supabase tables
           await supabase.from('orders').delete().gte('id', 0);
-          await supabase.from('customers').delete().gte('id', 0);
           await supabase.from('abandoned_checkouts').delete().gte('id', 0);
           await supabase.from('profiles').delete().neq('id', '00000000-0000-0000-0000-000000000000');
         }
@@ -831,7 +816,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Check current custom logged-in user
       if (!targetEmail) {
-        const localUserStr = localStorage.getItem('sba_custom_user');
+        const localUserStr = localStorage.getItem('sag_custom_user');
         if (localUserStr) {
           try {
             const parsed = JSON.parse(localUserStr);
@@ -852,7 +837,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Check last guest email fallback if user recently ordered or logged in
       if (!targetEmail) {
-        const guestEmail = localStorage.getItem('sba_last_guest_email');
+        const guestEmail = localStorage.getItem('sag_last_guest_email');
         if (guestEmail && guestEmail.includes('@')) {
           targetEmail = guestEmail.trim().toLowerCase();
         }
@@ -866,7 +851,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Read verified phone number saved specifically under this target user's email profile
       let targetPhone = '';
-      const userProfStr = localStorage.getItem(`sba_user_profile_${targetEmail}`);
+      const userProfStr = localStorage.getItem(`sag_user_profile_${targetEmail}`);
       if (userProfStr) {
         try {
           const p = JSON.parse(userProfStr);
@@ -878,9 +863,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // 1. Read from LocalStorage Order backups
       const localKeys = [
-        `sba_user_orders_${targetEmail}`,
-        'sba_orders_v1',
-        'sba_guest_orders'
+        `sag_user_orders_${targetEmail}`,
+        'sag_orders_v1',
+        'sag_guest_orders'
       ];
       localKeys.forEach((key) => {
         try {
@@ -905,32 +890,12 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } catch (e) {}
       });
 
-      // 2. Query Firestore DB 'orders' collection (Shared Real-Time Cloud Orders)
-      try {
-        const querySnap = await getDocs(collection(db, 'orders'));
-        querySnap.forEach((docSnap) => {
-          const data = docSnap.data() as Order;
-          if (data && data.orderNumber) {
-            const oEmail = (data.customerEmail || '').toLowerCase().trim();
-            const oPhone = cleanPhone(data.customerMobile || '');
-            if (
-              oEmail === targetEmail ||
-              (targetPhone && oPhone && oPhone === targetPhone)
-            ) {
-              matchedMap.set(data.orderNumber, data);
-            }
-          }
-        });
-      } catch (fsErr) {
-        console.warn('Firestore sync orders notice:', fsErr);
-      }
-
-      // 3. Query Supabase 'orders' table using ILIKE wildcards so customerEmail containing targetEmail matches!
+      // Query Supabase orders by the authenticated customer's email envelope.
       try {
         const { data: ordData, error } = await supabase
           .from('orders')
           .select('*')
-          .ilike('customerEmail', `%${targetEmail}%`);
+          .ilike('customer_email', `${targetEmail}%`);
         
         if (!error && ordData && ordData.length > 0) {
           const mappedOrders = ordData.map(mapOrderFromSupabase);
@@ -950,8 +915,8 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       setRecentOrders(userOrders);
       try {
-        localStorage.setItem(`sba_user_orders_${targetEmail}`, JSON.stringify(userOrders));
-        localStorage.setItem('sba_orders_v1', JSON.stringify(userOrders));
+        localStorage.setItem(`sag_user_orders_${targetEmail}`, JSON.stringify(userOrders));
+        localStorage.setItem('sag_orders_v1', JSON.stringify(userOrders));
       } catch {}
     } catch (e) {
       console.warn('Sync customer orders error:', e);
@@ -961,8 +926,8 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     syncCustomerOrders();
     const handleAuthEvent = () => syncCustomerOrders();
-    window.addEventListener('sba-auth-state-change', handleAuthEvent);
-    return () => window.removeEventListener('sba-auth-state-change', handleAuthEvent);
+    window.addEventListener('sag-auth-state-change', handleAuthEvent);
+    return () => window.removeEventListener('sag-auth-state-change', handleAuthEvent);
   }, []);
 
   // Toast Helper
@@ -982,7 +947,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     openDrawer: boolean = false
   ) => {
     const chosenSize = size || (product.sizes && product.sizes.length > 0 ? product.sizes[0] : 'M');
-    const chosenColor = color || (product.colors && product.colors.length > 0 ? product.colors[0] : { name: 'Standard', hex: '#58152D' });
+    const chosenColor = color || (product.colors && product.colors.length > 0 ? product.colors[0] : { name: 'Standard', hex: '#241D1B' });
 
     const itemId = `${product.id}-${chosenSize}-${chosenColor.name.replace(/\s+/g, '-').toLowerCase()}`;
     
@@ -1020,7 +985,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     color?: ProductColor,
     quantity: number = 1
   ) => {
-    const selectedColor = color || (product.colors && product.colors.length > 0 ? product.colors[0] : { name: 'Standard', hex: '#58152D' });
+    const selectedColor = color || (product.colors && product.colors.length > 0 ? product.colors[0] : { name: 'Standard', hex: '#241D1B' });
     const chosenSize = size || (product.sizes && product.sizes.length > 0 ? product.sizes[0] : 'M');
     
     // Add product to cart
@@ -1088,9 +1053,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const clearCart = () => {
     setCart([]);
     try {
-      localStorage.removeItem('sba_cart_v1');
-      localStorage.removeItem('sba_cart_backup');
-      sessionStorage.removeItem('sba_cart_session');
+      localStorage.removeItem('sag_cart_v1');
+      localStorage.removeItem('sag_cart_backup');
+      sessionStorage.removeItem('sag_cart_session');
     } catch (e) {
       console.error(e);
     }
@@ -1114,7 +1079,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const moveToCartFromWishlist = (product: Product, size: ProductSize = 'M') => {
-    addToCart(product, size, product.colors[0] || { name: 'Default', hex: '#58152D' }, 1);
+    addToCart(product, size, product.colors[0] || { name: 'Default', hex: '#241D1B' }, 1);
     setWishlist((prev) => prev.filter((item) => item.id !== product.id));
   };
 
@@ -1129,7 +1094,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     if (!found) {
-      showToast('Invalid coupon code. Try AURA10, FESTIVE15, ROYAL200, BLISS500, FIRSTSUIT, or JAIPUR12!', 'error');
+      showToast('Invalid coupon code. Try AURA10, FESTIVE15, ROYAL200, BLISS500, FIRSTSUIT, or ARTISAN12!', 'error');
       return false;
     }
 
@@ -1141,6 +1106,12 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Check Expiry
     const now = new Date();
+    const startsAt = new Date(found.startDate);
+    if (found.startDate && Number.isFinite(startsAt.getTime()) && now < startsAt) {
+      showToast('This coupon is not active yet.', 'error');
+      return false;
+    }
+
     const expiry = new Date(found.expiryDate);
     // Set expiry to end of day
     expiry.setHours(23, 59, 59, 999);
@@ -1239,7 +1210,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Dynamic Shipping Fee synchronized with Store Settings / AI Storefront Controller
   const [storeShippingSettings, setStoreShippingSettings] = useState<{ shippingCharge: number; freeShippingThreshold: number }>(() => {
     try {
-      const saved = localStorage.getItem('sba_store_settings');
+      const saved = localStorage.getItem('sag_store_settings');
       if (saved) {
         const parsed = JSON.parse(saved);
         return {
@@ -1254,7 +1225,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const syncShipping = () => {
       try {
-        const saved = localStorage.getItem('sba_store_settings');
+        const saved = localStorage.getItem('sag_store_settings');
         if (saved) {
           const parsed = JSON.parse(saved);
           setStoreShippingSettings({
@@ -1265,10 +1236,10 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } catch {}
     };
     window.addEventListener('storage', syncShipping);
-    window.addEventListener('sba_settings_updated', syncShipping);
+    window.addEventListener('sag_settings_updated', syncShipping);
     return () => {
       window.removeEventListener('storage', syncShipping);
-      window.removeEventListener('sba_settings_updated', syncShipping);
+      window.removeEventListener('sag_settings_updated', syncShipping);
     };
   }, []);
 

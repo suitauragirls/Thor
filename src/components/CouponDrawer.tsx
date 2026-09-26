@@ -32,23 +32,23 @@ export const CouponDrawer: React.FC = () => {
         initial={{ x: '100%' }}
         animate={{ x: isCouponDrawerOpen ? 0 : '100%' }}
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-        className="bg-[#FFFDFB] w-full max-w-md h-full flex flex-col shadow-2xl relative overflow-hidden"
+        className="bg-[#FDFBF7] w-full max-w-md h-full flex flex-col relative overflow-hidden border-l border-[#B8935A]/30"
       >
         {/* Drawer Header */}
-        <div className="p-5 border-b border-rose-100/50 flex items-center justify-between bg-gradient-to-r from-[#E0BFB8]/40 to-amber-50/30">
+        <div className="p-5 border-b border-[#B8935A]/30 flex items-center justify-between bg-[#FAF5EB]">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-[#58152D]/10 rounded-lg text-[#58152D]">
+            <div className="p-1.5 bg-[#3D0F1F] text-[#FAF5EB]">
               <Gift className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-serif text-lg font-black text-[#58152D]">Available Offers</h3>
+              <h3 className="font-serif text-lg font-semibold text-[#3D0F1F]">Available Offers</h3>
               <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Tap to apply instant savings</p>
             </div>
           </div>
           <motion.button 
             whileTap={{ scale: 0.9 }}
             onClick={() => setIsCouponDrawerOpen(false)}
-            className="p-1.5 rounded-full hover:bg-[#E0BFB8]/20 text-gray-400 hover:text-gray-700 transition cursor-pointer"
+            className="p-2 hover:bg-[#FDFBF7] text-[#3D0F1F]/55 hover:text-[#3D0F1F] transition-colors cursor-pointer"
             id="close-coupon-drawer"
           >
             <X className="w-5 h-5" />
@@ -77,16 +77,16 @@ export const CouponDrawer: React.FC = () => {
                   key={cp.id} 
                   className={`relative border-2 rounded-2xl overflow-hidden transition-all duration-300 ${
                     isApplied 
-                      ? 'border-[#58152D] bg-[#58152D]/5 shadow-pink-glow' 
-                      : 'border-rose-200/60 bg-[#E0BFB8]/20 hover:border-gray-300 hover:bg-[#FAF7F5]'
+                      ? 'border-[#3D0F1F] bg-[#FAF5EB]' 
+                        : 'border-[#B8935A]/25 bg-[#FDFBF7] hover:border-[#B8935A] hover:bg-[#FAF5EB]'
                   }`}
                 >
                   {/* Active Indicator Left Bar */}
-                  <div className={`absolute top-0 bottom-0 left-0 w-1.5 bg-gradient-to-b from-[#8B1E3F] to-[#58152D]`} />
+                  <div className="absolute top-0 bottom-0 left-0 w-1 bg-[#B8935A]" />
 
                   <div className="p-5 pl-7 space-y-3">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="px-2.5 py-0.5 bg-[#FAF7F5] text-gray-700 text-[9px] font-black uppercase tracking-widest rounded-full border border-gray-200/80 shadow-3xs">
+                      <span className="px-2.5 py-0.5 bg-[#FAF7F2] text-gray-700 text-[9px] font-black uppercase tracking-widest rounded-full border border-gray-200/80 shadow-3xs">
                         Royal Special
                       </span>
                       {isApplied && (
@@ -99,8 +99,8 @@ export const CouponDrawer: React.FC = () => {
                     <div className="flex items-center justify-between gap-4 pt-1">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <Tag className="w-4 h-4 text-[#DFBE65]" />
-                          <span className="font-mono text-base font-extrabold tracking-wider text-[#58152D]">
+                          <Tag className="w-4 h-4 text-black" />
+                          <span className="font-mono text-base font-extrabold tracking-wider text-[#211C1A]">
                             {cp.code}
                           </span>
                         </div>
@@ -113,7 +113,7 @@ export const CouponDrawer: React.FC = () => {
                         <motion.button
                           whileTap={{ scale: 0.95 }}
                           onClick={removeCoupon}
-                          className="px-4 py-2 bg-[#E0BFB8]/40 hover:bg-rose-200 text-rose-800 text-[10px] font-black uppercase tracking-wider rounded-xl transition cursor-pointer"
+                          className="px-4 py-2 bg-[#D8C8B8]/40 hover:bg-rose-200 text-rose-800 text-[10px] font-black uppercase tracking-wider rounded-xl transition cursor-pointer"
                         >
                           Remove
                         </motion.button>
@@ -121,7 +121,7 @@ export const CouponDrawer: React.FC = () => {
                         <motion.button
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleApply(cp.code)}
-                          className={`px-4 py-2 bg-gradient-to-r from-[#8B1E3F] to-[#58152D] text-white text-[10px] font-black uppercase tracking-wider rounded-xl transition shadow-3xs hover:opacity-95 cursor-pointer`}
+                          className="px-4 py-2 bg-[#3D0F1F] text-[#FAF5EB] text-[10px] font-semibold uppercase tracking-wider transition-colors hover:bg-[#3D0F1F]/90 cursor-pointer"
                         >
                           Apply
                         </motion.button>
@@ -140,9 +140,9 @@ export const CouponDrawer: React.FC = () => {
         </div>
 
         {/* Dynamic Interactive Hint Footer */}
-        <div className="p-4 border-t border-rose-100/50 bg-[#E0BFB8]/20 text-center space-y-1.5">
+        <div className="p-4 border-t border-rose-100/50 bg-[#D8C8B8]/20 text-center space-y-1.5">
           <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider flex items-center justify-center gap-1">
-            <Sparkles className="w-3.5 h-3.5 text-[#DFBE65] fill-[#DFBE65]" /> Maximize Festive Savings!
+            <Sparkles className="w-3.5 h-3.5 text-black fill-black" /> Maximize Festive Savings!
           </p>
           <p className="text-[11px] text-gray-600 leading-relaxed max-w-xs mx-auto">
             You can copy or apply any coupon directly. Multiple coupon codes cannot be combined on a single order.

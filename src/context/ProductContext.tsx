@@ -1,9 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { Product } from '../types';
-import { PRODUCTS_DATA } from '../data/products';
+import { Product, ProductSize } from '../types';
 
-const LOCAL_STORAGE_KEY = 'sba_custom_products_v3';
+const LOCAL_STORAGE_KEY = 'sag_custom_products_v1';
 
 export interface ProductContextType {
   isLoading: boolean;
@@ -25,7 +24,7 @@ const ALL_STANDARD_SIZES: ProductSize[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3X
 
 // Helper to retrieve any products saved in local storage across version keys
 const getLocalStorageProducts = (): Product[] => {
-  const keysToTry = [LOCAL_STORAGE_KEY, 'sba_products', 'sba_products_v1', 'sba_custom_products', 'suit_bliss_products'];
+  const keysToTry = [LOCAL_STORAGE_KEY];
   for (const key of keysToTry) {
     try {
       const saved = localStorage.getItem(key);
@@ -33,19 +32,32 @@ const getLocalStorageProducts = (): Product[] => {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
           const cleaned = parsed
-            .filter((p) => p && p.id != null && !String(p.id).startsWith('sba-0'))
+            .filter((p) => p && p.id != null)
             .map((p) => {
-              let imgs = p.images;
+              let imgs = p.images ?? p.image_urls ?? p.imageUrls ?? p.product_images ?? p.photos;
+              if (typeof imgs === 'string') {
+                try {
+                  const parsed = JSON.parse(imgs);
+                  imgs = Array.isArray(parsed) ? parsed : [imgs];
+                } catch {
+                  imgs = [imgs];
+                }
+              }
               if (Array.isArray(imgs)) {
                 imgs = imgs.filter(imgUrl => typeof imgUrl === 'string' && imgUrl.trim().length > 0);
               }
+              const stockValue = Number(p.stockQuantity ?? p.stock);
+              const stockQuantity = Number.isFinite(stockValue) && stockValue >= 0 ? stockValue : 0;
+              const sizes = Array.isArray(p.sizes)
+                ? p.sizes.filter((size: unknown): size is ProductSize => ALL_STANDARD_SIZES.includes(size as ProductSize))
+                : [];
               return {
                 ...p,
                 images: Array.isArray(imgs) && imgs.length > 0 ? imgs : (p.image ? [p.image] : []),
-                image: p.image || (Array.isArray(imgs) && imgs.length > 0 ? imgs[0] : ''),
-                sizes: ALL_STANDARD_SIZES,
-                inStock: true,
-                stockQuantity: Math.max(Number(p.stockQuantity) || 50, 50),
+                image: p.image || p.image_url || p.imageUrl || (Array.isArray(imgs) && imgs.length > 0 ? imgs[0] : ''),
+                sizes: sizes.length > 0 ? sizes : ALL_STANDARD_SIZES,
+                inStock: p.inStock ?? (p.status ? p.status === 'active' && stockQuantity > 0 : stockQuantity > 0),
+                stockQuantity,
               };
             });
           if (cleaned.length > 0) return cleaned;
@@ -60,12 +72,17 @@ const getLocalStorageProducts = (): Product[] => {
 
 const saveLocalStorageProducts = (prods: Product[]) => {
   try {
-    const onlyReal = prods.filter(p => p && p.id != null && !String(p.id).startsWith('sba-0'));
+    const onlyReal = prods.filter(p => p && p.id != null);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(onlyReal));
   } catch (e) {
     console.error('Failed to save products to localStorage:', e);
   }
 };
+
+const hasRealProductImage = (product: Product): boolean =>
+  Array.isArray(product.images) && product.images.some(
+    (image) => typeof image === 'string' && image.trim() !== '' && !image.startsWith('data:image/svg+xml') && !image.includes('placeholder.com')
+  );
 
 export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [products, setProducts] = useState<Product[]>(() => {
@@ -76,33 +93,20 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Helper functions to map products to and from Supabase database schemas
   const mapProductToSupabase = (p: any, isInsert = false) => {
+    const stockQuantity = Math.max(0, Number(p.stockQuantity ?? p.stock) || 0);
     const payload: any = {
       category: p.category || 'Suits',
       description: p.description || '',
       discount: Number(p.discount) || 0,
       fabric: p.fabric || '',
-      sku: p.sku || `SBA-${Date.now().toString().slice(-6)}`,
+      sku: p.sku || `SAG-${Date.now().toString().slice(-6)}`,
       name: p.name || 'Untitled Product',
-      subcategory: p.subcategory || '',
       price: Number(p.price) || 0,
-      originalPrice: Number(p.originalPrice) || 0,
-      rating: Number(p.rating) || 4.5,
-      reviewCount: Number(p.reviewCount) || 0,
-      stockQuantity: Number(p.stockQuantity) || 10,
-      fit: p.fit || '',
-      occasion: p.occasion || '',
-      washCare: p.washCare || '',
-      isNewArrival: p.isNewArrival ?? false,
-      isBestSeller: p.isBestSeller ?? false,
-      isTrending: p.isTrending ?? false,
-      isFestive: p.isFestive ?? false,
-      isSale: p.isSale ?? false,
-      isFeatured: p.isFeatured ?? false,
-      inStock: p.inStock ?? true,
+      mrp: Number(p.originalPrice ?? p.mrp ?? p.price) || 0,
+      stock: stockQuantity,
+      status: p.inStock === false || stockQuantity === 0 ? 'inactive' : 'active',
       colors: Array.isArray(p.colors) ? JSON.stringify(p.colors) : p.colors || '[]',
-      images: Array.isArray(p.images) ? JSON.stringify(p.images) : p.images || '[]',
       sizes: Array.isArray(p.sizes) ? JSON.stringify(p.sizes) : p.sizes || '[]',
-      reviews: Array.isArray(p.reviews) ? JSON.stringify(p.reviews) : p.reviews || '[]',
     };
     if (!isInsert && p.id) {
       const numId = Number(p.id);
@@ -115,21 +119,22 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const mapProductFromSupabase = (p: any): Product => {
     let images: string[] = [];
-    if (typeof p.images === 'string') {
+    const rawImages = p.images ?? p.image_urls ?? p.imageUrls ?? p.product_images ?? p.photos;
+    if (typeof rawImages === 'string') {
       try {
-        const parsed = JSON.parse(p.images);
+        const parsed = JSON.parse(rawImages);
         if (Array.isArray(parsed)) {
           images = parsed;
         } else if (typeof parsed === 'string' && parsed.trim()) {
           images = [parsed.trim()];
         }
       } catch {
-        if (p.images.trim()) {
-          images = [p.images.trim()];
+        if (rawImages.trim()) {
+          images = [rawImages.trim()];
         }
       }
-    } else if (Array.isArray(p.images)) {
-      images = p.images;
+    } else if (Array.isArray(rawImages)) {
+      images = rawImages;
     }
 
     let colors = p.colors;
@@ -141,6 +146,17 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
     }
     if (!Array.isArray(colors)) colors = [];
+    colors = colors
+      .map((color: any, index: number) => {
+        if (typeof color === 'string' && color.trim()) {
+          return {
+            name: color.trim(),
+            hex: ['#241D1B', '#9A6A3A', '#211C1A', '#D8C8B8'][index % 4],
+          };
+        }
+        return color;
+      })
+      .filter((color: any) => color && typeof color === 'object' && typeof color.name === 'string');
 
     // If images array is empty, check if colors has imageUrl or image
     if (images.length === 0 && Array.isArray(colors)) {
@@ -174,11 +190,13 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
         sizes = [];
       }
     }
-    // All sizes are permanently available across all 24 products
-    sizes = ALL_STANDARD_SIZES;
+    const availableSizes = Array.isArray(sizes)
+      ? sizes.filter((size): size is ProductSize => ALL_STANDARD_SIZES.includes(size))
+      : [];
+    sizes = availableSizes.length > 0 ? availableSizes : ALL_STANDARD_SIZES;
 
     if (!Array.isArray(colors) || colors.length === 0) {
-      colors = [{ name: 'Standard', hex: '#58152D' }];
+      colors = [{ name: 'Standard', hex: '#241D1B' }];
     }
 
     let reviews = p.reviews;
@@ -190,21 +208,28 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
     }
 
+    const stockValue = Number(p.stock ?? p.stockQuantity ?? p.stock_quantity);
+    const stockQuantity = Number.isFinite(stockValue) && stockValue >= 0 ? stockValue : 0;
+    const hasStatus = typeof p.status === 'string';
+    const inStock = hasStatus
+      ? p.status.toLowerCase() === 'active' && stockQuantity > 0
+      : p.inStock !== false && stockQuantity > 0;
+
     return {
       id: String(p.id),
       name: p.name || '',
-      category: p.category || '',
+      category: p.category || 'Suits',
       subcategory: p.subcategory || '',
       price: Number(p.price) || 0,
-      originalPrice: Number(p.originalPrice) || 0,
+      originalPrice: Number(p.mrp ?? p.originalPrice) || Number(p.price) || 0,
       discount: Number(p.discount) || 0,
       description: p.description || '',
       images: Array.isArray(images) ? images : [],
-      sizes: ALL_STANDARD_SIZES,
+      sizes,
       colors: Array.isArray(colors) ? colors : [],
-      inStock: true,
+      inStock,
       sku: p.sku || '',
-      stockQuantity: Math.max(Number(p.stockQuantity) || 50, 50),
+      stockQuantity,
       fabric: p.fabric || '',
       fit: p.fit || '',
       occasion: p.occasion || '',
@@ -222,17 +247,57 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
     };
   };
 
+  const syncProductImages = async (productId: string, imageUrls: string[]) => {
+    const desiredUrls = Array.from(new Set(imageUrls.filter((url) => typeof url === 'string' && url.trim())));
+    const { data: existingRows, error: readError } = await supabase
+      .from('product_images')
+      .select('image_url,storage_path')
+      .eq('product_id', productId);
+    if (readError) throw readError;
+
+    const existingUrls = (existingRows || []).map((row) => String(row.image_url || row.storage_path || ''));
+
+    for (const [sortOrder, imageUrl] of desiredUrls.entries()) {
+      if (existingUrls.includes(imageUrl)) {
+        const { error } = await supabase
+          .from('product_images')
+          .update({ is_primary: sortOrder === 0, sort_order: sortOrder })
+          .eq('product_id', productId)
+          .eq('image_url', imageUrl);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('product_images').insert([{
+          product_id: productId,
+          image_url: imageUrl,
+          is_primary: sortOrder === 0,
+          sort_order: sortOrder,
+        }]);
+        if (error) throw error;
+      }
+    }
+
+    const removedUrls = existingUrls.filter((url) => url && !desiredUrls.includes(url));
+    if (removedUrls.length > 0) {
+      const { error } = await supabase
+        .from('product_images')
+        .delete()
+        .eq('product_id', productId)
+        .in('image_url', removedUrls);
+      if (error) throw error;
+    }
+  };
+
   const mergeProducts = (supaProds: Product[], localProds: Product[]): Product[] => {
     if (supaProds && supaProds.length > 0) {
-      // Find any newly created unsynced local products (e.g. offline edits with sba-prod-)
+      // Find any newly created unsynced local products.
       const unsyncedNewLocal = localProds.filter(
-        (lp) => lp && lp.id != null && String(lp.id).startsWith('sba-prod-') && !supaProds.some((sp) => sp.name === lp.name || sp.sku === lp.sku)
+        (lp) => lp && lp.id != null && String(lp.id).startsWith('sag-prod-') && !supaProds.some((sp) => sp.name === lp.name || sp.sku === lp.sku)
       );
       return [...supaProds, ...unsyncedNewLocal];
     }
 
     // Only fallback to real local data if Supabase returned 0 items
-    const nonDefaultLocal = localProds.filter((p) => p && p.id != null && !String(p.id).startsWith('sba-0'));
+    const nonDefaultLocal = localProds.filter((p) => p && p.id != null);
     if (nonDefaultLocal.length > 0) {
       return nonDefaultLocal;
     }
@@ -241,11 +306,10 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const fetchProducts = async () => {
     const localCache = getLocalStorageProducts();
+    const fallbackProducts = localCache;
 
     // Immediately unblock UI with local cache if available
-    if (localCache.length > 0) {
-      setProducts(localCache);
-    }
+    setProducts(fallbackProducts);
 
     // Background fetch from Supabase with 5s timeout protection
     try {
@@ -253,19 +317,65 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setTimeout(() => reject(new Error('Supabase fetch timeout')), 5000)
       );
 
-      const fetchPromise = supabase.from('products').select('*').order('id', { ascending: false });
+      const fetchPromise = Promise.all([
+        supabase.from('products').select('*').order('id', { ascending: false }),
+        supabase.from('product_images').select('product_id,image_url,storage_path,is_primary,sort_order').order('sort_order', { ascending: true }),
+      ]).then(([productResult, imageResult]) => ({ productResult, imageResult }));
 
       const res: any = await Promise.race([fetchPromise, timeoutPromise]);
-      const { data, error } = res || {};
+      const { data, error } = res?.productResult || {};
+      const imageRows = Array.isArray(res?.imageResult?.data) ? res.imageResult.data : [];
 
       if (!error && data && data.length > 0) {
-        const supaNormalized = data.map(mapProductFromSupabase);
-        const merged = mergeProducts(supaNormalized, localCache);
+        const imagesByProduct = new Map<string, string[]>();
+        const imageRowsByProduct = new Map<string, any[]>();
+        imageRows.forEach((image: any) => {
+          const imageUrl = image?.image_url || image?.url || image?.storage_path;
+          if (!imageUrl || image?.product_id == null) return;
+          const productKey = String(image.product_id);
+          const current = imagesByProduct.get(productKey) || [];
+          const currentRows = imageRowsByProduct.get(productKey) || [];
+          current.push(String(imageUrl));
+          currentRows.push(image);
+          imagesByProduct.set(productKey, current);
+          imageRowsByProduct.set(productKey, currentRows);
+        });
+
+        const supaNormalized = data.map((rawProduct: any) => {
+          const product = mapProductFromSupabase(rawProduct);
+          const relatedImages = imagesByProduct.get(String(rawProduct.id)) || [];
+          const relatedRows = imageRowsByProduct.get(String(rawProduct.id)) || [];
+          const colorsWithImages = product.colors.map((color, index) => ({
+            ...color,
+            imageUrl: color.imageUrl || relatedRows[index]?.image_url || relatedRows[index]?.url || relatedRows[index]?.storage_path,
+          }));
+          const hasNamedColors = colorsWithImages.some((color) => color.name !== 'Standard');
+          const derivedShadeNames = ['Original', 'Alternate', 'Detail View', 'Back View'];
+          const derivedColors = relatedRows.map((image, index) => ({
+            name: derivedShadeNames[index % derivedShadeNames.length],
+            hex: ['#241D1B', '#9A6A3A', '#211C1A', '#D8C8B8'][index % 4],
+            imageUrl: image.image_url || image.url || image.storage_path,
+          }));
+          return {
+            ...product,
+            images: product.images.length > 0 ? product.images : relatedImages,
+            colors: hasNamedColors ? colorsWithImages : (derivedColors.length > 0 ? derivedColors : product.colors),
+          };
+        });
+        const productsWithImages = supaNormalized.filter(hasRealProductImage);
+        const merged = productsWithImages.length > 0
+          ? mergeProducts(productsWithImages, localCache)
+          : fallbackProducts;
         setProducts(merged);
         saveLocalStorageProducts(merged);
+      } else if (error || !data || data.length === 0) {
+        setProducts(fallbackProducts);
+        saveLocalStorageProducts(fallbackProducts);
       }
     } catch (err) {
       console.warn('Background Supabase fetch products notice:', err);
+      setProducts(fallbackProducts);
+      saveLocalStorageProducts(fallbackProducts);
     } finally {
       setIsLoading(false);
     }
@@ -314,7 +424,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       throw new Error('At least one product image is required');
     }
 
-    const fallbackId = `sba-prod-${Date.now()}`;
+    const fallbackId = `sag-prod-${Date.now()}`;
     const newLocalProduct: Product = {
       id: fallbackId,
       ...productData,
@@ -331,126 +441,92 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return updated;
     });
 
-    // 2. Try inserting into Supabase DB
+    let createdProductId: string | undefined;
     try {
       const payload = mapProductToSupabase(productData, true);
       const { data, error } = await supabase.from('products').insert([payload]).select();
 
-      if (!error && data && data[0]) {
-        const supaProduct = mapProductFromSupabase(data[0]);
-        // Replace temporary fallback product with real Supabase assigned product
-        setProducts((prev) => {
-          const updated = prev.map((p) => (p.id === fallbackId ? supaProduct : p));
-          saveLocalStorageProducts(updated);
-          return updated;
-        });
-        return supaProduct;
-      } else if (error) {
-        console.warn('Supabase add product notice:', error.message);
+      if (error) throw error;
+      if (!data?.[0]) {
+        throw new Error('Product insert returned no row; check database write/read permissions.');
       }
-    } catch (error) {
-      console.warn('Supabase add product notice:', error);
-    }
 
-    return newLocalProduct;
+      createdProductId = String(data[0].id);
+      await syncProductImages(createdProductId, productData.images);
+      const supaProduct = { ...mapProductFromSupabase(data[0]), images: productData.images };
+      setProducts((prev) => {
+        const updated = prev.map((p) => (p.id === fallbackId ? supaProduct : p));
+        saveLocalStorageProducts(updated);
+        return updated;
+      });
+      return supaProduct;
+    } catch (error) {
+      if (createdProductId) {
+        try {
+          await supabase.from('products').delete().eq('id', createdProductId);
+        } catch {}
+      }
+      setProducts((prev) => {
+        const updated = prev.filter((p) => p.id !== fallbackId);
+        saveLocalStorageProducts(updated);
+        return updated;
+      });
+      throw error;
+    }
   };
 
   const updateProduct = async (id: string, updated: Partial<Product>) => {
-    // 1. Optimistically update local state & local storage for instantaneous UI response
-    setProducts((prev) => {
-      const updatedList = prev.map((p) => (p.id === id ? { ...p, ...updated } : p));
-      saveLocalStorageProducts(updatedList);
-      return updatedList;
-    });
+    const existingProduct = products.find((product) => product.id === id);
+    if (!existingProduct) throw new Error('Product not found in the active catalog.');
+    const nextProduct = { ...existingProduct, ...updated };
 
     try {
-      // Build targeted payload containing ONLY fields that are valid columns in Supabase
-      const payload: Record<string, any> = {};
-      if (updated.name !== undefined) payload.name = updated.name.trim();
-      if (updated.category !== undefined) payload.category = updated.category;
-      if (updated.subcategory !== undefined) payload.subcategory = updated.subcategory;
-      if (updated.description !== undefined) payload.description = updated.description;
-      if (updated.price !== undefined) payload.price = Number(updated.price);
-      if (updated.originalPrice !== undefined) payload.originalPrice = Number(updated.originalPrice);
-      if (updated.discount !== undefined) payload.discount = Number(updated.discount);
-      if (updated.sku !== undefined) payload.sku = updated.sku.trim();
-      if (updated.stockQuantity !== undefined) payload.stockQuantity = Number(updated.stockQuantity);
-      if (updated.fabric !== undefined) payload.fabric = updated.fabric;
-      if (updated.fit !== undefined) payload.fit = updated.fit;
-      if (updated.occasion !== undefined) payload.occasion = updated.occasion;
-      if (updated.washCare !== undefined) payload.washCare = updated.washCare;
-      if (updated.isNewArrival !== undefined) payload.isNewArrival = Boolean(updated.isNewArrival);
-      if (updated.isBestSeller !== undefined) payload.isBestSeller = Boolean(updated.isBestSeller);
-      if (updated.isTrending !== undefined) payload.isTrending = Boolean(updated.isTrending);
-      if (updated.isFestive !== undefined) payload.isFestive = Boolean(updated.isFestive);
-      if (updated.isSale !== undefined) payload.isSale = Boolean(updated.isSale);
-      if (updated.isFeatured !== undefined) payload.isFeatured = Boolean(updated.isFeatured);
-      if (updated.inStock !== undefined) payload.inStock = Boolean(updated.inStock);
-      if (updated.rating !== undefined) payload.rating = Number(updated.rating);
-      if (updated.reviewCount !== undefined) payload.reviewCount = Number(updated.reviewCount);
-      if (updated.colors !== undefined) {
-        payload.colors = Array.isArray(updated.colors) ? JSON.stringify(updated.colors) : updated.colors;
+      const payload = mapProductToSupabase(nextProduct);
+      const { data, error } = await supabase.from('products').update(payload).eq('id', id).select();
+      if (error) throw error;
+      if (!data?.[0]) {
+        throw new Error('Product update returned no row; check the product ID and database permissions.');
       }
-      if (updated.images !== undefined) {
-        payload.images = Array.isArray(updated.images) ? JSON.stringify(updated.images) : updated.images;
-      }
-      if (updated.sizes !== undefined) {
-        payload.sizes = Array.isArray(updated.sizes) ? JSON.stringify(updated.sizes) : updated.sizes;
-      }
-      if (updated.reviews !== undefined) {
-        payload.reviews = Array.isArray(updated.reviews) ? JSON.stringify(updated.reviews) : updated.reviews;
-      }
+      await syncProductImages(id, nextProduct.images);
 
-      if (Object.keys(payload).length > 0) {
-        const numId = Number(id);
-        let updateRes: any;
-        if (!isNaN(numId) && numId > 0) {
-          updateRes = await supabase.from('products').update(payload).eq('id', numId).select();
-        }
-
-        // Fallback: match by SKU if not found by numeric ID
-        if ((!updateRes?.data || updateRes.data.length === 0) && (updated.sku || id)) {
-          updateRes = await supabase.from('products').update(payload).eq('sku', updated.sku || id).select();
-        }
-
-        if (updateRes?.error) {
-          console.error('Supabase update product error:', updateRes.error);
-          throw new Error(`Database error: ${updateRes.error.message}`);
-        }
-
-        // If updated row returned from Supabase, confirm synchronization into state and local storage
-        if (updateRes?.data && updateRes.data[0]) {
-          const freshProduct = mapProductFromSupabase(updateRes.data[0]);
-          setProducts((prev) => {
-            const synced = prev.map((p) => (p.id === id || p.id === String(freshProduct.id) ? freshProduct : p));
-            saveLocalStorageProducts(synced);
-            return synced;
-          });
-        }
-      }
+      const freshProduct = {
+        ...mapProductFromSupabase(data[0]),
+        images: nextProduct.images,
+      };
+      setProducts((prev) => {
+        const synced = prev.map((product) => product.id === id ? freshProduct : product);
+        saveLocalStorageProducts(synced);
+        return synced;
+      });
     } catch (error) {
-      console.error('Supabase update product error:', error);
+      setProducts((prev) => {
+        const rolledBack = prev.map((product) => product.id === id ? existingProduct : product);
+        saveLocalStorageProducts(rolledBack);
+        return rolledBack;
+      });
       throw error;
     }
   };
 
   const deleteProduct = async (id: string) => {
+    if (id.startsWith('sag-prod-')) {
+      setProducts((prev) => {
+        const updatedList = prev.filter((product) => product.id !== id);
+        saveLocalStorageProducts(updatedList);
+        return updatedList;
+      });
+      return;
+    }
+
+    const { data, error } = await supabase.from('products').delete().eq('id', id).select('id');
+    if (error) throw error;
+    if (!data?.length) throw new Error('Product delete returned no row; check the product ID and database permissions.');
+
     setProducts((prev) => {
-      const updatedList = prev.filter((p) => p.id !== id);
+      const updatedList = prev.filter((product) => product.id !== id);
       saveLocalStorageProducts(updatedList);
       return updatedList;
     });
-
-    try {
-      const numId = Number(id);
-      if (!isNaN(numId) && numId > 0) {
-        await supabase.from('products').delete().eq('id', numId);
-      } else {
-        await supabase.from('products').delete().eq('sku', id);
-      }
-    } catch (error) {
-      console.warn('Supabase delete product notice:', error);
-    }
   };
 
   const duplicateProduct = async (id: string): Promise<Product | undefined> => {
@@ -472,8 +548,8 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const resetToDefaultProducts = async () => {
-    setProducts(PRODUCTS_DATA);
-    saveLocalStorageProducts(PRODUCTS_DATA);
+    setProducts([]);
+    saveLocalStorageProducts([]);
   };
 
   return (

@@ -34,7 +34,7 @@ export interface StoreContextData {
 }
 
 /**
- * Intelligent Storefront NLU Processor for Suit Bliss Aura
+ * Intelligent Storefront NLU Processor for Suit Aura Girls
  * Parses Hindi, Hinglish & English natural language commands into live storefront actions.
  */
 export function parseStoreCommand(
@@ -143,11 +143,11 @@ export function parseStoreCommand(
     const payUpdates: Partial<PaymentGatewaySettings> = {};
 
     if (lower.includes('cashfree')) {
-      payUpdates.razorpayKeyIdPlaceholder = 'cf_live_SuitBlissAura_Active';
+      payUpdates.razorpayKeyIdPlaceholder = 'cf_live_SuitAuraGirls_Active';
       changesSummaryHi.push('Payment Gateway mode Cashfree integration mode me switch ho gaya');
       changesSummaryEn.push('Configured Cashfree payment processing pipeline');
     } else if (lower.includes('razorpay')) {
-      payUpdates.razorpayKeyIdPlaceholder = 'rzp_live_SuitBlissAuraKey';
+      payUpdates.razorpayKeyIdPlaceholder = 'rzp_live_SuitAuraGirlsKey';
       changesSummaryHi.push('Razorpay Payment Gateway credentials active kar diye gaye');
       changesSummaryEn.push('Razorpay payment gateway set as default provider');
     }
@@ -245,7 +245,7 @@ export function parseStoreCommand(
     }
 
     if (lower.includes('deal of the day') || lower.includes('deal') || lower.includes('aaj ka deal')) {
-      const topProd = context.products[0] || { id: 'prod-1', name: 'Jaipuri Anarkali Suit', price: 2499 };
+      const topProd = context.products[0] || { id: 'prod-1', name: 'Heritage Anarkali Suit', price: 2499 };
       actions.push({
         type: 'UPDATE_DEAL_OF_THE_DAY',
         description: `Activate Deal of the Day on ${topProd.name}`,
@@ -302,7 +302,7 @@ export function parseStoreCommand(
         originalPrice: Math.round(prodPrice * 1.8),
         category: 'Anarkali Suits',
         fabric: 'Pure Silk Chanderi with Handblock Gota Patti',
-        description: `Exquisite handcrafted ${prodName} tailored in Jaipur with pure heritage artisan embroidery and royal lace borders.`,
+        description: `Exquisite handcrafted ${prodName} tailored in Artisan with pure heritage artisan embroidery and royal lace borders.`,
         images: ['https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1200&q=85'],
         inStock: true,
         stockQuantity: 25,
@@ -344,11 +344,11 @@ export function parseStoreCommand(
   // E.g.: "WhatsApp broadcast message bana do festive sale ke liye", "Instagram caption likho"
   // ==========================================
   if (lower.includes('whatsapp') || lower.includes('broadcast') || lower.includes('instagram caption') || lower.includes('marketing copy')) {
-    const copyText = `✨ *SUIT BLISS AURA • ROYAL JAIPUR FESTIVE EDIT* ✨\n\n` +
+    const copyText = `✨ *SUIT AURA GIRLS • ROYAL ARTISAN FESTIVE EDIT* ✨\n\n` +
       `👑 Flat 15% Instant Off on all Pure Silk & Handloom Couture!\n` +
       `🚀 *24-Hour Express Air Dispatch Across India*\n` +
       `💳 Extra 5% Instant UPI & Prepaid Discount\n\n` +
-      `🛍️ Shop Now: https://suitblissaura.com\n` +
+      `🛍️ Shop Now: https://suitauragirls.com\n` +
       `Use Code: *ROYAL15* at 1-Click Instant Checkout!`;
 
     return {
@@ -366,14 +366,14 @@ export function parseStoreCommand(
   // ==========================================
   // 10. PRODUCT REVIEWS (INDIVIDUAL & STOREWIDE BULK REVIEWS)
   // E.g.: "Har product pe alag alag reviews add kar do"
-  // E.g.: "Anarkali suit par 5-star review add karo 'Pooja from Jaipur': 'Fabric is very soft'"
+  // E.g.: "Anarkali suit par 5-star review add karo 'Pooja from Artisan': 'Fabric is very soft'"
   // ==========================================
   if (lower.includes('review') || lower.includes('reviews') || lower.includes('rating') || lower.includes('feedback')) {
     const isStorewide = lower.includes('har product') || lower.includes('sab product') || lower.includes('sabhi product') || lower.includes('sabhi suit') || lower.includes('all product') || lower.includes('alag alag');
     
     if (isStorewide) {
       const reviewerNames = ['Pooja Bhatia', 'Dr. Radhika Mehta', 'Sneha Kulkarni', 'Meera Rajput', 'Ananya Deshmukh', 'Simran Kaur', 'Kavita Singhania', 'Tanvi Joshi', 'Rhea Kapoor', 'Shreya Saxena'];
-      const cities = ['Jaipur, Rajasthan', 'Delhi NCR', 'Mumbai, Maharashtra', 'Bengaluru, Karnataka', 'Chandigarh', 'Lucknow, UP', 'Pune, Maharashtra', 'Hyderabad'];
+      const cities = ['Artisan, Rajasthan', 'Delhi NCR', 'Mumbai, Maharashtra', 'Bengaluru, Karnataka', 'Chandigarh', 'Lucknow, UP', 'Pune, Maharashtra', 'Hyderabad'];
       const sizes: ('S' | 'M' | 'L' | 'XL')[] = ['M', 'L', 'S', 'XL'];
 
       const bulkReviews = context.products.map((prod, idx) => {
@@ -444,7 +444,7 @@ export function parseStoreCommand(
             rating,
             comment,
             verifiedPurchase: true,
-            location: 'Jaipur, Rajasthan',
+            location: 'Artisan, Rajasthan',
             sizePurchased: 'M',
             status: 'approved',
             date: '19 Feb 2026'
