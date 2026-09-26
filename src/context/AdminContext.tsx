@@ -36,9 +36,9 @@ export interface AdminSecurityConfig {
 }
 
 export const DEFAULT_SECURITY_CONFIG: AdminSecurityConfig = {
-  adminUsername: 'daina',
-  adminPassword: 'abhay',
-  securityPin: '634222',
+  adminUsername: '',
+  adminPassword: '',
+  securityPin: '',
   secretPathSlug: 'sag-vault',        // Secret administrative portal route e.g. /sag-vault
   allowDirectAdminRoute: false,      // When false, typing /admin returns 404 to protect route secrecy
   requirePin: true,                  // 2-Step PIN authentication
@@ -53,8 +53,8 @@ interface AdminContextType {
   loginAdmin: (email: string, pass: string, pin?: string) => Promise<{ success: boolean; message?: string }>;
   logoutAdmin: () => void;
   securityConfig: AdminSecurityConfig;
-  updateSecurityConfig: (updated: Partial<AdminSecurityConfig>) => void;
-  invalidateAllAdminSessions: () => void;
+  updateSecurityConfig: (updated: Partial<AdminSecurityConfig>) => Promise<void>;
+  invalidateAllAdminSessions: () => Promise<void>;
 
   // Products
   products: Product[];
@@ -189,15 +189,21 @@ const INITIAL_CUSTOMERS: Customer[] = [];
 const INITIAL_ORDERS: Order[] = [];
 const INITIAL_COUPONS: Coupon[] = [];
 export const INITIAL_SECTIONS: HomepageSectionConfig[] = [
-  { id: 'sec-hero', title: '1. Hero Banner Showcase (1:1 Luxury Slider)', key: 'hero', enabled: true, order: 1 },
-  { id: 'sec-deal', title: '2. Deal of the Day Spotlight', key: 'dealOfTheDay', enabled: true, order: 2 },
-  { id: 'sec-combo', title: '3. Royal Festive Combo Offers (Buy 2 Get 15% OFF)', key: 'comboOffers', enabled: true, order: 3 },
-  { id: 'sec-new-arrivals', title: '4. New Arrivals Showcase Grid', key: 'newArrivals', enabled: true, order: 4 },
-  { id: 'sec-best-sellers', title: '5. Best Sellers Showcase', key: 'bestSellers', enabled: true, order: 5 },
-  { id: 'sec-trending', title: '6. Trending Now Carousel', key: 'trending', enabled: true, order: 6 },
-  { id: 'sec-festive', title: '7. Festive Collection Edit', key: 'festive', enabled: true, order: 7 },
-  { id: 'sec-why-shop', title: '8. Why Shop With Us (Trust & Quality Pillars)', key: 'whyShop', enabled: true, order: 8 },
-  { id: 'sec-reviews', title: '9. Customer Reviews & Ratings Showcase', key: 'reviews', enabled: true, order: 9 },
+  { id: 'sec-brand-header', title: 'Announcement Marquee', key: 'brandHeader', enabled: true, order: 1 },
+  { id: 'sec-categories', title: 'Shop By Silhouette', key: 'categoryGrid', enabled: true, order: 2 },
+  { id: 'sec-hero', title: 'Hero Banner Showcase', key: 'hero', enabled: true, order: 3 },
+  { id: 'sec-promises', title: 'Artisanal Promises', key: 'artisanalPromises', enabled: true, order: 4 },
+  { id: 'sec-combo', title: 'Festive Combo Offers', key: 'comboOffers', enabled: true, order: 5 },
+  { id: 'sec-deal', title: 'Deal of the Day', key: 'dealOfTheDay', enabled: true, order: 6 },
+  { id: 'sec-new-arrivals', title: 'All Products & Categories', key: 'newArrivals', enabled: true, order: 7 },
+  { id: 'sec-best-sellers', title: 'Best Sellers', key: 'bestSellers', enabled: true, order: 8 },
+  { id: 'sec-trending', title: 'Trending Now', key: 'trending', enabled: true, order: 9 },
+  { id: 'sec-festive', title: 'Festive Collection', key: 'festive', enabled: true, order: 10 },
+  { id: 'sec-special-offer', title: 'Special Offer Banner', key: 'specialOffer', enabled: true, order: 11 },
+  { id: 'sec-why-shop', title: 'Why Shop With Us', key: 'whyShop', enabled: true, order: 12 },
+  { id: 'sec-reviews', title: 'Customer Reviews', key: 'reviews', enabled: true, order: 13 },
+  { id: 'sec-instagram', title: 'Instagram Gallery', key: 'instagram', enabled: true, order: 14 },
+  { id: 'sec-newsletter', title: 'Newsletter Signup', key: 'newsletter', enabled: true, order: 15 },
 ];
 
 export const mergeHomepageSections = (parsed: any[]): HomepageSectionConfig[] => {
@@ -205,9 +211,7 @@ export const mergeHomepageSections = (parsed: any[]): HomepageSectionConfig[] =>
     return INITIAL_SECTIONS;
   }
 
-  // Filter out categoryGrid, specialOffer, instagram, newsletter completely from homepage layout
-  const excludedKeys = new Set(['categoryGrid', 'specialOffer', 'instagram', 'newsletter']);
-  const sanitized = parsed.filter(p => !excludedKeys.has(p.key));
+  const sanitized = parsed;
   const existingKeys = new Set(sanitized.map(p => p.key));
   const merged = [...sanitized];
 
@@ -236,11 +240,11 @@ const INITIAL_STORE_SETTINGS: StoreSettings = {
   tagline: 'Elegance That Feels Like You',
   logoText: 'Suit Aura Girls',
   storeEmail: 'suitauragirls@gmail.com',
-  phone: '+91 82384 51017',
-  whatsapp: '+91 82384 51017',
-  address: 'Artisan, Rajasthan, India',
-  instagramUrl: 'https://instagram.com/suitauragirls',
-  facebookUrl: 'https://facebook.com/suitauragirls',
+  phone: '+91 87398 35310',
+  whatsapp: '+91 87398 35310',
+  address: 'Shop No. 23, Asansol Junction Railway Station, Station Road, Asansol, Paschim Bardhaman, West Bengal - 713301, India.',
+  instagramUrl: 'https://www.instagram.com/suit_aura_girls/',
+  facebookUrl: 'https://www.facebook.com/suitauragirls',
   twitterUrl: '',
   currency: 'INR',
   currencySymbol: '₹',
@@ -251,20 +255,52 @@ const INITIAL_STORE_SETTINGS: StoreSettings = {
 };
 const normalizeStoreBrand = (settings: StoreSettings): StoreSettings => ({
   ...settings,
-  storeName: 'Suit Aura Girls',
-  logoText: 'Suit Aura Girls',
+  storeName: settings.storeName?.trim() || INITIAL_STORE_SETTINGS.storeName,
+  logoText: settings.logoText?.trim() || INITIAL_STORE_SETTINGS.logoText,
+});
+const toPublicStoreSettings = (settings: Partial<StoreSettings>): StoreSettings => ({
+  storeName: settings.storeName?.trim() || INITIAL_STORE_SETTINGS.storeName,
+  tagline: settings.tagline?.trim() || INITIAL_STORE_SETTINGS.tagline,
+  logoText: settings.logoText?.trim() || INITIAL_STORE_SETTINGS.logoText,
+  storeEmail: settings.storeEmail?.trim() || INITIAL_STORE_SETTINGS.storeEmail,
+  phone: settings.phone?.trim() || INITIAL_STORE_SETTINGS.phone,
+  whatsapp: settings.whatsapp?.trim() || INITIAL_STORE_SETTINGS.whatsapp,
+  address: settings.address?.trim() || INITIAL_STORE_SETTINGS.address,
+  instagramUrl: settings.instagramUrl?.trim() || '',
+  facebookUrl: settings.facebookUrl?.trim() || '',
+  twitterUrl: settings.twitterUrl?.trim() || '',
+  currency: 'INR',
+  currencySymbol: '₹',
+  shippingCharge: Math.max(0, Number(settings.shippingCharge) || 0),
+  freeShippingThreshold: Math.max(0, Number(settings.freeShippingThreshold) || 0),
+  announcementText: settings.announcementText?.trim().slice(0, 500),
+  announcementActive: settings.announcementActive ?? true,
 });
 const INITIAL_PAYMENT_SETTINGS: PaymentGatewaySettings = {
   mode: 'test',
   prepaidOnly: true,
   allowCod: false,
-  razorpayKeyIdPlaceholder: 'rzp_test_SuitAuraGirlsKey2026',
+  razorpayKeyIdPlaceholder: '',
   razorpayKeySecretPlaceholder: '••••••••••••••••••••••••••••',
   webhookSecretPlaceholder: '••••••••••••••••••••••••••••',
   enableUpi: true,
   enableCards: true,
   enableNetBanking: true,
 };
+
+const toPublicPaymentSettings = (settings: Partial<PaymentGatewaySettings>): PaymentGatewaySettings => ({
+  mode: settings.mode === 'live' ? 'live' : 'test',
+  prepaidOnly: true,
+  allowCod: false,
+  razorpayKeyIdPlaceholder: typeof settings.razorpayKeyIdPlaceholder === 'string'
+    ? (settings.razorpayKeyIdPlaceholder.trim().includes('SuitAuraGirlsKey') ? '' : settings.razorpayKeyIdPlaceholder.trim().slice(0, 160))
+    : '',
+  razorpayKeySecretPlaceholder: '',
+  webhookSecretPlaceholder: '',
+  enableUpi: Boolean(settings.enableUpi),
+  enableCards: Boolean(settings.enableCards),
+  enableNetBanking: Boolean(settings.enableNetBanking),
+});
 
 const INITIAL_DEAL_OF_THE_DAY: DealOfTheDayConfig = {
   enabled: true,
@@ -383,11 +419,18 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const saved = localStorage.getItem('sag_admin_security_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
-        return {
+        const config = {
           ...DEFAULT_SECURITY_CONFIG,
           ...parsed,
           sessionVersion: Math.max(parsed.sessionVersion || 0, DEFAULT_SECURITY_CONFIG.sessionVersion),
         };
+        const isProductionHost = typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname);
+        if (isProductionHost) {
+          config.adminPassword = '';
+          config.securityPin = '';
+          localStorage.setItem('sag_admin_security_v2', JSON.stringify(config));
+        }
+        return config;
       }
     } catch {}
     return DEFAULT_SECURITY_CONFIG;
@@ -395,6 +438,11 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(() => {
     try {
+      if (typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+        localStorage.removeItem('sag_admin_auth');
+        localStorage.removeItem('sag_admin_session_version');
+        return false;
+      }
       const isAuth = localStorage.getItem('sag_admin_auth') === 'true';
       const storedVer = Number(localStorage.getItem('sag_admin_session_version') || 0);
       let currentVer = DEFAULT_SECURITY_CONFIG.sessionVersion;
@@ -420,13 +468,45 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   });
   const [adminEmail, setAdminEmail] = useState<string | null>(() => {
+    if (typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname)) return null;
     return localStorage.getItem('sag_admin_email') || null;
   });
   const [adminTab, setAdminTab] = useState<AdminTab>('dashboard');
 
   // Active session validation guard: boots out stale logins immediately if tab is reactivated
   useEffect(() => {
-    const validateSession = () => {
+    let active = true;
+    const isProductionHost = !['localhost', '127.0.0.1'].includes(window.location.hostname);
+    const validateSession = async () => {
+      if (isProductionHost) {
+        try {
+          const response = await fetch('/api/admin-config?action=session', { credentials: 'same-origin' });
+          if (!active) return;
+          if (!response.ok) {
+            setIsAdminLoggedIn(false);
+            setAdminEmail(null);
+            localStorage.removeItem('sag_admin_email');
+            return;
+          }
+          const session = await response.json();
+          setIsAdminLoggedIn(true);
+          setAdminEmail(session.username || null);
+          const securityResponse = await fetch('/api/admin-config?action=security', { credentials: 'same-origin' });
+          if (securityResponse.ok && active) {
+            const result = await securityResponse.json();
+            const safeConfig = { ...DEFAULT_SECURITY_CONFIG, ...result.securityConfig, adminPassword: '', securityPin: '' };
+            setSecurityConfig(safeConfig);
+            localStorage.setItem('sag_admin_security_v2', JSON.stringify(safeConfig));
+          }
+        } catch {
+          if (active) {
+            setIsAdminLoggedIn(false);
+            setAdminEmail(null);
+          }
+        }
+        return;
+      }
+
       try {
         const isAuth = localStorage.getItem('sag_admin_auth') === 'true';
         const storedVer = Number(localStorage.getItem('sag_admin_session_version') || 0);
@@ -447,6 +527,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     window.addEventListener('focus', validateSession);
     window.addEventListener('storage', validateSession);
     return () => {
+      active = false;
       window.removeEventListener('focus', validateSession);
       window.removeEventListener('storage', validateSession);
     };
@@ -492,12 +573,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     try {
       const saved = localStorage.getItem('sag_store_settings_local');
       if (saved) {
-        const parsed = JSON.parse(saved);
-        const normalized = normalizeStoreBrand({
-          ...parsed,
-          phone: '+91 82384 51017',
-          whatsapp: '+91 82384 51017',
-        });
+        const normalized = normalizeStoreBrand(toPublicStoreSettings(JSON.parse(saved)));
         localStorage.setItem('sag_store_settings_local', JSON.stringify(normalized));
         return normalized;
       }
@@ -507,9 +583,13 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [paymentSettings, setPaymentSettings] = useState<PaymentGatewaySettings>(() => {
     try {
       const saved = localStorage.getItem('sag_payment_settings_local');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const safeSettings = toPublicPaymentSettings(JSON.parse(saved));
+        localStorage.setItem('sag_payment_settings_local', JSON.stringify(safeSettings));
+        return safeSettings;
+      }
     } catch {}
-    return INITIAL_PAYMENT_SETTINGS;
+    return toPublicPaymentSettings(INITIAL_PAYMENT_SETTINGS);
   });
   const [dealOfTheDay, setDealOfTheDay] = useState<DealOfTheDayConfig>(() => {
     try {
@@ -519,6 +599,101 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return INITIAL_DEAL_OF_THE_DAY;
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const persistStorefrontSetting = async (key: string, value: unknown, localKey: string) => {
+    const isLocalHost = typeof window === 'undefined' || ['localhost', '127.0.0.1'].includes(window.location.hostname);
+    if (isLocalHost) {
+      try {
+        localStorage.setItem(localKey, JSON.stringify(value));
+      } catch {}
+      return;
+    }
+
+    const response = await fetch('/api/admin-config', {
+      method: 'PUT',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ settings: { [key]: value } }),
+    });
+    if (!response.ok) {
+      const result = await response.json().catch(() => ({}));
+      throw new Error(result.error || 'Unable to sync storefront setting.');
+    }
+    try {
+      localStorage.setItem(localKey, JSON.stringify(value));
+    } catch {}
+  };
+
+  const loadSharedStorefrontSettings = async () => {
+    if (typeof window === 'undefined' || ['localhost', '127.0.0.1'].includes(window.location.hostname)) return;
+    try {
+      const response = await fetch('/api/admin-config', { credentials: 'same-origin' });
+      if (!response.ok) return;
+      const { settings = {} } = await response.json();
+
+      if (settings.homepageSections) {
+        const value = mergeHomepageSections(settings.homepageSections);
+        setHomepageSections(value);
+        localStorage.setItem('sag_homepage_sections_local', JSON.stringify(value));
+      }
+      if (settings.heroConfig) {
+        setHeroConfig(settings.heroConfig);
+        localStorage.setItem('sag_hero_config_local', JSON.stringify(settings.heroConfig));
+      }
+      if (settings.storeSettings) {
+        const value = normalizeStoreBrand(settings.storeSettings);
+        setStoreSettings(value);
+        localStorage.setItem('sag_store_settings_local', JSON.stringify(value));
+      }
+      if (settings.banners) {
+        setBanners(settings.banners);
+        localStorage.setItem('sag_banners_local', JSON.stringify(settings.banners));
+      }
+      if (settings.dealOfTheDay) {
+        setDealOfTheDay(settings.dealOfTheDay);
+        localStorage.setItem('sag_deal_of_the_day', JSON.stringify(settings.dealOfTheDay));
+      }
+      if (settings.paymentSettings) {
+        const value = toPublicPaymentSettings(settings.paymentSettings);
+        setPaymentSettings(value);
+        localStorage.setItem('sag_payment_settings_local', JSON.stringify(value));
+      }
+    } catch (error) {
+      console.warn('Shared storefront settings unavailable:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || ['localhost', '127.0.0.1'].includes(window.location.hostname)) return;
+    let settingsConnected = false;
+    let paymentConnected = false;
+    const refreshSharedSettings = () => {
+      void loadSharedStorefrontSettings();
+    };
+    refreshSharedSettings();
+    const settingsChannel = supabase
+      .channel('storefront-settings-live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'storefront_settings' }, () => {
+        refreshSharedSettings();
+      })
+      .subscribe((status) => { settingsConnected = status === 'SUBSCRIBED'; });
+    const paymentChannel = supabase
+      .channel('storefront-payment-settings-live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'storefront_payment_settings' }, () => {
+        refreshSharedSettings();
+      })
+      .subscribe((status) => { paymentConnected = status === 'SUBSCRIBED'; });
+    const fallbackSync = window.setInterval(() => {
+      if (!settingsConnected || !paymentConnected) refreshSharedSettings();
+    }, 15000);
+    window.addEventListener('focus', refreshSharedSettings);
+    return () => {
+      window.clearInterval(fallbackSync);
+      window.removeEventListener('focus', refreshSharedSettings);
+      supabase.removeChannel(settingsChannel);
+      supabase.removeChannel(paymentChannel);
+    };
+  }, []);
 
   useEffect(() => {
     try {
@@ -677,29 +852,25 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     totalSpent: Number(c.totalSpent) || 0,
   });
 
-  // Keep storefront configuration local until a protected settings API is available.
+  // Public storefront settings are persisted through the protected server API.
   const saveHomepageSectionsToSupabase = async (nextSections: HomepageSectionConfig[]) => {
-    try {
-      localStorage.setItem('sag_homepage_sections_local', JSON.stringify(nextSections));
-    } catch {}
+    await persistStorefrontSetting('homepageSections', nextSections, 'sag_homepage_sections_local');
   };
 
   const saveStoreSettingsToSupabase = async (nextStore: StoreSettings) => {
-    try {
-      localStorage.setItem('sag_store_settings_local', JSON.stringify(nextStore));
-    } catch {}
+    await persistStorefrontSetting('storeSettings', toPublicStoreSettings(nextStore), 'sag_store_settings_local');
   };
 
   const savePaymentSettingsToSupabase = async (nextPayment: PaymentGatewaySettings) => {
-    try {
-      localStorage.setItem('sag_payment_settings_local', JSON.stringify(nextPayment));
-    } catch {}
+    await persistStorefrontSetting(
+      'paymentSettings',
+      toPublicPaymentSettings(nextPayment),
+      'sag_payment_settings_local'
+    );
   };
 
   const saveHeroConfigToSupabase = async (nextHero: HeroBannerConfig) => {
-    try {
-      localStorage.setItem('sag_hero_config_local', JSON.stringify(nextHero));
-    } catch {}
+    await persistStorefrontSetting('heroConfig', nextHero, 'sag_hero_config_local');
   };
 
   // Fetch store data from Supabase, loading tables independently to prevent single-table failures from blocking others
@@ -838,8 +1009,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       if (!heroConfig?.slides || heroConfig.slides.length === 0) {
         const freshSlides = generateHeroSlidesFromProducts(products);
         const newConfig: HeroBannerConfig = { slides: freshSlides };
-        setHeroConfig(newConfig);
-        saveHeroConfigToSupabase(newConfig);
+        void saveHeroConfigToSupabase(newConfig)
+          .then(() => setHeroConfig(newConfig))
+          .catch((error) => console.warn('Hero live sync notice:', error));
         return;
       }
 
@@ -882,8 +1054,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       if (updatedSome) {
         const newConfig: HeroBannerConfig = { slides: updatedSlides };
-        setHeroConfig(newConfig);
-        saveHeroConfigToSupabase(newConfig);
+        void saveHeroConfigToSupabase(newConfig)
+          .then(() => setHeroConfig(newConfig))
+          .catch((error) => console.warn('Hero live sync notice:', error));
       }
     }
   }, [products]);
@@ -896,6 +1069,32 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   ): Promise<{ success: boolean; message?: string }> => {
     if (!usernameOrEmail || !pass) {
       return { success: false, message: 'Please provide both username and password.' };
+    }
+
+    if (typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+      try {
+        const response = await fetch('/api/admin-config?action=login', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: usernameOrEmail, password: pass, pin }),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) return { success: false, message: result.error || 'Admin authentication failed.' };
+        const securityResponse = await fetch('/api/admin-config?action=security', { credentials: 'same-origin' });
+        if (securityResponse.ok) {
+          const securityResult = await securityResponse.json();
+          setSecurityConfig((previous) => ({ ...previous, ...securityResult.securityConfig }));
+        }
+        setIsAdminLoggedIn(true);
+        setAdminEmail(usernameOrEmail);
+        localStorage.setItem('sag_admin_auth', 'true');
+        localStorage.setItem('sag_admin_email', usernameOrEmail);
+        localStorage.setItem('sag_admin_session_version', String(result.sessionVersion || 1));
+        return { success: true };
+      } catch {
+        return { success: false, message: 'Admin authentication service unavailable.' };
+      }
     }
 
     const inputLower = usernameOrEmail.trim().toLowerCase();
@@ -929,6 +1128,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const logoutAdmin = () => {
+    if (typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+      void fetch('/api/admin-config?action=logout', { method: 'POST', credentials: 'same-origin' }).catch(() => {});
+    }
     setIsAdminLoggedIn(false);
     setAdminEmail(null);
     localStorage.removeItem('sag_admin_auth');
@@ -936,24 +1138,31 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.removeItem('sag_admin_session_version');
   };
 
-  const updateSecurityConfig = (updated: Partial<AdminSecurityConfig>) => {
-    setSecurityConfig((prev) => {
-      const next = { ...prev, ...updated };
-      try {
-        localStorage.setItem('sag_admin_security_v2', JSON.stringify(next));
-      } catch {}
-      return next;
-    });
+  const updateSecurityConfig = async (updated: Partial<AdminSecurityConfig>) => {
+    const next = { ...securityConfig, ...updated };
+    const isProductionHost = typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname);
+    if (isProductionHost) {
+      const response = await fetch('/api/admin-config', {
+        method: 'PUT',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ securityConfig: next }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || 'Unable to update admin security settings.');
+      next.sessionVersion = result.sessionVersion || next.sessionVersion + 1;
+    }
+    const savedConfig = isProductionHost ? { ...next, adminPassword: '', securityPin: '' } : next;
+    setSecurityConfig(savedConfig);
+    try {
+      localStorage.setItem('sag_admin_security_v2', JSON.stringify(savedConfig));
+    } catch {}
   };
 
-  const invalidateAllAdminSessions = () => {
+  const invalidateAllAdminSessions = async () => {
     const nextVer = (securityConfig.sessionVersion || 2) + 1;
-    updateSecurityConfig({ sessionVersion: nextVer });
-    setIsAdminLoggedIn(false);
-    setAdminEmail(null);
-    localStorage.removeItem('sag_admin_auth');
-    localStorage.removeItem('sag_admin_email');
-    localStorage.removeItem('sag_admin_session_version');
+    await updateSecurityConfig({ sessionVersion: nextVer });
+    logoutAdmin();
   };
 
   // Category Operations
@@ -1140,8 +1349,8 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Homepage Operations
   const toggleHomepageSection = async (id: string) => {
     const nextSections = homepageSections.map((sec) => (sec.id === id ? { ...sec, enabled: !sec.enabled } : sec));
-    setHomepageSections(nextSections);
     await saveHomepageSectionsToSupabase(nextSections);
+    setHomepageSections(nextSections);
   };
 
   const moveHomepageSection = async (id: string, direction: 'up' | 'down') => {
@@ -1155,27 +1364,25 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     updated[idx] = updated[targetIdx];
     updated[targetIdx] = temp;
     const nextSections = updated.map((sec, i) => ({ ...sec, order: i + 1 }));
-    setHomepageSections(nextSections);
     await saveHomepageSectionsToSupabase(nextSections);
+    setHomepageSections(nextSections);
   };
 
   const reorderHomepageSections = async (newSections: HomepageSectionConfig[]) => {
     const formatted = newSections.map((sec, i) => ({ ...sec, order: i + 1 }));
-    setHomepageSections(formatted);
     await saveHomepageSectionsToSupabase(formatted);
+    setHomepageSections(formatted);
   };
 
   const resetHomepageSectionsToDefault = async () => {
-    setHomepageSections(INITIAL_SECTIONS);
     await saveHomepageSectionsToSupabase(INITIAL_SECTIONS);
+    setHomepageSections(INITIAL_SECTIONS);
   };
 
   const updateHeroConfig = async (updated: Partial<HeroBannerConfig>) => {
     const nextHero = { ...heroConfig, ...updated };
+    await saveHeroConfigToSupabase(nextHero);
     setHeroConfig(nextHero);
-    try {
-      localStorage.setItem('sag_hero_config_local', JSON.stringify(nextHero));
-    } catch {}
   };
 
   const syncHeroWithLiveProducts = async () => {
@@ -1193,15 +1400,21 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const addBanner = async (banner: Omit<Banner, 'id'>) => {
     const newId = String(Math.floor(Math.random() * 10000000) + 1);
     const newBan = { id: newId, ...banner };
-    setBanners((prev) => [newBan, ...prev]);
+    const nextBanners = [newBan, ...banners];
+    await persistStorefrontSetting('banners', nextBanners, 'sag_banners_local');
+    setBanners(nextBanners);
   };
 
   const updateBanner = async (id: string, updated: Partial<Banner>) => {
-    setBanners((prev) => prev.map((b) => (b.id === id ? { ...b, ...updated } : b)));
+    const nextBanners = banners.map((banner) => (banner.id === id ? { ...banner, ...updated } : banner));
+    await persistStorefrontSetting('banners', nextBanners, 'sag_banners_local');
+    setBanners(nextBanners);
   };
 
   const deleteBanner = async (id: string) => {
-    setBanners((prev) => prev.filter((b) => b.id !== id));
+    const nextBanners = banners.filter((banner) => banner.id !== id);
+    await persistStorefrontSetting('banners', nextBanners, 'sag_banners_local');
+    setBanners(nextBanners);
   };
 
   const toggleBannerStatus = (id: string) => {
@@ -1297,16 +1510,14 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Store & Payment Settings
   const updateStoreSettings = async (updated: Partial<StoreSettings>) => {
     const nextStore = normalizeStoreBrand({ ...storeSettings, ...updated });
-    setStoreSettings(nextStore);
     await saveStoreSettingsToSupabase(nextStore);
+    setStoreSettings(nextStore);
   };
 
   const updateDealOfTheDay = async (updated: Partial<DealOfTheDayConfig>) => {
     const nextDeal = { ...dealOfTheDay, ...updated };
+    await persistStorefrontSetting('dealOfTheDay', nextDeal, 'sag_deal_of_the_day');
     setDealOfTheDay(nextDeal);
-    try {
-      localStorage.setItem('sag_deal_of_the_day', JSON.stringify(nextDeal));
-    } catch {}
   };
 
   const updatePaymentSettings = async (updated: Partial<PaymentGatewaySettings>) => {
@@ -1328,6 +1539,13 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setReviewsList(INITIAL_REVIEWS);
     setStoreSettings(INITIAL_STORE_SETTINGS);
     setPaymentSettings(INITIAL_PAYMENT_SETTINGS);
+    await Promise.all([
+      saveHomepageSectionsToSupabase(INITIAL_SECTIONS),
+      saveHeroConfigToSupabase(INITIAL_HERO_CONFIG),
+      saveStoreSettingsToSupabase(INITIAL_STORE_SETTINGS),
+      persistStorefrontSetting('banners', INITIAL_BANNERS, 'sag_banners_local'),
+      persistStorefrontSetting('dealOfTheDay', INITIAL_DEAL_OF_THE_DAY, 'sag_deal_of_the_day'),
+    ]);
   };
 
   // Lead Operations

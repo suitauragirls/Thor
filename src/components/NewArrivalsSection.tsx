@@ -5,22 +5,17 @@ import { Sparkles, ArrowRight } from 'lucide-react';
 
 export const NewArrivalsSection: React.FC = () => {
   const { products = [], navigateToCategory } = useShop();
-  const [activeTab, setActiveTab] = useState<'All' | 'Suits' | 'Kurtis' | 'Anarkali' | 'Co-ord Sets' | 'Dresses'>('All');
+  const [activeTab, setActiveTab] = useState('All');
 
-  // Filter active products marked as newArrival
-  const activeProducts = products.filter((p) => p.inStock);
-  const newArrivalsList = activeProducts.filter((p) => p.isNewArrival);
-  const newArrivals = newArrivalsList.length > 0 ? newArrivalsList : activeProducts;
-  const tabs = ['All', 'Suits', 'Kurtis', 'Anarkali', 'Co-ord Sets', 'Dresses'] as const;
-  const availableTabs = tabs.filter((tab) =>
-    tab === 'All' || newArrivals.some((product) => product.category === tab)
-  );
-  const selectedTab = availableTabs.some((tab) => tab === activeTab) ? activeTab : 'All';
+  const activeProducts = products.filter((product) => product.inStock);
+  const availableTabs = ['All', ...Array.from(
+    new Set(activeProducts.map((product) => product.category).filter(Boolean))
+  ).sort((first, second) => first.localeCompare(second))];
+  const selectedTab = availableTabs.includes(activeTab) ? activeTab : 'All';
 
-  const displayedProducts = (selectedTab === 'All'
-    ? newArrivals
-    : newArrivals.filter((p) => p.category === selectedTab)
-  ).slice(0, 8);
+  const displayedProducts = selectedTab === 'All'
+    ? activeProducts
+    : activeProducts.filter((product) => product.category === selectedTab);
 
   return (
     <section id="new-arrivals-section" className="py-12 sm:py-16 bg-[#FDFBF7] border-b border-[#B8935A]/25">
@@ -34,10 +29,10 @@ export const NewArrivalsSection: React.FC = () => {
               <span>FRESH OFF THE LOOM</span>
             </div>
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#3D0F1F]">
-              New Arrivals
+              Shop All Styles
             </h2>
             <p className="text-sm sm:text-base text-[#3D0F1F]/75 mt-2 max-w-xl font-normal leading-relaxed">
-              Handpicked Artisan ethnic silhouettes crafted for timeless grace, comfortable drapes, and vibrant festive allure.
+              Explore every available style, organized by its collection.
             </p>
           </div>
 
@@ -70,7 +65,7 @@ export const NewArrivalsSection: React.FC = () => {
           </div>
         ) : (
           <p className="py-12 text-center text-sm text-[#3D0F1F]/70" role="status">
-            New styles are on their way.
+            No styles are currently available.
           </p>
         )}
 
@@ -78,10 +73,10 @@ export const NewArrivalsSection: React.FC = () => {
         <div className="mt-8 sm:mt-12 text-center">
           <button
             id="view-all-new-arrivals-btn"
-            onClick={() => navigateToCategory('New Arrivals')}
+            onClick={() => navigateToCategory('All')}
             className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 bg-[#3D0F1F] text-[#FAF5EB] hover:bg-[#3D0F1F]/90 border border-[#3D0F1F] text-xs font-sans font-bold tracking-[0.14em] uppercase transition-colors cursor-pointer"
           >
-            <span>EXPLORE ALL NEW ARRIVALS</span>
+            <span>SHOP ALL PRODUCTS</span>
             <ArrowRight className="w-4 h-4 text-[#211C1A]" />
           </button>
         </div>

@@ -3,7 +3,6 @@ import { useAdmin } from '../../context/AdminContext';
 import { useShop } from '../../context/ShopContext';
 import { useRouter } from '../../context/RouterContext';
 import { VisitorAnalytics, calculateStayDuration, markFirestoreQuotaExhausted, isQuotaExhausted } from '../../utils/visitorTracker';
-import { supabase } from '../../lib/supabase';
 import { db } from '../../lib/firebase';
 import { collection, onSnapshot, query, orderBy, limit } from 'firebase/firestore';
 import { 
@@ -32,7 +31,8 @@ import {
   Smartphone,
   Calendar,
   ListFilter,
-  MousePointerClick
+  MousePointerClick,
+  Star
 } from 'lucide-react';
 import { MetricsDashboard } from './MetricsDashboard';
 import { SystemStatusMonitor } from './SystemStatusMonitor';
@@ -51,7 +51,7 @@ export const AdminDashboardOverview: React.FC = () => {
 
   const todayStr = new Date().toISOString().split('T')[0];
 
-  // Real-time Firestore analytics collections & Supabase sync
+  // Real-time Firestore analytics collections
   const [dailyAnalyticsList, setDailyAnalyticsList] = useState<any[]>([]);
   const [visitorSessions, setVisitorSessions] = useState<any[]>([]);
   const [selectedDateFilter, setSelectedDateFilter] = useState<string>(todayStr);
@@ -59,29 +59,10 @@ export const AdminDashboardOverview: React.FC = () => {
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
 
   useEffect(() => {
-    // If quota was already exhausted, skip Firestore listener setup and load directly from Supabase
+    // If quota was already exhausted, skip Firestore listener setup.
     if (isQuotaExhausted()) {
-      supabase.from('live_visitors').select('*').order('last_ping', { ascending: false }).limit(50)
-        .then(({ data }) => {
-          if (data && data.length > 0) {
-            const mapped = data.map((item: any) => ({
-              id: item.session_id || item.id,
-              sessionId: item.session_id || item.id,
-              date: item.updated_at ? item.updated_at.split('T')[0] : todayStr,
-              firstSeen: item.created_at || item.last_ping,
-              lastActive: item.last_ping || item.updated_at,
-              deviceType: item.device_type === 'instagram_webview' || item.is_instagram_webview ? 'instagram_webview' : (item.device_type || 'mobile'),
-              deviceModel: item.device_model || (item.is_instagram_webview ? 'Instagram Browser' : 'Mobile Device'),
-              browser: item.browser || (item.is_instagram_webview ? 'Instagram In-App Browser' : 'Web Browser'),
-              userAgent: item.user_agent || '',
-              utm_source: item.utm_source || (item.is_instagram_webview ? 'instagram' : 'direct'),
-              page: item.page || '/',
-              actions: item.actions || [{ time: item.last_ping, type: 'page_view', path: item.page || '/', label: `Visited ${item.page || '/'}` }]
-            }));
-            setVisitorSessions(mapped);
-          }
-        })
-        .catch(() => {});
+      setVisitorSessions([]);
+      setDailyAnalyticsList([]);
       return;
     }
 
@@ -114,38 +95,7 @@ export const AdminDashboardOverview: React.FC = () => {
           list.push({ id: doc.id, ...doc.data() });
         });
 
-        // Merge with Supabase live_visitors if available
-        supabase.from('live_visitors').select('*').order('last_ping', { ascending: false }).limit(50)
-          .then(({ data }) => {
-            if (data && data.length > 0) {
-              const mapped = data.map((item: any) => ({
-                id: item.session_id || item.id,
-                sessionId: item.session_id || item.id,
-                date: item.updated_at ? item.updated_at.split('T')[0] : todayStr,
-                firstSeen: item.created_at || item.last_ping,
-                lastActive: item.last_ping || item.updated_at,
-                deviceType: item.device_type === 'instagram_webview' || item.is_instagram_webview ? 'instagram_webview' : (item.device_type || 'mobile'),
-                deviceModel: item.device_model || (item.is_instagram_webview ? 'Instagram Browser' : 'Mobile Device'),
-                browser: item.browser || (item.is_instagram_webview ? 'Instagram In-App Browser' : 'Web Browser'),
-                userAgent: item.user_agent || '',
-                utm_source: item.utm_source || (item.is_instagram_webview ? 'instagram' : 'direct'),
-                page: item.page || '/',
-                actions: item.actions || [{ time: item.last_ping, type: 'page_view', path: item.page || '/', label: `Visited ${item.page || '/'}` }]
-              }));
-
-              const map = new Map<string, any>();
-              list.forEach(s => map.set(s.id, s));
-              mapped.forEach(s => {
-                if (!map.has(s.id)) map.set(s.id, s);
-              });
-              setVisitorSessions(Array.from(map.values()).sort((a, b) => new Date(b.lastActive || 0).getTime() - new Date(a.lastActive || 0).getTime()));
-            } else {
-              setVisitorSessions(list);
-            }
-          })
-          .catch(() => {
-            setVisitorSessions(list);
-          });
+        setVisitorSessions(list);
       }, (err) => {
         if (err?.code === 'resource-exhausted' || err?.message?.includes('Quota')) {
           markFirestoreQuotaExhausted();
@@ -473,7 +423,8 @@ export const AdminDashboardOverview: React.FC = () => {
 
                 <div className="flex items-center gap-2 shrink-0">
                   <span className="text-[11px] font-bold text-[#211C1A]">
-                    ★ {prod.rating} ({prod.reviewCount})
+                    <Star className="inline-block w-3 h-3 fill-[#DFBE65] text-[#B8935A] mr-0.5" aria-hidden="true" />
+                    {prod.rating} ({prod.reviewCount})
                   </span>
                   <button
                     onClick={() => openAdminProductEdit(prod.id)}

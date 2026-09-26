@@ -8,55 +8,64 @@ import { FestiveComboOffers } from './FestiveComboOffers';
 import { NewArrivalsSection } from './NewArrivalsSection';
 import { DealOfTheDaySection } from './DealOfTheDaySection';
 import { BestSellersSection, FestiveCollectionSection } from './BestSellersSection';
+import { TrendingNowSection } from './TrendingNowSection';
+import { SpecialOfferBanner } from './SpecialOfferBanner';
+import { InstagramGallery } from './InstagramGallery';
+import { Newsletter } from './Newsletter';
 import { WhyShopWithUs } from './WhyShopWithUs';
 import { CustomerReviews } from './CustomerReviews';
 
 export const HomePage: React.FC = () => {
   const { homepageSections = [] } = useAdmin();
 
-  // Render non-hero dynamic components
   const renderSectionComponent = (key: string) => {
     switch (key) {
+      case 'brandHeader':
+        return <BrandMarqueeHeader />;
+      case 'categoryGrid':
+        return <PrepaidTrustBanner />;
+      case 'hero':
+        return <HeroSection />;
+      case 'artisanalPromises':
+        return <ArtisanalPromises />;
+      case 'comboOffers':
+        return <FestiveComboOffers />;
+      case 'dealOfTheDay':
+        return <DealOfTheDaySection />;
       case 'newArrivals':
-        return <NewArrivalsSection key="newArrivals" />;
+        return <NewArrivalsSection />;
       case 'bestSellers':
-        return <BestSellersSection key="bestSellers" />;
+        return <BestSellersSection />;
+      case 'trending':
+        return <TrendingNowSection />;
       case 'festive':
-        return <FestiveCollectionSection key="festive" />;
+        return <FestiveCollectionSection />;
+      case 'specialOffer':
+        return <SpecialOfferBanner />;
       case 'whyShop':
-        return <WhyShopWithUs key="whyShop" />;
+        return <WhyShopWithUs />;
       case 'reviews':
-        return <CustomerReviews key="reviews" />;
+        return <CustomerReviews />;
+      case 'instagram':
+        return <InstagramGallery />;
+      case 'newsletter':
+        return <Newsletter />;
       default:
         return null;
     }
   };
 
-  // Filter dynamic sections (excluding fixed top hero & deal sections)
-  const dynamicSections = homepageSections.filter(s => 
-    s.enabled !== false && 
-    !['hero', 'dealOfTheDay', 'categoryGrid', 'trending', 'specialOffer', 'instagram', 'newsletter', 'comboOffers'].includes(s.key)
-  );
-
-  const lowerSections = dynamicSections.length > 0
-    ? dynamicSections.map(sec => renderSectionComponent(sec.key))
-    : [
-        <BestSellersSection key="bestSellers" />,
-        <FestiveCollectionSection key="festive" />,
-        <WhyShopWithUs key="whyShop" />,
-        <CustomerReviews key="reviews" />,
-      ];
+  const visibleSections = [...homepageSections]
+    .filter((section) => section.enabled !== false)
+    .sort((first, second) => first.order - second.order);
 
   return (
     <div id="dynamic-storefront-homepage" className="flex flex-col relative gap-0">
-      <BrandMarqueeHeader />
-      <PrepaidTrustBanner />
-      <HeroSection />
-      <ArtisanalPromises />
-      <FestiveComboOffers />
-      <NewArrivalsSection />
-      <DealOfTheDaySection />
-      {lowerSections}
+      {visibleSections.map((section) => (
+        <React.Fragment key={section.id}>
+          {renderSectionComponent(section.key)}
+        </React.Fragment>
+      ))}
     </div>
   );
 };

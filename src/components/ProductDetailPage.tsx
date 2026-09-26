@@ -6,6 +6,7 @@ import { ProductCard } from './ProductCard';
 import { ShimmerPDP } from './ShimmerPDP';
 import { ProductSize, ProductColor } from '../types';
 import { getCleanImageUrl, getShareableUrl, ELEGANT_PLACEHOLDER_SVG } from '../utils/imageHelper';
+import { createSupportWhatsAppUrl } from '../utils/storeContact';
 import { supabase } from '../lib/supabase';
 import { 
   Star, 
@@ -141,7 +142,7 @@ export const ProductDetailPage: React.FC = () => {
       rating: 5.0,
       reviewCount: 1,
       images: [],
-      colors: [{ name: 'Standard', hex: '#4A0404' }],
+      colors: [{ name: 'Standard', hex: '#FAF5EB' }],
       sizes: ['S', 'M', 'L', 'XL'],
       description: 'Artisanal pure cotton ethnic ensemble.',
       fabric: '100% Pure Cambric Cotton',
@@ -176,12 +177,12 @@ export const ProductDetailPage: React.FC = () => {
     ? storedColors
     : productImages.map((image, index) => ({
         name: ['Original', 'Alternate', 'Detail View', 'Back View'][index % 4],
-        hex: ['#241D1B', '#9A6A3A', '#211C1A', '#D8C8B8'][index % 4],
+        hex: '#FAF5EB',
         imageUrl: image,
       }));
   const safeProductColors = productColors.length > 0
     ? productColors
-    : [{ name: 'Standard', hex: '#241D1B' }];
+    : [{ name: 'Standard', hex: '#FAF5EB' }];
 
   const availableSizes: ProductSize[] = Array.isArray(product.sizes) ? product.sizes : [];
 
@@ -668,7 +669,7 @@ export const ProductDetailPage: React.FC = () => {
   useEffect(() => {
     setSelectedImageIdx(0);
     setSelectedSize(availableSizes[0] || 'M');
-    setSelectedColor(productColors[0] || { name: 'Standard', hex: '#4A0404' });
+    setSelectedColor(productColors[0] || { name: 'Standard', hex: '#FAF5EB' });
     setQuantity(1);
     setPincodeStatus(null);
   }, [product.id]);
@@ -1231,6 +1232,7 @@ export const ProductDetailPage: React.FC = () => {
               <div className="flex flex-wrap gap-2.5">
                 {productColors.map((c, idx) => {
                   const isSelected = selectedColor === c || (selectedColor.name === c.name && selectedColor.hex === c.hex);
+                  const swatchImage = c.imageUrl || productImages[idx];
                   return (
                     <button
                       key={`pdp-col-${c.name}-${c.hex}-${idx}`}
@@ -1242,7 +1244,13 @@ export const ProductDetailPage: React.FC = () => {
                           : 'border-[#B8935A]/30 bg-[#FDFBF7] text-[#3D0F1F] hover:border-[#3D0F1F]'
                       }`}
                     >
-                      <span className="w-3.5 h-3.5 rounded-full border border-black/10" style={{ backgroundColor: c.hex }}></span>
+                      <span className="w-3.5 h-3.5 rounded-full border border-black/10 overflow-hidden bg-[#FAF5EB] shrink-0" aria-hidden="true">
+                        {swatchImage ? (
+                          <img src={getCleanImageUrl(swatchImage, 80)} alt="" className="w-full h-full object-cover" loading="lazy" />
+                        ) : (
+                          <span className="block w-full h-full" style={{ backgroundColor: c.hex }} />
+                        )}
+                      </span>
                       <span>{c.name}</span>
                     </button>
                   );
@@ -1448,9 +1456,7 @@ export const ProductDetailPage: React.FC = () => {
               {/* Ask Question on WhatsApp - Redesigned to be Premium, Clean & Warm Luxury */}
               <a
                 id="pdp-whatsapp-ask-btn"
-                href={`https://wa.me/918238451017?text=${encodeURIComponent(
-                  `Hi Suit Aura Girls, I am interested in "${product.name}" (₹${product.price}). Could you help me with a question? Link: ${getShareableUrl(product.id)}`
-                )}`}
+                href={createSupportWhatsAppUrl(`Hi Suit Aura Girls, I am interested in "${product.name}" (₹${product.price}). Could you help me with a question? Link: ${getShareableUrl(product.id)}`)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full p-4 bg-[#F1E8DF] border border-[#9A6A3A]/30 rounded-xl hover:bg-[#F1E8DF]/80 hover:border-[#9A6A3A]/50 transition-all duration-200 flex items-center justify-between gap-3 group cursor-pointer active:scale-99 shadow-3xs"

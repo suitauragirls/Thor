@@ -1,6 +1,7 @@
 import React from 'react';
 import { useShop } from '../context/ShopContext';
 import { Truck, RotateCcw, ShieldCheck, FileText, Ban, Ruler, ChevronRight, Check } from 'lucide-react';
+import { SUPPORT_PHONE_DISPLAY } from '../utils/storeContact';
 
 interface PolicyWrapperProps {
   title: string;
@@ -182,7 +183,7 @@ export const CancellationPolicyPage: React.FC = () => (
 
       <h3 className="font-serif text-xl font-bold text-[#211C1A]">2. How to Request Cancellation</h3>
       <p>
-        To cancel an order, simply email <strong>suitauragirls@gmail.com</strong> or WhatsApp our support team (+91 82384 51017) with your Order ID.
+        To cancel an order, simply email <strong>suitauragirls@gmail.com</strong> or WhatsApp our support team ({SUPPORT_PHONE_DISPLAY}) with your Order ID.
       </p>
 
       <h3 className="font-serif text-xl font-bold text-[#211C1A]">3. 100% Instant Refund for Cancelled Orders</h3>

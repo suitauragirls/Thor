@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useShop } from '../context/ShopContext';
 import { ChevronRight, Package, User, Info, Headphones, X, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { createSupportWhatsAppUrl } from '../utils/storeContact';
 
 export const MobileMenuDrawer: React.FC = () => {
   const { 
@@ -82,10 +83,8 @@ export const MobileMenuDrawer: React.FC = () => {
           >
             {/* Drawer Header Area with Close button and Brand Logo */}
             <div className="p-5 border-b border-[#B8935A]/30 bg-[#FAF5EB] flex items-center justify-between shrink-0">
-              <div className="flex flex-col">
-                <span className="font-serif text-lg font-semibold text-[#3D0F1F] uppercase">
-                  SUIT AURA GIRLS
-                </span>
+              <div className="flex flex-col items-start">
+                <img src="/suit-aura-logo.png" alt="Suit Aura Girls logo" className="w-36 h-[72px] object-contain object-left" />
                 <span className="text-[9px] uppercase tracking-[0.15em] text-[#B8935A] font-semibold mt-0.5">
                   House of Artisan Couture
                 </span>
@@ -215,7 +214,7 @@ export const MobileMenuDrawer: React.FC = () => {
                 {/* Suit Aura Girls Official WhatsApp Concierge Card */}
                 <a
                   id="mobile-menu-whatsapp-concierge"
-                  href="https://wa.me/918238451017?text=Hi%20Suit%20Bliss%20Aura!%20I%20need%20assistance%20with%20sizing%20or%20my%20order."
+                  href={createSupportWhatsAppUrl('Hi Suit Aura Girls! I need assistance with sizing or my order.')}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-3 flex items-center justify-between p-3.5 bg-gradient-to-r from-[#241D1B] to-[#2B0914] text-[#211C1A] rounded-2xl border border-[#9A6A3A]/40 shadow-md transition-all active:scale-[0.98] cursor-pointer group hover:border-[#C7A77A]"

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Crown, Sparkles } from 'lucide-react';
+import { Crown, Sparkles, Gem } from 'lucide-react';
 
 const LUXURY_PHRASES = [
   'Weaving Pure Chanderi & Handloom Silks...',
@@ -49,20 +49,20 @@ export const LuxuryLoadingScreen: React.FC = () => {
       <div className="absolute inset-3 sm:inset-6 border border-[#9A6A3A]/25 pointer-events-none flex flex-col justify-between p-3 sm:p-5">
         {/* Top Corners */}
         <div className="flex justify-between items-center text-black/70 text-xs sm:text-sm font-serif">
-          <span className="select-none">❖</span>
+          <Gem className="w-3 h-3 text-[#DFBE65]" aria-hidden="true" />
           <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.35em] text-black/80 font-medium hidden xs:inline">
             HAUTE ETHNIC ATELIER
           </span>
-          <span className="select-none">❖</span>
+          <Gem className="w-3 h-3 text-[#DFBE65]" aria-hidden="true" />
         </div>
 
         {/* Bottom Corners */}
         <div className="flex justify-between items-center text-black/70 text-xs sm:text-sm font-serif">
-          <span className="select-none">❖</span>
+          <Gem className="w-3 h-3 text-[#DFBE65]" aria-hidden="true" />
           <span className="text-[8.5px] sm:text-[9.5px] uppercase tracking-[0.3em] text-black/70 font-medium hidden xs:inline">
             EST. IN ARTISAN, INDIA
           </span>
-          <span className="select-none">❖</span>
+          <Gem className="w-3 h-3 text-[#DFBE65]" aria-hidden="true" />
         </div>
       </div>
 
@@ -78,40 +78,17 @@ export const LuxuryLoadingScreen: React.FC = () => {
       {/* Center Stage: Royal Brand Medallion & Title */}
       <div className="relative z-10 flex flex-col items-center text-center max-w-md my-auto px-4">
         
-        {/* Animated Royal Medallion */}
-        <div className="relative w-28 h-28 sm:w-36 sm:h-36 mb-6 sm:mb-8 flex items-center justify-center">
-          
-          {/* Outer Pulsing Aura */}
-          <div className="absolute inset-0 rounded-full bg-[#9A6A3A]/15 animate-ping opacity-75" />
-
-          {/* Counter-rotating Outer Gold Ring */}
-          <div className="absolute -inset-2.5 sm:-inset-3 rounded-full border border-dashed border-[#C7A77A]/40 animate-[spin_18s_linear_infinite]" />
-
-          {/* Clockwise Fine Hairline Ring */}
-          <div className="absolute -inset-1 sm:-inset-1.5 rounded-full border border-[#9A6A3A]/50 animate-[spin_10s_linear_infinite_reverse]" />
-
-          {/* Soft Glow Behind Image */}
-          <div className="absolute inset-1 rounded-full bg-[#C7A77A]/20 blur-md" />
-
-          {/* Official Suit Aura Girls Medallion Image */}
-          <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full p-1 bg-gradient-to-b from-[#C7A77A] via-[#9A6A3A] to-[#241D1B] shadow-2xl">
-            <img
-              src="/cropped_circle_image.png"
-              alt="Suit Aura Girls Royal Seal"
-              className="w-full h-full object-cover rounded-full border border-[#16030A]"
-            />
-          </div>
-
-          {/* Decorative Sparkle Accent */}
-          <div className="absolute -top-1 -right-1 text-black animate-pulse">
+        {/* Official Wide Suit Aura Girls Logo */}
+        <div className="relative w-64 sm:w-80 aspect-[2/1] mb-6 sm:mb-8 flex items-center justify-center border border-[#9A6A3A]/35 p-2">
+          <img
+            src="/suit-aura-logo.png"
+            alt="Suit Aura Girls logo"
+            className="w-full h-full object-contain"
+          />
+          <div className="absolute -top-2 -right-2 text-black animate-pulse">
             <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
-
-        {/* Brand Name Typography */}
-        <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#F1E8DF] tracking-[0.22em] uppercase leading-tight mb-2 drop-shadow-md">
-          Suit Aura Girls
-        </h1>
 
         {/* Royal Tagline */}
         <p className="text-[10px] sm:text-xs tracking-[0.38em] uppercase text-black font-semibold mb-6 sm:mb-8">

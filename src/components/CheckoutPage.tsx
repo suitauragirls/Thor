@@ -43,6 +43,7 @@ import {
   RotateCcw
 } from 'lucide-react';
 import { getCleanImageUrl } from '../utils/imageHelper';
+import { createSupportWhatsAppUrl } from '../utils/storeContact';
 
 const INDIAN_STATES = [
   'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 
@@ -749,7 +750,8 @@ export const CheckoutPage: React.FC = () => {
     const envKey = (import.meta as any).env?.VITE_RAZORPAY_KEY_ID || '';
     const adminKey = paymentSettings.razorpayKeyIdPlaceholder || '';
     const localKey = localStorage.getItem('sag_razorpay_key_id') || '';
-    const candidateKey = (envKey || adminKey || localKey || '').trim();
+    const isLocalHost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+    const candidateKey = (adminKey || envKey || (isLocalHost ? localKey : '') || '').trim();
 
     if (!candidateKey) {
       releaseReservedStockLock();
@@ -776,7 +778,7 @@ export const CheckoutPage: React.FC = () => {
         currency: 'INR',
         name: 'Suit Aura Girls',
         description: `Order #${orderNum} - Luxury Ethnic Wear`,
-        image: '/cropped_circle_image.png',
+        image: '/suit-aura-logo.png',
         handler: async function (response: any) {
           if (response.razorpay_payment_id) {
             const verifiedOrder: Order = {
@@ -1732,7 +1734,7 @@ export const CheckoutPage: React.FC = () => {
             </div>
 
             <a
-              href="https://wa.me/918238451017?text=Hi%20Suit%20Bliss%20Aura%2C%20I%20need%20help%20with%20my%20order%20checkout."
+              href={createSupportWhatsAppUrl('Hi Suit Aura Girls, I need help with my order checkout.')}
               target="_blank"
               rel="noopener noreferrer"
               className="px-3.5 py-2 bg-[#F1E8DF] text-[#211C1A] hover:bg-white rounded-xl font-bold text-[11px] uppercase tracking-wider transition-all cursor-pointer shrink-0"

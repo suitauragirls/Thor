@@ -3,6 +3,7 @@ import { useShop } from '../context/ShopContext';
 import { useAdmin } from '../context/AdminContext';
 import { fuzzyMatchProduct } from '../utils/fuzzySearch';
 import { RotatableBannerTicker } from './RotatableBannerTicker';
+import { createSupportWhatsAppUrl } from '../utils/storeContact';
 import { 
   Search, 
   Home,
@@ -19,7 +20,8 @@ import {
   Clock,
   TrendingUp,
   Trash2,
-  MessageSquare
+  MessageSquare,
+  Star
 } from 'lucide-react';
 import * as motion from 'motion/react-client';
 
@@ -255,33 +257,16 @@ export const Header: React.FC = () => {
           <button
             id="header-brand-logo"
             onClick={() => setActivePage('home')}
-            className="flex items-center justify-center group gap-1.5 xs:gap-2 sm:gap-3 shrink-0 cursor-pointer"
+            className="flex items-center justify-center group shrink-0 cursor-pointer"
           >
-            {/* Store Circular Logo */}
-            <div className="relative shrink-0">
-              <motion.img
-                src="/cropped_circle_image.png" 
-                alt="Suit Aura Girls Logo"
-                initial={{ rotate: -5, scale: 0.9 }}
-                animate={{ rotate: 0, scale: 1 }}
-                transition={{ duration: 0.5 }}
-                className="w-9 h-9 xs:w-10 xs:h-10 sm:w-11 sm:h-11 rounded-full border border-[#B8935A]/50 object-cover"
-              />
-              <div className="absolute inset-0 rounded-full border border-[#B8935A]/25 pointer-events-none" />
-            </div>
-
-            {/* High-Fashion Title & Tagline */}
-            <div className="flex flex-col items-start text-left shrink-0">
-              <div className="relative">
-                <h1 className="font-serif text-sm xs:text-base sm:text-2xl lg:text-3xl font-semibold text-[#3D0F1F] leading-none whitespace-nowrap">
-                  {storeSettings?.logoText || 'SUIT AURA GIRLS'}
-                </h1>
-              </div>
-
-              <p className="text-[7px] xs:text-[8px] sm:text-[10px] uppercase text-[#3D0F1F]/65 font-medium mt-1 whitespace-nowrap">
-                {storeSettings?.tagline || 'HANDCRAFTED LUXURY ETHNIC WEAR'}
-              </p>
-            </div>
+            <motion.img
+              src="/suit-aura-logo.png"
+              alt="Suit Aura Girls logo"
+              initial={{ scale: 0.96 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.35 }}
+              className="w-24 h-12 xs:w-28 xs:h-14 sm:w-36 sm:h-[72px] object-contain"
+            />
           </button>
         </div>
 
@@ -380,7 +365,7 @@ export const Header: React.FC = () => {
 
                 <a
                   id="acc-whatsapp-stylist-btn"
-                  href="https://wa.me/918238451017?text=Hi%20Suit%20Bliss%20Aura!%20I%20have%20a%20question%20regarding%20suits%20and%20orders."
+                  href={createSupportWhatsAppUrl('Hi Suit Aura Girls! I have a question regarding suits and orders.')}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setIsAccountMenuOpen(false)}
@@ -604,7 +589,8 @@ export const Header: React.FC = () => {
                                 {prod.category}
                               </span>
                               <span className="text-[9px] text-black font-bold">
-                                ★ {prod.rating}
+                                <Star className="inline-block w-2.5 h-2.5 fill-[#DFBE65] text-[#B8935A] mr-0.5" aria-hidden="true" />
+                                {prod.rating}
                               </span>
                             </div>
                             <p className="text-xs font-bold text-[#211C1A] group-hover:text-black truncate">

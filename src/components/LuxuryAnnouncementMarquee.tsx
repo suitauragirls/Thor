@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Sparkles, Crown, Zap, Truck, Tag, ArrowRight } from 'lucide-react';
+import { Sparkles, Gem, Crown, Zap, Truck, Tag, ArrowRight } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 import { useAdmin } from '../context/AdminContext';
 
@@ -30,42 +30,12 @@ export const LuxuryAnnouncementMarquee: React.FC = () => {
 
   const [isPaused, setIsPaused] = useState(false);
   const [adminCustomText, setAdminCustomText] = useState<string>(() => {
-    try {
-      if (storeSettings?.announcementText) return storeSettings.announcementText;
-      const saved = localStorage.getItem('sag_store_settings');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.announcementText) return parsed.announcementText;
-      }
-    } catch {}
-    return '';
+    return storeSettings?.announcementActive === false ? '' : storeSettings?.announcementText || '';
   });
 
-  // Listen for admin real-time settings update
   useEffect(() => {
-    const handleSync = () => {
-      try {
-        const saved = localStorage.getItem('sag_store_settings');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (parsed.announcementText) {
-            setAdminCustomText(parsed.announcementText);
-            return;
-          }
-        }
-      } catch {}
-      if (storeSettings?.announcementText) {
-        setAdminCustomText(storeSettings.announcementText);
-      }
-    };
-
-    window.addEventListener('storage', handleSync);
-    window.addEventListener('sag_settings_updated', handleSync);
-    return () => {
-      window.removeEventListener('storage', handleSync);
-      window.removeEventListener('sag_settings_updated', handleSync);
-    };
-  }, [storeSettings?.announcementText]);
+    setAdminCustomText(storeSettings?.announcementActive === false ? '' : storeSettings?.announcementText || '');
+  }, [storeSettings?.announcementActive, storeSettings?.announcementText]);
 
   // Determine current active section or category context
   const currentContextKey = useMemo(() => {
@@ -85,7 +55,7 @@ export const LuxuryAnnouncementMarquee: React.FC = () => {
     const list: MarqueeMessage[] = [];
 
     // 1. If admin configured custom announcement, inject as priority royal spotlight
-    if (adminCustomText && adminCustomText.trim().length > 0) {
+    if (storeSettings?.announcementActive !== false && adminCustomText && adminCustomText.trim().length > 0) {
       list.push({
         id: 'admin-custom-lead',
         leadPrefix: 'ROYAL EDIT',
@@ -401,9 +371,9 @@ export const LuxuryAnnouncementMarquee: React.FC = () => {
       case 'crown':
         return <Crown className="w-3 h-3 text-black shrink-0 mx-3 sm:mx-4 opacity-90 inline-block" />;
       case 'star':
-        return <span className="text-black text-[11px] sm:text-xs shrink-0 mx-3 sm:mx-4 select-none opacity-80">✦</span>;
+        return <Sparkles className="w-3 h-3 text-antique-gold shrink-0 mx-3 sm:mx-4" aria-hidden="true" />;
       case 'diamond':
-        return <span className="text-black text-[11px] sm:text-xs shrink-0 mx-3 sm:mx-4 select-none opacity-80">❖</span>;
+        return <Gem className="w-3 h-3 text-antique-gold shrink-0 mx-3 sm:mx-4" aria-hidden="true" />;
       case 'dot':
       default:
         return <span className="w-1.5 h-1.5 rounded-full bg-[#C7A77A]/70 shrink-0 mx-3 sm:mx-4 inline-block" />;

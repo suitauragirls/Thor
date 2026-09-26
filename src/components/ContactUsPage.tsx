@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useShop } from '../context/ShopContext';
-import { Mail, Phone, MapPin, Clock, Send, CheckCircle2, ChevronRight, MessageSquare } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, Send, CheckCircle2, ChevronRight, MessageSquare, Instagram } from 'lucide-react';
 import { db } from '../lib/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import { markFirestoreQuotaExhausted, isQuotaExhausted } from '../utils/visitorTracker';
+import { STORE_ADDRESS_LINES, STORE_INSTAGRAM_URL, STORE_MAPS_URL, SUPPORT_PHONE_DISPLAY, createSupportWhatsAppUrl } from '../utils/storeContact';
 
 export const ContactUsPage: React.FC = () => {
   const { setActivePage, showToast } = useShop();
@@ -35,13 +36,13 @@ export const ContactUsPage: React.FC = () => {
         });
       }
       setSubmitted(true);
-      showToast('Your message has been received! Our concierge team will reply within 24 hours.', 'success');
+      showToast('Your message has been received. Our team will reply during support hours.', 'success');
     } catch (error: any) {
       if (error?.code === 'resource-exhausted' || error?.message?.includes('Quota')) {
         markFirestoreQuotaExhausted();
       }
       setSubmitted(true);
-      showToast('Your message has been received! Our concierge team will reply within 24 hours.', 'success');
+      showToast('Your message has been received. Our team will reply during support hours.', 'success');
     }
   };
 
@@ -84,7 +85,7 @@ export const ContactUsPage: React.FC = () => {
                   <a href="mailto:suitauragirls@gmail.com" className="text-[#211C1A] hover:underline font-semibold">
                     suitauragirls@gmail.com
                   </a>
-                  <p className="text-[11px] text-gray-400">Average response time: 2-4 hours</p>
+                  <p className="text-[11px] text-gray-400">Customer Support: Monday to Saturday, 10:00 AM - 7:00 PM IST</p>
                 </div>
               </div>
 
@@ -92,11 +93,12 @@ export const ContactUsPage: React.FC = () => {
                 <Phone className="w-5 h-5 text-[#211C1A] shrink-0 mt-0.5" />
                 <div>
                   <strong className="block text-gray-900">WhatsApp &amp; Call Support</strong>
-                  <span className="text-gray-900 font-bold">+91 82384 51017</span>
-                  <p className="text-[11px] text-gray-400">Monday – Sunday: 9:00 AM – 10:00 PM IST</p>
+                  <a className="text-gray-900 font-bold" href={`tel:+91${SUPPORT_PHONE_DISPLAY.replace(/\D/g, '').replace(/^91/, '')}`}>{SUPPORT_PHONE_DISPLAY}</a>
+                  <p className="text-[11px] text-gray-400">Monday to Saturday: 10:00 AM - 7:00 PM IST</p>
+                  <p className="text-[11px] text-gray-500">Sunday: Closed for order fulfillment and scheduled dispatches. Sunday queries are attended to first thing Monday morning.</p>
                   
                   <a
-                    href="https://wa.me/918238451017?text=Hi%20Suit%20Bliss%20Aura!%20I%20have%20a%20question%20regarding%20suits%20and%20orders."
+                    href={createSupportWhatsAppUrl('Hi Suit Aura Girls! I have a question regarding suits and orders.')}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 mt-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-transform active:scale-95"
@@ -110,19 +112,21 @@ export const ContactUsPage: React.FC = () => {
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-[#211C1A] shrink-0 mt-0.5" />
                 <div>
-                  <strong className="block text-gray-900">Design Studio & Headquarters</strong>
+                  <strong className="block text-gray-900">Flagship Store & Fulfillment Facility</strong>
                   <p className="text-gray-600">
-                    Suit Aura Girls Fashions Pvt. Ltd.<br />
-                    Plot 48, Apparel & Handloom Park, Sitapura Industrial Area, Artisan, Rajasthan 302022, India
+                    {STORE_ADDRESS_LINES.map((line) => <React.Fragment key={line}>{line}<br /></React.Fragment>)}
                   </p>
+                  <a className="mt-1 inline-block font-semibold text-[#3D0F1F] underline" href={STORE_MAPS_URL} target="_blank" rel="noopener noreferrer">View on Google Maps</a>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
                 <Clock className="w-5 h-5 text-[#211C1A] shrink-0 mt-0.5" />
                 <div>
-                  <strong className="block text-gray-900">Order Dispatch Hours</strong>
-                  <p className="text-gray-600">Orders placed before 2 PM IST are dispatched the same day.</p>
+                  <strong className="block text-gray-900">Latest Bridal Collections</strong>
+                  <a className="inline-flex items-center gap-1.5 text-[#3D0F1F] font-semibold" href={STORE_INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">
+                    <Instagram className="h-4 w-4 text-[#B8935A]" /> @suit_aura_girls
+                  </a>
                 </div>
               </div>
             </div>
@@ -203,7 +207,7 @@ export const ContactUsPage: React.FC = () => {
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
-                    placeholder="e.g. 8238451017"
+                    placeholder={SUPPORT_PHONE_DISPLAY}
                     className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-[#241D1B]"
                   />
                 </div>

@@ -29,6 +29,27 @@ export const getCleanImageUrl = (url: string | undefined | null, targetWidth?: n
     return cleanUrl;
   }
 
+  // Resize public Supabase originals before they reach the storefront.
+  if (cleanUrl.includes('/storage/v1/object/public/')) {
+    try {
+      const urlObj = new URL(cleanUrl);
+      urlObj.pathname = urlObj.pathname.replace(
+        '/storage/v1/object/public/',
+        '/storage/v1/render/image/public/'
+      );
+      const width = Math.max(64, Math.min(1600, Math.round(targetWidth || 960)));
+      const height = Math.round(width * 1.25);
+      urlObj.searchParams.set('width', String(width));
+      urlObj.searchParams.set('height', String(height));
+      urlObj.searchParams.set('resize', 'cover');
+      urlObj.searchParams.set('quality', '75');
+      urlObj.searchParams.set('format', 'webp');
+      return urlObj.toString();
+    } catch {
+      return cleanUrl;
+    }
+  }
+
   // Optimize Unsplash image loading speed & cross-browser compatibility (Android, iOS, WebViews)
   if (cleanUrl.includes('images.unsplash.com')) {
     try {
@@ -36,15 +57,8 @@ export const getCleanImageUrl = (url: string | undefined | null, targetWidth?: n
       urlObj.searchParams.set('auto', 'format');
       urlObj.searchParams.set('fit', 'crop');
       
-      if (targetWidth) {
-        urlObj.searchParams.set('w', String(targetWidth));
-      } else if (!urlObj.searchParams.has('w')) {
-        urlObj.searchParams.set('w', '1000');
-      }
-
-      if (!urlObj.searchParams.has('q')) {
-        urlObj.searchParams.set('q', '80');
-      }
+      urlObj.searchParams.set('w', String(targetWidth || 960));
+      urlObj.searchParams.set('q', '75');
       return urlObj.toString();
     } catch (e) {
       return cleanUrl;

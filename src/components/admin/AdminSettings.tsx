@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAdmin } from '../../context/AdminContext';
 import { useShop } from '../../context/ShopContext';
 import { 
@@ -52,6 +52,9 @@ export const AdminSettings: React.FC = () => {
   const [payForm, setPayForm] = useState<PaymentGatewaySettings>(paymentSettings);
   const [activeTab, setActiveTab] = useState<'general' | 'payment' | 'database' | 'security' | 'brevo'>('security');
 
+  useEffect(() => setStoreForm(storeSettings), [storeSettings]);
+  useEffect(() => setPayForm(paymentSettings), [paymentSettings]);
+
   // Brevo API State
   const [brevoKeyInput, setBrevoKeyInput] = useState(getStoredBrevoKey());
   const [testEmail, setTestEmail] = useState('starkhell69@gmail.com');
@@ -62,25 +65,34 @@ export const AdminSettings: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
-  const handleSaveGeneral = (e: React.FormEvent) => {
+  const handleSaveGeneral = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateStoreSettings(storeForm);
-    showToast('Store settings updated successfully.', 'success');
+    try {
+      await updateStoreSettings(storeForm);
+      showToast('Store settings updated successfully.', 'success');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Unable to save store settings.', 'error');
+    }
   };
 
-  const handleSavePayment = (e: React.FormEvent) => {
+  const handleSavePayment = async (e: React.FormEvent) => {
     e.preventDefault();
-    updatePaymentSettings(payForm);
-    showToast('Payment configuration updated.', 'success');
+    try {
+      await updatePaymentSettings(payForm);
+      setPayForm((current) => ({ ...current, razorpayKeySecretPlaceholder: '', webhookSecretPlaceholder: '' }));
+      showToast('Payment configuration updated.', 'success');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Unable to update payment configuration.', 'error');
+    }
   };
 
-  const handleSaveSecurity = (e: React.FormEvent) => {
+  const handleSaveSecurity = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!secForm.adminPassword || secForm.adminPassword.length < 6) {
-      showToast('Password must be at least 6 characters.', 'error');
+    if (secForm.adminPassword && secForm.adminPassword.length < 8) {
+      showToast('New password must be at least 8 characters.', 'error');
       return;
     }
-    if (secForm.requirePin && (!secForm.securityPin || secForm.securityPin.length !== 6)) {
+    if (secForm.requirePin && secForm.securityPin && !/^\d{6}$/.test(secForm.securityPin)) {
       showToast('Security PIN must be exactly 6 digits.', 'error');
       return;
     }
@@ -90,23 +102,31 @@ export const AdminSettings: React.FC = () => {
       .replace(/[^a-z0-9-_]/g, '');
     const finalSlug = cleanSlug || 'sag-vault';
     
-    updateSecurityConfig({
-      adminUsername: secForm.adminUsername.trim(),
-      adminPassword: secForm.adminPassword,
-      securityPin: secForm.securityPin.trim(),
-      secretPathSlug: finalSlug,
-      allowDirectAdminRoute: secForm.allowDirectAdminRoute,
-      requirePin: secForm.requirePin,
-    });
-    setSecForm((prev) => ({ ...prev, secretPathSlug: finalSlug }));
-    showToast('Admin credentials & route security updated successfully!', 'success');
+    try {
+      await updateSecurityConfig({
+        adminUsername: secForm.adminUsername.trim(),
+        adminPassword: secForm.adminPassword,
+        securityPin: secForm.securityPin.trim(),
+        secretPathSlug: finalSlug,
+        allowDirectAdminRoute: secForm.allowDirectAdminRoute,
+        requirePin: secForm.requirePin,
+      });
+      setSecForm((prev) => ({ ...prev, adminPassword: '', securityPin: '', secretPathSlug: finalSlug }));
+      showToast('Admin security settings updated.', 'success');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Unable to update admin security settings.', 'error');
+    }
   };
 
-  const handleRevokeAllSessions = () => {
+  const handleRevokeAllSessions = async () => {
     if (window.confirm('Revoke all active sessions? Anyone who had the old password or an active session on another device (including friends) will be instantly disconnected.')) {
-      invalidateAllAdminSessions();
-      showToast('All sessions invalidated. Logging out...', 'info');
-      window.location.href = `/${secForm.secretPathSlug || 'sag-vault'}`;
+      try {
+        await invalidateAllAdminSessions();
+        showToast('All sessions invalidated. Logging out...', 'info');
+        window.location.href = `/${secForm.secretPathSlug || 'sag-vault'}`;
+      } catch (error) {
+        showToast(error instanceof Error ? error.message : 'Unable to revoke sessions.', 'error');
+      }
     }
   };
 
@@ -283,6 +303,32 @@ export const AdminSettings: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block font-medium text-gray-600 mb-1">Instagram URL</label>
+
+              <div className="space-y-3 pt-2">
+                <h4 className="font-bold text-gray-900 uppercase tracking-wider text-[11px] border-b border-gray-100 pb-1">
+                  Homepage Announcement
+                </h4>
+                <label className="block font-medium text-gray-600 mb-1" htmlFor="store-announcement-text">
+                  Custom marquee message
+                </label>
+                <textarea
+                  id="store-announcement-text"
+                  maxLength={500}
+                  rows={2}
+                  value={storeForm.announcementText || ''}
+                  onChange={(e) => setStoreForm({ ...storeForm, announcementText: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs resize-y"
+                />
+                <label className="inline-flex items-center gap-2 text-xs font-semibold text-gray-700 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={storeForm.announcementActive ?? true}
+                    onChange={(e) => setStoreForm({ ...storeForm, announcementActive: e.target.checked })}
+                    className="accent-[#3D0F1F]"
+                  />
+                  Show custom announcement in marquee
+                </label>
+              </div>
                   <input
                     type="url"
                     value={storeForm.instagramUrl}
@@ -309,6 +355,32 @@ export const AdminSettings: React.FC = () => {
                   />
                 </div>
               </div>
+            </div>
+
+            <div className="space-y-3 pt-2">
+              <h4 className="font-bold text-gray-900 uppercase tracking-wider text-[11px] border-b border-gray-100 pb-1">
+                Homepage Announcement
+              </h4>
+              <label className="block font-medium text-gray-600 mb-1" htmlFor="store-announcement-text">
+                Custom marquee message
+              </label>
+              <textarea
+                id="store-announcement-text"
+                maxLength={500}
+                rows={2}
+                value={storeForm.announcementText || ''}
+                onChange={(e) => setStoreForm({ ...storeForm, announcementText: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs resize-y"
+              />
+              <label className="inline-flex items-center gap-2 text-xs font-semibold text-gray-700 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={storeForm.announcementActive ?? true}
+                  onChange={(e) => setStoreForm({ ...storeForm, announcementActive: e.target.checked })}
+                  className="accent-[#3D0F1F]"
+                />
+                Show custom announcement in marquee
+              </label>
             </div>
 
             {/* Currency & Delivery Thresholds */}
@@ -433,7 +505,7 @@ export const AdminSettings: React.FC = () => {
                   type="text"
                   value={payForm.razorpayKeyIdPlaceholder}
                   onChange={(e) => setPayForm({ ...payForm, razorpayKeyIdPlaceholder: e.target.value })}
-                  placeholder="rzp_test_..."
+                  placeholder="rzp_test_... or rzp_live_..."
                   className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl font-mono text-gray-800"
                 />
               </div>
@@ -446,10 +518,10 @@ export const AdminSettings: React.FC = () => {
                 </label>
                 <input
                   type="password"
-                  value={payForm.razorpayKeySecretPlaceholder}
-                  onChange={(e) => setPayForm({ ...payForm, razorpayKeySecretPlaceholder: e.target.value })}
-                  placeholder="Managed securely via RAZORPAY_KEY_SECRET"
-                  className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl font-mono bg-gray-50 text-gray-600"
+                  value=""
+                  readOnly
+                  placeholder="Managed in Vercel: RAZORPAY_KEY_SECRET"
+                  className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl font-mono bg-gray-50 text-gray-600 cursor-not-allowed"
                 />
                 <span className="text-[10px] text-gray-400 mt-1 block">
                   Mapped to backend server variable `RAZORPAY_KEY_SECRET`
@@ -462,10 +534,10 @@ export const AdminSettings: React.FC = () => {
                 </label>
                 <input
                   type="password"
-                  value={payForm.webhookSecretPlaceholder}
-                  onChange={(e) => setPayForm({ ...payForm, webhookSecretPlaceholder: e.target.value })}
-                  placeholder="Managed securely via RAZORPAY_WEBHOOK_SECRET"
-                  className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl font-mono bg-gray-50 text-gray-600"
+                  value=""
+                  readOnly
+                  placeholder="Managed in Vercel: RAZORPAY_WEBHOOK_SECRET"
+                  className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl font-mono bg-gray-50 text-gray-600 cursor-not-allowed"
                 />
                 <span className="text-[10px] text-gray-400 mt-1 block">
                   Validates signature on `/api/webhooks/razorpay` events

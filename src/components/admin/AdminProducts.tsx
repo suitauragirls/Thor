@@ -17,7 +17,8 @@ import {
   Layers, 
   Eye, 
   AlertCircle,
-  ArrowUpDown
+  ArrowUpDown,
+  Star
 } from 'lucide-react';
 import { Product, ProductCategory } from '../../types';
 
@@ -218,7 +219,7 @@ export const AdminProducts: React.FC = () => {
                             title="Click to toggle Bestseller status"
                           >
                             <Sparkles className="w-2.5 h-2.5 text-black" />
-                            <span>{product.isBestSeller ? '★ Bestseller' : '+ Mark Bestseller'}</span>
+                            <span>{product.isBestSeller ? <><Star className="inline-block w-3 h-3 fill-[#DFBE65] text-[#B8935A] mr-0.5" aria-hidden="true" /> Bestseller</> : '+ Mark Bestseller'}</span>
                           </button>
 
                           <button

@@ -14,7 +14,8 @@ import {
   ChevronRight,
   Search,
   LayoutGrid,
-  Square
+  Square,
+  Star
 } from 'lucide-react';
 
 const CATEGORIES_LIST: (ProductCategory | 'All' | 'Sale' | 'New Arrivals' | 'Best Sellers' | 'Trending')[] = [
@@ -549,8 +550,8 @@ export const ShopPage: React.FC = () => {
                 <div className="space-y-1.5 text-xs text-gray-700">
                   {[
                     { label: 'All Ratings', val: 0 },
-                    { label: '4.8 ★ and above', val: 4.8 },
-                    { label: '4.5 ★ and above', val: 4.5 },
+                    { label: '4.8', val: 4.8 },
+                    { label: '4.5', val: 4.5 },
                   ].map((r) => (
                     <label key={r.val} className="flex items-center gap-2 cursor-pointer font-bold text-gray-600">
                       <input
@@ -560,7 +561,9 @@ export const ShopPage: React.FC = () => {
                         onChange={() => setMinRating(r.val)}
                         className="accent-[#241D1B]"
                       />
-                      <span>{r.label}</span>
+                      <span className="flex items-center gap-1">
+                        {r.val > 0 ? <><span>{r.label}</span><Star className="w-3 h-3 fill-[#DFBE65] text-[#B8935A]" aria-hidden="true" /><span>and above</span></> : r.label}
+                      </span>
                     </label>
                   ))}
                 </div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useShop } from '../context/ShopContext';
 import { useAdmin } from '../context/AdminContext';
 import { ActivePage } from '../types';
+import { STORE_ADDRESS, STORE_INSTAGRAM_URL, STORE_MAPS_URL, SUPPORT_PHONE_DISPLAY } from '../utils/storeContact';
 import { 
   Mail, 
   Phone, 
@@ -12,6 +13,7 @@ import {
   Lock,
   MessageSquare,
   MessageCircle,
+  MapPin,
   X,
   Truck,
   RotateCcw,
@@ -27,6 +29,8 @@ import {
 export const Footer: React.FC = () => {
   const { setActivePage, navigateToCategory } = useShop();
   const { storeSettings } = useAdmin();
+  const whatsappDigits = (storeSettings?.whatsapp || SUPPORT_PHONE_DISPLAY).replace(/\D/g, '');
+  const whatsappNumber = whatsappDigits.length === 10 ? `91${whatsappDigits}` : whatsappDigits;
 
   // State to manage which interactive concierge modal is open
   const [activeModal, setActiveModal] = useState<string | null>(null);
@@ -108,13 +112,20 @@ export const Footer: React.FC = () => {
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4.5 h-4.5 text-[#DFBE65] shrink-0" />
                 <a 
-                  href="https://wa.me/918238451017?text=Hi%20Suit%20Bliss%20Aura!%20I%20have%20a%20question." 
+                  href={`https://wa.me/${whatsappNumber}?text=Hi%20Suit%20Aura%20Girls!%20I%20have%20a%20question.`}
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="hover:text-[#DFBE65] font-semibold hover:underline transition"
                 >
-                  {storeSettings?.phone || '+91 82384 51017'} (WhatsApp Order Help)
+                  {storeSettings?.phone || SUPPORT_PHONE_DISPLAY} (WhatsApp Order Help)
                 </a>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <MapPin className="w-4.5 h-4.5 text-[#DFBE65] shrink-0" />
+                <div>
+                  <a href={STORE_MAPS_URL} target="_blank" rel="noopener noreferrer" className="hover:text-[#DFBE65] hover:underline transition">{STORE_ADDRESS}</a>
+                  <p className="mt-1 text-[10px] text-[#FAF5EB]/70">Support: Mon-Sat, 10:00 AM - 7:00 PM IST. Sunday queries are answered Monday morning.</p>
+                </div>
               </div>
             </div>
           </div>
@@ -159,9 +170,9 @@ export const Footer: React.FC = () => {
               {/* Circular Social Icons */}
               <div className="flex items-center gap-3 pt-1">
                 {[
-                  { icon: Instagram, href: 'https://instagram.com' },
-                  { icon: Facebook, href: 'https://facebook.com' },
-                  { icon: Twitter, href: 'https://twitter.com' }
+                  { icon: Instagram, href: storeSettings?.instagramUrl || STORE_INSTAGRAM_URL },
+                  { icon: Facebook, href: storeSettings?.facebookUrl || 'https://facebook.com' },
+                  { icon: Twitter, href: storeSettings?.twitterUrl || 'https://twitter.com' }
                 ].map((soc, sIdx) => {
                   const IconComp = soc.icon;
                   return (
@@ -526,12 +537,12 @@ export const Footer: React.FC = () => {
                         <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Online Now" />
                       </div>
                       <p className="text-[11px] text-emerald-700 font-semibold">🟢 Online & Ready to Assist</p>
-                      <p className="text-[10px] text-gray-500 mt-0.5">+91 82384 51017 (Artisan, Rajasthan)</p>
+                      <p className="text-[10px] text-gray-500 mt-0.5">{SUPPORT_PHONE_DISPLAY} (Asansol, West Bengal)</p>
                     </div>
                   </div>
 
                   <a 
-                    href="https://wa.me/918238451017?text=Hi%20Suit%20Bliss%20Aura!%20I%20have%20a%20query%20about%20your%20Heritage%20Suit%20Collection."
+                    href={`https://wa.me/${whatsappNumber}?text=Hi%20Suit%20Aura%20Girls!%20I%20have%20a%20query%20about%20your%20Heritage%20Suit%20Collection.`}
                     target="_blank"
                     rel="noreferrer"
                     className="w-full py-3.5 bg-[#25D366] hover:bg-[#20bd5a] text-white font-black text-xs uppercase tracking-widest rounded-xl shadow-md flex items-center justify-center gap-2 transition active:scale-98 cursor-pointer border border-[#20bd5a]"

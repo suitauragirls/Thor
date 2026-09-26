@@ -46,6 +46,15 @@ export const AdminHomepage: React.FC = () => {
         return <Gift className="w-4 h-4 text-black" />;
       case 'categoryGrid':
         return <LayoutGrid className="w-4 h-4 text-purple-500" />;
+      case 'brandHeader':
+        return <Sparkles className="w-4 h-4 text-black" />;
+      case 'artisanalPromises':
+        return <ShieldCheck className="w-4 h-4 text-emerald-600" />;
+      case 'specialOffer':
+        return <Flame className="w-4 h-4 text-orange-500" />;
+      case 'instagram':
+      case 'newsletter':
+        return <Star className="w-4 h-4 text-black" />;
       case 'newArrivals':
         return <Sparkles className="w-4 h-4 text-\[#B76E79\]" />;
       case 'bestSellers':
@@ -73,6 +82,16 @@ export const AdminHomepage: React.FC = () => {
         return 'Royal Multi-Buy Combo Offer Builder (Buy 2 Suits Get Extra 15% OFF).';
       case 'categoryGrid':
         return 'Visual image grid linking to Suits, Kurtis, Anarkali & Dresses.';
+      case 'brandHeader':
+        return 'Announcement ticker and brand messages at the top of the storefront.';
+      case 'artisanalPromises':
+        return 'Shipping, craftsmanship, exchange, and payment trust promises.';
+      case 'specialOffer':
+        return 'Promotional campaign banner controlled from Banner Management.';
+      case 'instagram':
+        return 'Social media lookbook gallery.';
+      case 'newsletter':
+        return 'Customer newsletter signup form.';
       case 'newArrivals':
         return 'Latest catalog additions with fresh tags and quick view.';
       case 'bestSellers':
@@ -124,7 +143,7 @@ export const AdminHomepage: React.FC = () => {
       setIsResetting(true);
       try {
         await resetHomepageSectionsToDefault();
-        showToast('Homepage layout reset to default order & synced to Supabase!', 'success');
+        showToast('Homepage layout reset to the default order.', 'success');
       } catch (e) {
         console.error(e);
         showToast('Error resetting layout', 'error');
@@ -164,7 +183,7 @@ export const AdminHomepage: React.FC = () => {
             Homepage Layout & Section Order Manager
           </h2>
           <p className="text-xs text-gray-500 mt-1">
-            à¤¯à¤¹à¤¾à¤ à¤¸à¥‡ à¤†à¤ª à¤¹à¥‹à¤®à¤ªà¥‡à¤œ à¤•à¥‡ à¤¸à¤­à¥€ 12 à¤¸à¥‡à¤•à¥à¤¶à¤¨à¥à¤¸ à¤•à¤¾ à¤•à¥à¤°à¤® (Order) à¤Šà¤ªà¤°/à¤¨à¥€à¤šà¥‡ à¤¬à¤¦à¤² à¤¸à¤•à¤¤à¥‡ à¤¹à¥ˆà¤‚ à¤”à¤° à¤œà¤¿à¤¨à¥à¤¹à¥‡à¤‚ à¤›à¥à¤ªà¤¾à¤¨à¤¾ à¤¹à¥‹ à¤‰à¤¨à¥à¤¹à¥‡à¤‚ 1-à¤•à¥à¤²à¤¿à¤• à¤®à¥‡à¤‚ Hide/Show à¤•à¤° à¤¸à¤•à¤¤à¥‡ à¤¹à¥ˆà¤‚à¥¤
+            Is admin controls ki help se homepage ke visible sections ko hide/show ya reorder karke live storefront layout badlo.
           </p>
         </div>
 
@@ -239,7 +258,7 @@ export const AdminHomepage: React.FC = () => {
 
           <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
             <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Auto-Synced to Supabase</span>
+            <span>Preview Updated</span>
           </div>
         </div>
 
@@ -269,9 +288,9 @@ export const AdminHomepage: React.FC = () => {
         <div className="p-4 bg-gradient-to-r from-[#D8C8B8]/60 via-amber-50/40 to-\[#D8C8B8\]\/60 rounded-2xl border border-rose-100 text-xs text-gray-700 flex items-start gap-3 mt-4">
           <Sparkles className="w-4 h-4 text-black shrink-0 mt-0.5" />
           <div className="space-y-0.5">
-            <span className="font-bold text-[#211C1A]">Real-Time Storefront Synchronization Active:</span>
+            <span className="font-bold text-[#211C1A]">Homepage Preview Controls:</span>
             <p className="text-gray-600 text-[11px]">
-              à¤¯à¤¹à¤¾à¤ à¤•à¤¿à¤¯à¤¾ à¤—à¤¯à¤¾ à¤•à¥‹à¤ˆ à¤­à¥€ à¤¬à¤¦à¤²à¤¾à¤µ (à¤¸à¥‡à¤•à¥à¤¶à¤¨ à¤•à¥‹ à¤Šà¤ªà¤°/à¤¨à¥€à¤šà¥‡ à¤•à¤°à¤¨à¤¾ à¤¯à¤¾ à¤¹à¤¾à¤‡à¤¡ à¤•à¤°à¤¨à¤¾) à¤¤à¥à¤°à¤‚à¤¤ à¤†à¤ªà¤•à¥‡ à¤²à¤¾à¤‡à¤µ à¤•à¤¸à¥à¤Ÿà¤®à¤° à¤¸à¥à¤Ÿà¥‹à¤° à¤ªà¤° à¤²à¤¾à¤—à¥‚ à¤¹à¥‹ à¤œà¤¾à¤¤à¤¾ à¤¹à¥ˆ à¤”à¤° Supabase à¤¡à¥‡à¤Ÿà¤¾à¤¬à¥‡à¤¸ à¤®à¥‡à¤‚ à¤¸à¥à¤°à¤•à¥à¤·à¤¿à¤¤ à¤¸à¥‡à¤µ à¤¹à¥‹à¤¤à¤¾ à¤¹à¥ˆà¥¤
+              Changes apply immediately in this browser and are stored locally. Shared publishing across devices requires secure server-side configuration.
             </p>
           </div>
         </div>

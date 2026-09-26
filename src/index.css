@@ -131,12 +131,60 @@
 [class~="bg-[#211C1A]"] :is([class~="text-[#211C1A]"], [class~="text-black"]),
 [class~="from-[#241D1B]"] :is([class~="text-[#211C1A]"], [class~="text-black"]),
 [class~="bg-black"] :is([class~="text-[#211C1A]"], [class~="text-black"]),
-[class*="bg-black/"] :is([class~="text-[#211C1A]"], [class~="text-black"]) {
+[class*="bg-black/"] > :is([class~="text-[#211C1A]"], [class~="text-black"]) {
   color: #FAF7F2 !important;
 }
 
 [class*="hover:bg-[#241D1B]"][class*="hover:text-[#211C1A]"]:hover {
   color: #FAF7F2 !important;
+}
+
+/* Keep monochrome Lucide icons on-brand while preserving semantic status colors. */
+svg.lucide:not([class*="text-"]) {
+  color: #B8935A;
+}
+
+svg.lucide[class*="text-black"],
+svg.lucide[class*="text-gray-"],
+svg.lucide[class*="text-[#211C1A]"],
+svg.lucide[class*="text-[#241D1B]"],
+svg.lucide[class~="text-current"] {
+  color: #9A6A3A !important;
+}
+
+svg.lucide[class*="text-white"],
+svg.lucide[class*="text-[#FAF5EB]"],
+svg.lucide[class*="text-[#FAF7F2]"] {
+  color: #DFBE65 !important;
+}
+
+svg.lucide[class*="fill-black"],
+svg.lucide[class*="fill-gray-"] {
+  fill: #9A6A3A !important;
+}
+
+svg.lucide[class*="fill-white"] {
+  fill: #DFBE65 !important;
+}
+
+svg.lucide[class*="stroke-black"],
+svg.lucide[class*="stroke-gray-"] {
+  stroke: #9A6A3A !important;
+}
+
+svg.lucide[class*="stroke-white"] {
+  stroke: #DFBE65 !important;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  svg.lucide {
+    transition: color 180ms ease, transform 180ms ease;
+  }
+
+  button:hover svg.lucide,
+  a:hover svg.lucide {
+    transform: scale(1.04);
+  }
 }
 
 .gold-hairline {

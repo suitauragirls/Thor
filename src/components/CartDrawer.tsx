@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { useShop } from '../context/ShopContext';
 import { getCleanImageUrl } from '../utils/imageHelper';
+import { createSupportWhatsAppUrl } from '../utils/storeContact';
 import { 
   X, 
   Trash2, 
@@ -578,7 +579,7 @@ export const CartDrawer: React.FC = () => {
             {/* Direct WhatsApp Stylist Assistance in Cart */}
             <a
               id="cart-drawer-whatsapp-help"
-              href="https://wa.me/918238451017?text=Hi%20Suit%20Bliss%20Aura!%20I%20have%20a%20question%20about%20my%20bag%20items%20before%20checkout."
+              href={createSupportWhatsAppUrl('Hi Suit Aura Girls! I have a question about my bag items before checkout.')}
               target="_blank"
               rel="noopener noreferrer"
               className="text-[11px] text-[#211C1A] hover:text-black font-semibold text-center flex items-center justify-center gap-1.5 transition-colors py-1 cursor-pointer"
